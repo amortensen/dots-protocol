@@ -114,3 +114,135 @@ Architectural Overview
 
 Protocol
 ========
+
+Signal Channel
+--------------
+
+* Role/Purpose
+
+* L4 Protocol
+
+  * UDP
+
+  * TCP
+
+  * Should use QUIC? Quick readup on it plz
+
+* Security
+
+  * CurveCP? DTLS?
+
+* Messages
+
+  * All messages are a heartbeat
+
+  * Client message
+
+    * Seqno
+
+    * Last seqno from server
+
+    * Mit request
+
+      * Mit requested - Boolean
+
+      * Mit ID - opaque client-generated ID (absent if mit not requested)
+
+      * Mit lifetime - unsigned long int (absent if mit not requested)
+
+    * Mit scope - Object
+
+      * identifier; OR
+
+      * resource Prefix/IP/FQDN/URL, port, etc.
+
+    * Attack telemetry?
+
+  * Server message
+
+    * Seqno
+
+    * Last seqno from client
+
+    * Mit statuses (Bundled if smaller than MTU and multiple mits from client)
+
+      * Mit status
+
+        * Mit enabled - Boolean
+
+        * Mit ID - opaque client-generated ID from mit request above
+
+        * Mitigation TTL
+
+        * Dropped byte count
+
+        * Dropped bps
+
+        * Dropped packet count
+
+        * Dropped pps
+
+        * Blacklist enabled - Boolean
+
+        * Whitelist enabled - Boolean
+
+        * Filters enabled - Boolean
+
+
+Data Channel
+------------
+
+* Role/Purpose
+
+* Security
+
+  * HTTPS
+
+  * Authentication
+
+    * Bidirectional cert auth
+
+  * Authorization
+
+    * Password to limit access? e.g. admin v. read-only?
+
+* Endpoints
+
+  * Content-Types
+
+  * Black-/white-list endpoints
+
+    * Similar to filter endpoint below
+
+  * Status endpoint
+
+    * GET
+
+  * Filter endpoint
+
+    * GET/POST/PUT/DELETE
+
+      * GET -> *200 OK* + filter body
+
+        * "GET /v1/filters/" returns all filters
+
+      * POST -> *201 Created* + Location header for specific filter
+
+      * PUT -> *204 No Content* on successful update
+
+      * DELETE -> *204 No Content* on successful delete
+
+  * Signaling session config endpoint
+
+    * Resource identifier management
+
+    * Max mit lifetime
+
+    * Heartbeat interval
+
+    * Permitted lossiness (missed heartbeat count, miss duration)
+
+    * Action on signal loss (auto-mit, none, etc.)
+
+  * Provisioning endpoint
+
