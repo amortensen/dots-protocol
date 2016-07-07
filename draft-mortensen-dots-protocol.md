@@ -6,7 +6,7 @@ date: 2015-10-19
 area: Security
 wg: DOTS
 kw: Internet-Draft
-cat: standards
+cat: std
 
 coding: us-ascii
 pi:
@@ -35,14 +35,43 @@ normative:
   RFC0791:
   RFC0793:
   RFC2119:
+  RFC2460:
+  RFC5246:
+  RFC6555:
+  RFC7159:
+  RFC7230:
+  RFC7231:
+  RFC7540:
+  REST:
+    target: http://www.ics.uci.edu/~fielding/pubs/dissertation/fielding_dissertation.pdf
+    title: Architectural Styles and the Design of Network-based Software Architectures
+    author:
+      ins: R. Fielding
+      name: Roy Thomas Fielding
+      org: University of California, Irvine
+    date: 2000
+    seriesinfo:
+      "Ph.D.": "Dissertation, University of California, Irvine"
+    format:
+      PDF: http://www.ics.uci.edu/~fielding/pubs/dissertation/fielding_dissertation.pdf
 
 informative:
   RFC1518:
   RFC1519:
   RFC2373:
   RFC4271:
+  RFC5575:
+  I-D.tsvwg-quic-protocol:
+  WISR:
+    target: https://www.arbornetworks.com/images/documents/WISR2016_EN_Web.pdf
+    title: Worldwide Infrastructure Security Report
+    author:
+      org: Arbor Networks, Inc.
+    date: 2016
+    format:
+      PDF: https://www.arbornetworks.com/images/documents/WISR2016_EN_Web.pdf
 
--- abstract
+--- abstract
 
 This document describes Distributed-Denial-of-Service (DDoS) Open Threat
 Signaling (DOTS), a signaling protocol for requesting and managing mitigation of
@@ -107,16 +136,84 @@ interpreted as described in {{RFC2119}}.
 
 Terms used to define entity relationships, transmitted data, and methods of
 communication are drawn from the terminology defined in
-[I-D.draft-ietf-dots-requirements].
+[I-D.ietf-dots-requirements].
 
-Architectural Overview
-======================
 
-Protocol
-========
+Architecture
+============
+
+The architecture in which the DOTS protocol operates is assumed to be derived
+from the architectural components and concepts described in
+[I-D.ietf-dots-architecture].
+
+
+DOTS Agents
+-----------
+
+All protocol communication is between a DOTS client and a DOTS server. The
+logical agent termed a DOTS gateway is in practice a DOTS server placed
+back-to-back with a DOTS client. As discussed in [I-D.ietf-dots-architecture],
+any interface enabling the back-to-back DOTS server and client to act as a DOTS
+gateway is implementation-specific. This protocol is therefore concerned only
+with managing one or more bilateral relationships between DOTS clients and the
+DOTS servers, a signaling mode known as Direct Signaling in the DOTS
+architecture. This is shown in {{fig-proto-dir-sig}} below:
+
+~~~~~
+    +-----------+  signal channel  +-----------+
+    |           |<---------------->|           |
+    |DOTS client|                  |DOTS server|
+    |           |<================>|           |
+    +-----------+   data channel   +-----------+
+~~~~~
+{: #fig-proto-dir-sig title="DOTS protocol direct signaling"}
+
+The DOTS architecture anticipates many-to-one and one-to-many deployments, in
+which multiple DOTS clients maintain distinct signaling sessions with a single
+DOTS server or a single DOTS client maintains distinct signaling sessions with
+multiple DOTS servers, as shown below in {{fig-proto-mn-dir-sig}}:
+
+~~~~~
+    +----+      +----+      +----+
+    | c1 |      | Sa |------| c2 |
+    +----+      +----+      +----+
+          \                /
+           \              /
+            \   +----+   /
+             +--| Sb |--+
+                +----+
+
+    DOTS        DOTS        DOTS
+    client 1    servers     client 2
+~~~~~
+{: #fig-proto-mn-dir-sig title="DOTS protocol direct signaling"}
+
+DOTS server Sb has signaling sessions with DOTS clients c1 and c2. DOTS client
+c2 has signaling sessions with DOTS servers Sa and Sb. Except where explicitly
+defined in this protocol, all mechanisms to maintain multiple signaling sessions
+are left to the implementation. Exceptions arising from detected mitigation
+request conflicts are described in \{\{mit-conflict-detection\}\} below.
+
+
+Protocol Overview
+=================
+
+The DOTS protocol consists of two channels, a signal channel and a data channel.
+The signal channel is the minimal secure communication layer a DOTS client uses
+to request mitigation for resources under the administrative control of the DOTS
+client; the administrative control may be delegated. The data channel acts as a
+management plane for DOTS, permitting DOTS client operators a limited ability to
+adjust configuration and filtering for their mitigation requests.
 
 Signal Channel
---------------
+==============
+
+The signal channel characteristics in [I-D.ietf-dots-requirements] describe a
+secure, low-overhead protocol capable of operating in DDoS attack conditions. To
+function in attack conditions, the signal channel must expect and absorb a
+certain amount of signal lossiness and latency, with the limits established by
+operators of deployed DOTS agents.
+
 
 * Role/Purpose
 
@@ -189,26 +286,185 @@ Signal Channel
         * Filters enabled - Boolean
 
 
-Data Channel
-------------
+Data Channel {#data-channel}
+============
 
-* Role/Purpose
+Role {#data-channel-role}
+----
 
-* Security
+The DOTS data channel serves as a management plane for the DOTS signal channel.
+Using the conventions established in [REST], the data channel provides an
+HTTPS interface for configuration, black- and white-list management, traffic
+filter management, and extensibility required for future operator needs
+(GEN-001 [I-D.ietf-dots-requirements]).
 
-  * HTTPS
 
-  * Authentication
+Limitations {#data-channel-limitations}
+-----------
 
-    * Bidirectional cert auth
+Unlike the DOTS signal channel, the data channel potentially offers DOTS client
+operators limited direct control over the behavior of mitigations requested by
+the DOTS client. However, the DOTS data channel is not a general purpose
+application programming interface for mitigators with which a DOTS server is
+communicating. Certain countermeasure profiles for DDoS attacks are widely
+understood and deployed, but many remain specific to mitigation vendor
+implementations, making abstraction all but impossible. The DOTS data channel in
+this protocol is therefore focused on a limited subset of widely available and
+well understood mitigation actions, namely black- and white-listing, and
+rate-limiting.
 
-  * Authorization
 
-    * Password to limit access? e.g. admin v. read-only?
+Transport {#data-channel-transport}
+---------
+
+The DOTS data channel relies on the semantics described in [REST], meaning any
+reliable application protocol enabling those semantics could be used. This
+document anticipates HTTP/1.1 over TLS [RFC7230] will be most widely deployed at
+the time of writing. Implementations of the DOTS protocol therefore MUST support
+data channel using HTTP/1.1 over TLS. However, this document also leaves open
+the possibility that the data channel MAY be implemented through such
+application transports as HTTP/2 [RFC7540] or the Quick UDP Internet Connection
+[QUIC] protocol, as well as other current and future protocols supporting [REST]
+semantics and the security requirements described in
+[I-D.ietf-dots-requirements]. Support for alternative secure REST transports
+for the data channel are deployment- and implementation-specific.
+
+DOTS data channel implementations MUST support the IPv4 [RFC791] and IPv6
+[RFC2460] protocols, and MUST support the "Happy Eyeballs" algorithm for dual
+stack deployments discussed in [RFC6555].
+
+Implementations of the DOTS data channel MUST use TLS version 1.2 or higher.
+DOTS agents MUST NOT create a data channel with a peer agent requesting a lower
+TLS version, and SHOULD drop the connection immediately on detecting the peer
+DOTS agent does not support a recent enough TLS version.
+
+{{security-considerations}} offers a more detailed discussion of data channel
+transport security, including cipher suites.
+
+
+Authentication {#data-channel-authentication}
+--------------
+
+When establishing the data channel, the DOTS client and DOTS server MUST
+mutually authenticate each other, per SEC-001 in [I-D.ietf-dots-requirements].
+A common method for mutual authentication for HTTP/1.1 over TLS is an exchange
+of X.509 certificates between client and server during the TLS handshake
+[RFC5246]; similar mechanisms exist in HTTP/2 and in [QUIC].
+
+Regardless of the underlying transport used, this document does not prescribe
+the method of mutual authentication. The method of mutual authentication
+used for the data channel is left to the discretion of the DOTS server operator.
+Additional discussion of mutual authentication is below in
+{{security-considerations}}.
+
+
+Authorization {#data-channel-authorization}
+-------------
+
+TBD deployment-specific, see also security considerations.
+
+
+Resources {#data-channel-resources}
+---------
+
+The DOTS server exposes data channel resources to the DOTS client as uniform
+resource identifiers. The DOTS client sends requests related to the data channel
+resources using the verbs defined in [RFC7231]: GET, POST, PUT, PATCH and
+DELETE. The DOTS server responds to the DOTS client requests with a status code
+and, if the request succeeded, available data returned by the request. The
+status codes used in DOTS server responses are also defined in [RFC7231].
+
+
+### Resource Root
+
+The root resource or endpoint in the DOTS data channel is /dots/v1/data. The
+root resource MUST be prefixed to all resources exposed through the data
+channel.
+
+
+### {+dataroot}/sessions
+
+The /sessions endpoint is a read-only resource from which the DOTS client may
+request the status of signaling sessions. The DOTS client requests the list of
+signaling sessions by issuing a GET for the /sessions resource:
+
+~~~~~
+    GET /dots/v1/sessions HTTP/1.1
+    Host: dots-server.example.com
+    Accept: application/json
+~~~~~
+{: #eg-client-status title="DOTS Client Requesting Session Status"}
+
+If the DOTS client is authorized, the DOTS server responds to the GET with a
+list of signaling session identifiers, as in the following example:
+
+~~~~~
+    HTTP/1.1 200 OK
+    Cache-Control: no-cache
+    Content-Type: application/json
+
+    {
+        "sessions": [
+            {
+                "id": <string>,
+            }
+        ]
+    }
+~~~~~
+
+The JSON key-value pairs in the response are as follows
+
+sessions:
+: A list of dictionary objects describing active signaling session identifiers.
+If empty, no signaling sessions are active.
+
+
+### {+dataroot}/filters
+
+The /filters endpoint on a DOTS server is a read-write resource through which
+a DOTS client may request that the DOTS server add, retrieve, modify and delete
+traffic filters to an active mitigation requested through the signal channel.
+
+
+### Serialization {#data-channel-resources-serialization}
+
+Resource data is exchanged between DOTS client in a serialized format.
+Implementations MUST support JSON [RFC7159] serialization of resource data. DOTS
+clients MUST advertise support for JSON-encoded data from the DOTS server
+through the HTTP Accept header [RFC7231] \(or an equivalent if not using HTTP),
+using the MIME type defined in [RFC7159], application/json:
+
+~~~~~
+        GET /dots/v1/sessions HTTP/1.1
+        Host: dots-server.example.com
+        Accept: application/json
+~~~~~
+{: #eg-client-serial1 title="DOTS Client Advertising Required Serialization"}
+
+Implementations MAY offer additional serialization formats as well. DOTS clients
+MAY advertise support for additional serialization formats in requests to the
+DOTS server through the HTTP Accept header [RFC7231] \(or an equivalent if not
+using HTTP), as shown in the example HTTP/1.1 request below:
+
+~~~~~
+        GET /dots/v1/sessions HTTP/1.1
+        Host: dots-server.example.com
+        Accept: application/json; q=0.5, application/cbor
+~~~~~
+{: #eg-client-serial2 title="DOTS Client Supporting Additional Serializations"}
+
+If a DOTS server does not support the media types in the DOTS client's Accept
+header (or its equivalent), the DOTS server MUST respond with an status code
+indicating an error in the client request. In HTTP deployments, the DOTS server
+MUST return the 415 Unsupported Media Type error code defined in [RFC7231]. A
+DOTS client request lacking indicated support for application/json content
+suggests an invalid or malicious client implementation. After sending the 415
+error response, DOTS servers SHOULD terminate the data channel connection with
+the invalid client.
+
+
 
 * Endpoints
-
-  * Content-Types
 
   * Black-/white-list endpoints
 
@@ -246,3 +502,20 @@ Data Channel
 
   * Provisioning endpoint
 
+
+Security Considerations
+=======================
+
+Data Channel Security
+---------------------
+
+The DOTS data channel acts as a management plane for DOTS signaling sessions.
+As discussed in the security considerations of [I-D.ietf-dots-architecture], an
+attacker with control over data channel may be able to blacklist or rate-limit
+any flows under the administrative control of the DOTS client. Extra care must
+therefore be taken when authenticating and authorizing the data channel.
+
+DOTS server operators SHOULD enforce access control policies restricting which
+addresses are able to contact
+
+###
