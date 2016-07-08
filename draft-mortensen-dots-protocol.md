@@ -1,7 +1,7 @@
 ---
 title: DDoS Open Threat Signaling Protocol
 docname: draft-mortensen-dots-protocol-00
-date: 2015-10-19
+date: @DATE@
 
 area: Security
 wg: DOTS
@@ -36,15 +36,38 @@ normative:
   RFC0793:
   RFC2119:
   RFC2460:
+  RFC2784:
+  RFC3031:
+  RFC5405:
   RFC5246:
   RFC5952:
   RFC6555:
+  RFC6698:
   RFC7159:
   RFC7230:
   RFC7231:
+  RFC7234:
   RFC7540:
   I-D.ietf-dots-architecture:
   I-D.ietf-dots-requirements:
+  CURVECP:
+    target: https://curvecp.org/
+    title: "CurveCP: Usable security for the Internet"
+    author:
+      ins: D. Bernstein
+      name: Daniel J. Bernstein
+      org: University of Illinois at Chicago
+    date: 2011
+    format:
+      HTML: https://curvecp.org/
+  PROTOBUF:
+    target: https://developers.google.com/protocol-buffers/
+    title: Protocol Buffers
+    author:
+      org: Google, Inc.
+    date: 2016
+    format:
+      HTML: https://developers.google.com/protocol-buffers/
   REST:
     target: http://www.ics.uci.edu/~fielding/pubs/dissertation/fielding_dissertation.pdf
     title: Architectural Styles and the Design of Network-based Software Architectures
@@ -61,10 +84,33 @@ normative:
 informative:
   RFC1518:
   RFC1519:
-  RFC2373:
   RFC4271:
   RFC5575:
   I-D.tsvwg-quic-protocol:
+  ARBORCCS:
+    target: https://www.arbornetworks.com/cloud-signaling-a-faster-automated-way-to-mitigate-ddos-attacks
+    title: "Cloud SIgnaling: A Faster, Automated Way to Mitigate DDoS Attacks"
+    author:
+      org: Arbor Networks, Inc.
+    date: 2011
+    format:
+      HTML: https://www.arbornetworks.com/cloud-signaling-a-faster-automated-way-to-mitigate-ddos-attacks
+  COMMUNITYFS:
+    target: https://www.cymru.com/jtk/misc/community-fs.html
+    title: Community FlowSpec
+    author:
+      org: Team Cymru, Inc.
+    date: 2011
+    format:
+      HTML: https://www.cymru.com/jtk/misc/community-fs.html
+  VERISIGNOH:
+    target: http://www.verisign.com/en_US/security-services/ddos-protection/open-api/index.xhtml
+    title: Verisign OpenHybrid
+    author:
+      org: Verisign, Inc.
+    date: 2016
+    format:
+      HTML: http://www.verisign.com/en_US/security-services/ddos-protection/open-api/index.xhtml
   WISR:
     target: https://www.arbornetworks.com/images/documents/WISR2016_EN_Web.pdf
     title: Worldwide Infrastructure Security Report
@@ -89,8 +135,9 @@ clients. DOTS clients additionally may use the data channel to manage filters
 and black- and white-lists to restrict or allow traffic to the clients' domains
 arbitrarily.
 
-The DOTS signal channel operates over UDP and if necessary TCP. The DOTS data
-channel operates over HTTPS.
+The DOTS signal channel operates over UDP [RFC0768] and if necessary TCP
+[RFC0793]. The DOTS data channel operates over HTTPS [RFC7230] or a
+transport with similar reliability, interaction and security characteristics.
 
 
 --- middle
@@ -102,12 +149,12 @@ Distributed-Denial-of-Service attack scale and frequency continues to increase
 year over year, and the trend shows no signs of abating [WISR]. In response to
 the DDoS attack trends, service providers and vendors have developed various
 approaches to sharing or delegating responsibility for defense, among them ad
-hoc service relationships, filtering through peering relationships [CARISFLOW],
-and proprietary solutions ([ARBOR], [VERISIGN]). Such hybrid approaches to DDoS
-defense have proven effective [CITE], but the heterogeneous methods employed to
-coordinate DDoS defenses across domain boundaries have necessarily limited their
-scope and effectiveness, as the mechanisms in one domain have no traction in
-another.
+hoc service relationships, filtering through peering relationships [COMMUNITYFS],
+and proprietary solutions ([ARBORCCS], [VERISIGNOH]). Such hybrid approaches to
+DDoS defense have proven effective [CITE], but the heterogeneous methods
+employed to coordinate DDoS defenses across domain boundaries have necessarily
+limited their scope and effectiveness, as the mechanisms in one domain have no
+traction in another.
 
 The DDoS Open Threat Signaling (DOTS) protocol provides a common mechanism to
 achieve the coordinated attack response previously restricted to custom or
@@ -243,12 +290,12 @@ requiring versioning or refactoring.  The data channel may be used to provide a
 mechanism by which schema updates or expansions may be communicated during
 provisioning/session (re)establishment.
 
-Data serialization alone does not provide for the requirements of peer mutual
-authentication [SEC-001], message confidentiality [SEC-002], message replay
-protection [SEC-003] or message integrity.  CurveCP [CCP] meets these
-requirements and provides active and passive forward secrecy.  Key distribution
-may be achieved via the data channel, via an online mechanism such as DANE
-[RFC6698] or by out of band means.
+Data serialization alone does not cover the security requirements in
+[I-D.ietf-dots-requirements] of peer mutual authentication (SEC-001), message
+confidentiality (SEC-002), message replay protection (SEC-003) or message
+integrity.  CurveCP [CURVECP] meets these requirements and provides active and
+passive forward secrecy.  Key distribution may be achieved via the data channel,
+via an online mechanism such as DANE [RFC6698] or by out of band means.
 
 
 Minimum Viable Information
@@ -265,15 +312,16 @@ telemetry and mitigation/countermeasure stipulations and as such this type of
 information if conveyed can only be considered advisory.  In these instances the
 minimum viable information required for the majority of mitigations to be
 activated is that which pertains to the resource being targeted by the attack
-(host, prefix, protocol, port, URI etc. [OP-006]).  [I-D.ietf-dots-requirements]
-also identifies a mitigation lifetime period [OP-005] and mitigation efficacy
-metric [OP-007].  The former may be considered for inclusion in the minimum
-viable information set, however, the latter may only be relevant in updates.  An
-explicit mitigation request/terminate flag is also required - a mitigation MUST
-be explicitly requested by an operator.  Finally, each message should include a
-message id or sequence number field as well as a field for the last received
-message id or sequence number.  These may then be compared by the endpoints to
-assist in tracking state and/or identifying loss.
+(host, prefix, protocol, port, URI etc.), per [I-D.ietf-dots-requirements]
+\(OP-006). The DOTS requirements also identify a mitigation lifetime period
+(OP-005) and mitigation efficacy metric (OP-007).  The former may be considered
+for inclusion in the minimum viable information set, however, the latter may
+only be relevant in updates.  An explicit mitigation request/terminate flag is
+also required - a mitigation MUST be explicitly requested by an operator.
+Finally, each message should include a message id or sequence number field as
+well as a field for the last received message id or sequence number.  These may
+then be compared by the endpoints to assist in tracking state and/or identifying
+loss.
 
 Messages
 --------
@@ -465,63 +513,6 @@ Heartbeat:
       |<---------HeartBeat----------|  // Server heartbeat
       |                             |
 ~~~~~
-
-
-* Messages
-
-  * All messages are a heartbeat
-
-  * Client message
-
-    * Seqno
-
-    * Last seqno from server
-
-    * Mit request
-
-      * Mit requested - Boolean
-
-      * Mit ID - opaque client-generated ID (absent if mit not requested)
-
-      * Mit lifetime - unsigned long int (absent if mit not requested)
-
-    * Mit scope - Object
-
-      * identifier; OR
-
-      * resource Prefix/IP/FQDN/URL, port, etc.
-
-    * Attack telemetry?
-
-  * Server message
-
-    * Seqno
-
-    * Last seqno from client
-
-    * Mit statuses (Bundled if smaller than MTU and multiple mits from client)
-
-      * Mit status
-
-        * Mit enabled - Boolean
-
-        * Mit ID - opaque client-generated ID from mit request above
-
-        * Mitigation TTL
-
-        * Dropped byte count
-
-        * Dropped bps
-
-        * Dropped packet count
-
-        * Dropped pps
-
-        * Blacklist enabled - Boolean
-
-        * Whitelist enabled - Boolean
-
-        * Filters enabled - Boolean
 
 
 Data Channel {#data-channel}
@@ -870,50 +861,8 @@ the invalid client.
 ### Caching {#data-channel-resources-caching}
 
 DOTS server responses sent over the DOTS data channel MUST NOT be cached by the
-DOTS client.
-DOTS server implementations MUST include the Cache-Control with a value of
-"no-cache", as desc
-
-
-
-* Endpoints
-
-  * Black-/white-list endpoints
-
-    * Similar to filter endpoint below
-
-  * Status endpoint
-
-    * GET
-
-  * Filter endpoint
-
-    * GET/POST/PUT/DELETE
-
-      * GET -> *200 OK* + filter body
-
-        * "GET /v1/filters/" returns all filters
-
-      * POST -> *201 Created* + Location header for specific filter
-
-      * PUT -> *204 No Content* on successful update
-
-      * DELETE -> *204 No Content* on successful delete
-
-  * Signaling session config endpoint
-
-    * Resource identifier management
-
-    * Max mit lifetime
-
-    * Heartbeat interval
-
-    * Permitted lossiness (missed heartbeat count, miss duration)
-
-    * Action on signal loss (auto-mit, none, etc.)
-
-  * Provisioning endpoint
-
+DOTS client. DOTS server implementations therefore MUST include in responses
+a Cache-Control header with a value of "no-cache" [RFC7234].
 
 
 Security Considerations
@@ -929,6 +878,4 @@ any flows under the administrative control of the DOTS client. Extra care must
 therefore be taken when authenticating and authorizing the data channel.
 
 DOTS server operators SHOULD enforce access control policies restricting which
-addresses are able to contact
-
-###
+clients are able to contact DOTS servers.
