@@ -37,11 +37,14 @@ normative:
   RFC2119:
   RFC2460:
   RFC5246:
+  RFC5952:
   RFC6555:
   RFC7159:
   RFC7230:
   RFC7231:
   RFC7540:
+  I-D.ietf-dots-architecture:
+  I-D.ietf-dots-requirements:
   REST:
     target: http://www.ics.uci.edu/~fielding/pubs/dissertation/fielding_dissertation.pdf
     title: Architectural Styles and the Design of Network-based Software Architectures
@@ -101,7 +104,7 @@ the DDoS attack trends, service providers and vendors have developed various
 approaches to sharing or delegating responsibility for defense, among them ad
 hoc service relationships, filtering through peering relationships [CARISFLOW],
 and proprietary solutions ([ARBOR], [VERISIGN]). Such hybrid approaches to DDoS
-defense have proven effective [CITE], but the heterogenous methods employed to
+defense have proven effective [CITE], but the heterogeneous methods employed to
 coordinate DDoS defenses across domain boundaries have necessarily limited their
 scope and effectiveness, as the mechanisms in one domain have no traction in
 another.
@@ -294,9 +297,9 @@ Role {#data-channel-role}
 
 The DOTS data channel serves as a management plane for the DOTS signal channel.
 Using the conventions established in [REST], the data channel provides an
-HTTPS interface for configuration, black- and white-list management, traffic
-filter management, and extensibility required for future operator needs
-(GEN-001 [I-D.ietf-dots-requirements]).
+interface for configuration, black- and white-list management, traffic filter
+management, and extensibility required for future operator needs (GEN-001
+[I-D.ietf-dots-requirements]).
 
 
 Limitations {#data-channel-limitations}
@@ -313,6 +316,12 @@ this protocol is therefore focused on a limited subset of widely available and
 well understood mitigation actions, namely black- and white-listing, and
 rate-limiting.
 
+While managing filters and rate-limit policy over the DOTS data channel
+resembles the dissemination of flow specifications with a match and action on
+match in [RFC5575], the similarity is restricted to [RFC5575]'s traffic-rate
+action only in order to prevent a DOTS client from exerting influence over
+traffic not destined for the DOTS client's domain.
+
 
 Transport {#data-channel-transport}
 ---------
@@ -321,22 +330,22 @@ The DOTS data channel relies on the semantics described in [REST], meaning any
 reliable application protocol enabling those semantics could be used. This
 document anticipates HTTP/1.1 over TLS [RFC7230] will be most widely deployed at
 the time of writing. Implementations of the DOTS protocol therefore MUST support
-data channel using HTTP/1.1 over TLS. However, this document also leaves open
+data channels using HTTP/1.1 over TLS. However, this document also leaves open
 the possibility that the data channel MAY be implemented through such
 application transports as HTTP/2 [RFC7540] or the Quick UDP Internet Connection
-[QUIC] protocol, as well as other current and future protocols supporting [REST]
-semantics and the security requirements described in
-[I-D.ietf-dots-requirements]. Support for alternative secure REST transports
-for the data channel are deployment- and implementation-specific.
+[I-D.tsvwg-quic-protocol] protocol, as well as other current and future
+protocols supporting [REST] semantics and the security requirements described in
+[I-D.ietf-dots-requirements]. Support for alternative secure REST transports for
+the data channel are deployment- and implementation-specific.
 
-DOTS data channel implementations MUST support the IPv4 [RFC791] and IPv6
+DOTS data channel implementations MUST support the IPv4 [RFC0791] and IPv6
 [RFC2460] protocols, and MUST support the "Happy Eyeballs" algorithm for dual
 stack deployments discussed in [RFC6555].
 
 Implementations of the DOTS data channel MUST use TLS version 1.2 or higher.
 DOTS agents MUST NOT create a data channel with a peer agent requesting a lower
 TLS version, and SHOULD drop the connection immediately on detecting the peer
-DOTS agent does not support a recent enough TLS version.
+DOTS agent does not support a required TLS version.
 
 {{security-considerations}} offers a more detailed discussion of data channel
 transport security, including cipher suites.
@@ -349,7 +358,7 @@ When establishing the data channel, the DOTS client and DOTS server MUST
 mutually authenticate each other, per SEC-001 in [I-D.ietf-dots-requirements].
 A common method for mutual authentication for HTTP/1.1 over TLS is an exchange
 of X.509 certificates between client and server during the TLS handshake
-[RFC5246]; similar mechanisms exist in HTTP/2 and in [QUIC].
+[RFC5246]; similar mechanisms exist in HTTP/2 and in [I-D.tsvwg-quic-protocol].
 
 Regardless of the underlying transport used, this document does not prescribe
 the method of mutual authentication. The method of mutual authentication
@@ -385,11 +394,16 @@ channel.
 ### {+dataroot}/sessions
 
 The /sessions endpoint is a read-only resource from which the DOTS client may
-request the status of signaling sessions. The DOTS client requests the list of
-signaling sessions by issuing a GET for the /sessions resource:
+request the status of signaling sessions.
+
+
+#### GET {+dataroot}/sessions
+
+The DOTS client requests the list of signaling sessions by issuing a GET for the
+/sessions resource:
 
 ~~~~~
-    GET /dots/v1/sessions HTTP/1.1
+    GET /dots/v1/data/sessions HTTP/1.1
     Host: dots-server.example.com
     Accept: application/json
 ~~~~~
@@ -407,16 +421,41 @@ list of signaling session identifiers, as in the following example:
         "sessions": [
             {
                 "id": <string>,
+                "client": <ip_address>,
+                "server": <ip_address>,
+                "duration": <iso8601_duration>,
+            },
+            {
+                ...
             }
         ]
     }
 ~~~~~
 
-The JSON key-value pairs in the response are as follows
+The top-level JSON key-value pairs in the response are as follows:
 
 sessions:
-: A list of dictionary objects describing active signaling session identifiers.
-If empty, no signaling sessions are active.
+: A list of dictionary objects describing active signaling sessions.  If empty,
+no signaling sessions are active.
+
+Each dictionary within the sessions list contains the following JSON key-value
+pairs:
+
+id:
+: An opaque alphanumeric string identifying the signaling session.
+
+client:
+: The dotted-quad IPv4 or formatted IPv6 address [RFC5952] of the DOTS client in
+  the signaling session.
+
+server:
+: The dotted-quad IPv4 or formatted IPv6 address [RFC5952] of the DOTS server in
+  the signaling session.
+
+duration:
+: The [ISO8601] duration of the signaling session.
+
+YANG model TBD
 
 
 ### {+dataroot}/filters
@@ -424,6 +463,136 @@ If empty, no signaling sessions are active.
 The /filters endpoint on a DOTS server is a read-write resource through which
 a DOTS client may request that the DOTS server add, retrieve, modify and delete
 traffic filters to an active mitigation requested through the signal channel.
+
+A filter is a match and an action on match. As discussed above in
+{{data-channel-limitations}}, actions are restricted to black- and white-listing
+and rate-limiting. Matches in a filter dictionary may be any of the match types
+discussed below. All matches MUST include a destination address or identifier;
+DOTS server implementations MUST NOT accept filters missing a destination
+address or prefix.
+
+A filter can be represented as a map or dictionary with the following
+attributes:
+
+af:
+: address family of the flow to filter, must be one of "ipv4" or "ipv6". This
+  attribute is required in all filters.
+
+dstpfx:
+: destination prefix of the flow to filter, where the prefix format is
+  daddr value must be
+
+TBD: 
+
+
+#### PUT {+dataroot}/filters/{+mitigation-id}
+
+A POST request over the data channel to the /filters endpoint on a DOTS server
+permits a DOTS client to manage traffic-rate policy for a mitigation:
+
+~~~~~
+    POST /dots/v1/data/filters/42 HTTP/1.1
+    Host: dots-server.example.com
+    Accept: application/json
+    Content-Type: application/json
+    Content-Length: NNNN
+
+    {
+        "filters": [
+            {
+                
+            }
+        ]
+    }
+~~~~~
+
+#### GET {+dataroot}/filters/{+mitigation-id}
+
+A GET request to the /filters endpoint on a DOTS server returns filters for a
+mitigation requested by the DOTS client. The mitigation-id value MUST be the
+DOTS client-generated mitigation ID used in a mitigation request previously sent
+to the DOTS server over the signal channel, with the exception of the global
+filter list as described below. A request listing the filters active during
+a mitigation is shown below in {{eg-client-get-per-mit-filter}}:
+
+~~~~~
+    GET /dots/v1/data/filters/42 HTTP/1.1
+    Host: dots-server.example.com
+    Accept: application/json
+~~~~~
+{: #eg-client-get-per-mit-filter title="Filter GET"}
+
+The DOTS server returns a list of active filters applied as part of the
+mitigation on the DOTS client's behalf as in
+{{eg-client-get-per-mit-filter-response}}:
+
+~~~~~
+    HTTP/1.1 200 OK
+    Cache-Control: no-cache
+    Content-Type: application/json
+
+    {
+        "id": 42,
+        "filters": [
+            {
+            }
+        ]
+    }
+~~~~~
+{: #eg-client-get-per-mit-filter-response title="Filter GET Response"}
+
+If the filter list is empty, no filters are applied as part of the mitigation.
+
+If mitigation-id is omitted or if the mitigation-id value is 0, the
+DOTS server MUST return the list off global filters the DOTS client has
+previously added. Global filters submitted by a client are applied to all
+mitigations requested by a DOTS client, and are applied before any 
+
+
+### {+dataroot}/config
+
+The /config data channel endpoint on a DOTS server is a read-write resource
+through which a DOTS client may configure global signaling session behavior.
+
+#### GET {+dataroot}/config
+
+A GET request to the /config endpoint returns the current DOTS configuration for
+the DOTS client:
+
+~~~~~
+GET /dots/v1/data/config HTTP/1.1
+Host: dots-server.example.com
+Accept: application/json
+~~~~~
+{: #eg-client-cfg-get title="DOTS Client Requesting Configuration"}
+
+~~~~~
+HTTP/1.1 200 OK
+Cache-Control:
+Content-Type: application/json
+
+{
+    "config": {
+        "protected-resources": {
+            <alnum_id>: [
+            ]
+        }
+    }
+}
+
+~~~~~
+
+  * Signaling session config endpoint
+
+    * Resource identifier management
+
+    * Max mit lifetime
+
+    * Heartbeat interval
+
+    * Permitted lossiness (missed heartbeat count, miss duration)
+
+    * Action on signal loss (auto-mit, none, etc.)
 
 
 ### Serialization {#data-channel-resources-serialization}
@@ -435,7 +604,7 @@ through the HTTP Accept header [RFC7231] \(or an equivalent if not using HTTP),
 using the MIME type defined in [RFC7159], application/json:
 
 ~~~~~
-        GET /dots/v1/sessions HTTP/1.1
+        GET /dots/v1/data/sessions HTTP/1.1
         Host: dots-server.example.com
         Accept: application/json
 ~~~~~
@@ -447,7 +616,7 @@ DOTS server through the HTTP Accept header [RFC7231] \(or an equivalent if not
 using HTTP), as shown in the example HTTP/1.1 request below:
 
 ~~~~~
-        GET /dots/v1/sessions HTTP/1.1
+        GET /dots/v1/data/sessions HTTP/1.1
         Host: dots-server.example.com
         Accept: application/json; q=0.5, application/cbor
 ~~~~~
@@ -461,6 +630,14 @@ DOTS client request lacking indicated support for application/json content
 suggests an invalid or malicious client implementation. After sending the 415
 error response, DOTS servers SHOULD terminate the data channel connection with
 the invalid client.
+
+
+### Caching {#data-channel-resources-caching}
+
+DOTS server responses sent over the DOTS data channel MUST NOT be cached by the
+DOTS client.
+DOTS server implementations MUST include the Cache-Control with a value of
+"no-cache", as desc
 
 
 
@@ -501,6 +678,7 @@ the invalid client.
     * Action on signal loss (auto-mit, none, etc.)
 
   * Provisioning endpoint
+
 
 
 Security Considerations
