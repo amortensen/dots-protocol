@@ -217,20 +217,255 @@ function in attack conditions, the signal channel must expect and absorb a
 certain amount of signal lossiness and latency, with the limits established by
 operators of deployed DOTS agents.
 
+The purpose of the signaling channel is to convey DDoS mitigation request and
+status information between participating agents (client and server or gateway).
+Conditions during a DDoS attack are invariably hostile for connection oriented
+protocols traversing affected paths.  Mechanisms such as Happy Eyeballs
+[RFC6555] may be used to select a transport suitable for a given time and
+prevailing network conditions.  For the purpose of this draft, however, a
+default signaling transport based upon UDP [RFC5405] will be used.  UDP's
+connectionless quality lends itself to being able to sustain loose
+communications during an event which may heavily congest certain network paths
+towards the DOTS signal originating network.  Key tenets of DOTS protocol design
+is low communication overhead and efficient message packing to increase the
+chances of successful transmission and receipt.  Desirable side-effects of
+efficient packing are the removal of the possibility of fragmentation in
+addition to a message size that is friendly towards encapsulation (e.g via GRE
+[RFC2784] or MPLS [RFC3031]).  Large UDP packets may also be treated adversely
+by middleboxes with restrictive policies or may fall foul of aggressive
+filtering.
 
-* Role/Purpose
+To assist in meeting the requirements for efficiency the signaling channel will
+utilize Protocol Buffers [PROTOBUF] - "A language neutral, extensible mechanism
+for serializing structured data".  Numbered fields in Protobufs allow for new
+fields to be introduced at any time permitting extensibility within DOTS without
+requiring versioning or refactoring.  The data channel may be used to provide a
+mechanism by which schema updates or expansions may be communicated during
+provisioning/session (re)establishment.
 
-* L4 Protocol
+Data serialization alone does not provide for the requirements of peer mutual
+authentication [SEC-001], message confidentiality [SEC-002], message replay
+protection [SEC-003] or message integrity.  CurveCP [CCP] meets these
+requirements and provides active and passive forward secrecy.  Key distribution
+may be achieved via the data channel, via an online mechanism such as DANE
+[RFC6698] or by out of band means.
 
-  * UDP
 
-  * TCP
+Minimum Viable Information
+--------------------------
 
-  * Should use QUIC? Quick readup on it plz
+DOTS is intended to be extensible and to evolve to meet the future needs in
+communicating as yet unknown threats, however, it must be able to convey the
+minimum amount of information required for an upstream mitigation platform to
+successfully counter a DDoS attack.  A client may have limited visibility into
+the full breadth of an attack and as such may not be well placed to provide
+useful telemetry, in addition DDoS sources may or may not be spoofed and number
+in the millions.  This provides challenges for the quality and usefulness of
+telemetry and mitigation/countermeasure stipulations and as such this type of
+information if conveyed can only be considered advisory.  In these instances the
+minimum viable information required for the majority of mitigations to be
+activated is that which pertains to the resource being targeted by the attack
+(host, prefix, protocol, port, URI etc. [OP-006]).  [I-D.ietf-dots-requirements]
+also identifies a mitigation lifetime period [OP-005] and mitigation efficacy
+metric [OP-007].  The former may be considered for inclusion in the minimum
+viable information set, however, the latter may only be relevant in updates.  An
+explicit mitigation request/terminate flag is also required - a mitigation MUST
+be explicitly requested by an operator.  Finally, each message should include a
+message id or sequence number field as well as a field for the last received
+message id or sequence number.  These may then be compared by the endpoints to
+assist in tracking state and/or identifying loss.
 
-* Security
+Messages
+--------
 
-  * CurveCP? DTLS?
+DOTS signaling using Protobufs may reduce the number of discrete messages to
+just a single message superset per direction with function defined by the chosen
+fields contained within the message.  We would, therefore, define a single
+schema each for the client and server sides containing all relevant fields.
+Tags 1 through 15 may benefit from only requiring a single byte to encode (vs
+two for tags 16 through 2047) and these should be used for frequently occurring
+message elements.
+
+
+### Client Schema
+
+The entire client schema is detailed in {{fig-client-schema}}.  It is not
+expected that client messages will require all fields to be used simultaneously
+but instead a subset to convey a given signal type.  The only fields which may
+be common to all signals are seqno and lastsvrseqno which may be used to detect
+loss or drop outs.
+
+~~~~~
+    message Client {
+      // Client generated sequence number
+      int64 seqno = 1;
+
+      // Sequence number of last received server message
+      int64 lastsvrseqno = 2;
+
+      // Opaque client generated event identifier
+      string eventid = 3;
+
+      // Mitigation scope (target)
+      string scope = 4;
+
+      // Mitigation request lifetime in seconds
+      int64 lifetime = 5;
+
+      // Mitigation eficacy
+      int32 eficacy = 6;
+
+      // Request active mitigation list from server
+      enum Active {
+        FALSE = 0;
+        TRUE = 1;
+      }
+      Active active = 13 [default = FALSE];
+
+      // Heartbeat request (operator initiated)
+      enum Ping {
+        FALSE = 0;
+        TRUE = 1;
+      }
+      Ping ping = 14 [default = FALSE];
+
+      // Mitigation request
+      enum Mitigate {
+        FALSE = 0;
+        TRUE = 1;
+      }
+      Mitigate mitigateReq = 15 [default = FALSE];
+
+      extensions 100 to 199;
+    }
+~~~~~
+{: #fig-client-schema title="Client Schema"}
+
+
+### Server Schema
+
+The entire server schema is detailed in {{fig-server-schema}}.  It is not
+expected that server messages will require all fields to be used simultaneously
+but instead a subset to convey a given signal type.  The only fields which may
+be common to all signals are seqno and lastcliseqno which may be used to detect
+loss or drop outs.
+
+~~~~~
+    message Server {
+      // Server generated sequence number
+      int64 seqno = 1;
+
+      // Sequence number of last received Client message
+      int64 lastcliseqno = 2;
+
+      // May be bundled if sub-MTU
+      message Mitigations {
+        // Opaque Client generated event identifier
+        string eventid = 1;
+
+        // Mitigation state
+        enum Enabled {
+          FALSE = 0;
+          TRUE = 1;
+        }
+        Enabled enabled = 2 [default = FALSE];
+
+        // Remaining mitigation time to live
+        int64 ttl = 3;
+
+        // Dropped byte count
+        int64 bytec = 4;
+
+        // Dropped bps
+        int64 bps = 5;
+
+        // Dropped packet count
+        int64 packc = 6;
+
+        // Dropped pps
+        int64 pps = 7;
+
+        // Blacklist enabled
+        enum Blacklist {
+          False = 0;
+          True = 1;
+        }
+        Blacklist blacklist = 8 [default = FALSE];
+
+        // Whitelist enabled
+        enum Whitelist {
+          False = 0;
+          True = 1;
+        }
+        Whitelist whitelist = 9 [default = FALSE];
+
+        // Filters enabled
+        enum Filters {
+          False = 0;
+          True = 1;
+        }
+        Filters filters = 10; [default = FALSE]
+
+        extensions 100 to 199;
+      }
+      repeated Mitigations mitigations = 3;
+
+      enum Ping {           // Heartbeat request (operator initiated)
+        FALSE = 0;
+        TRUE = 1;
+      }
+      Ping ping = 4 [default = FALSE];
+
+      extensions 100 to 199;
+    }
+~~~~~
+{: #fig-server-schema title="Server Schema"}
+
+
+Interactions
+------------
+
+Practical interactions
+
+Mitigation request:
+
+~~~~~
+    Client                       Server
+      |                             |
+      |---------Event (M=1)-------->|  // Mitigation request
+      |                             |
+      |<---------SvrResponse--------|  // Server acceptance
+      |                             |
+      |---------EventUpdate-------->|  // Efficacy update
+      |                             |
+      |<---------SvrResponse--------|  // Server feedback
+      |                             |
+      |---------Event (M=0)-------->|  // Mitigation termination
+      |                             |
+~~~~~
+
+Active mitigation request:
+
+~~~~~
+    Client                       Server
+      |                             |
+      |-----------Status----------->|  // Status request
+      |                             |
+      |<-------StatusResponse-------|  // Status response
+      |                             |
+~~~~~
+
+Heartbeat:
+
+~~~~~
+    Client                       Server
+      |                             |
+      |----------HeartBeat--------->|  // Client heartbeat
+      |                             |
+      |<---------HeartBeat----------|  // Server heartbeat
+      |                             |
+~~~~~
+
 
 * Messages
 
