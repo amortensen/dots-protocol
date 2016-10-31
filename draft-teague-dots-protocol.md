@@ -46,6 +46,7 @@ normative:
   RFC5952:
   RFC6555:
   RFC6698:
+  RFC7030:
   RFC7159:
   RFC7230:
   RFC7231:
@@ -78,11 +79,10 @@ normative:
 informative:
   RFC1518:
   RFC1519:
-  RFC4271:
   RFC5575:
-  ARBORCCS:
+  CLOUDSIGNAL:
     target: https://www.arbornetworks.com/cloud-signaling-a-faster-automated-way-to-mitigate-ddos-attacks
-    title: "Cloud SIgnaling: A Faster, Automated Way to Mitigate DDoS Attacks"
+    title: "Cloud Signaling: A Faster, Automated Way to Mitigate DDoS Attacks"
     author:
       org: Arbor Networks, Inc.
     date: 2011
@@ -96,7 +96,7 @@ informative:
     date: 2011
     format:
       HTML: https://www.cymru.com/jtk/misc/community-fs.html
-  VERISIGNOH:
+  OPENHYBRID:
     target: http://www.verisign.com/en_US/security-services/ddos-protection/open-api/index.xhtml
     title: Verisign OpenHybrid
     author:
@@ -145,7 +145,7 @@ year over year, and the trend shows no signs of abating [WISR].  In response to
 the DDoS attack trends, service providers and vendors have developed various
 approaches to sharing or delegating responsibility for defense, among them ad
 hoc service relationships, filtering through peering relationships
-[COMMUNITYFS], and proprietary solutions ([ARBORCCS], [VERISIGNOH]).  Such
+[COMMUNITYFS], and proprietary solutions ([CLOUDSIGNAL], [OPENHYBRID]).  Such
 hybrid approaches to DDoS defense have proven effective [CITE], but the
 heterogeneous methods employed to coordinate DDoS defenses across domain
 boundaries have necessarily limited their scope and effectiveness, as the
@@ -291,7 +291,7 @@ via an online mechanism such as DANE [RFC6698], Enrollment over Secure Transport
 [RFC7030], or by out-of-band means.
 
 
-Minimum Viable Information
+Minimum Viable Information {#minimum-viable-information}
 --------------------------
 
 DOTS is intended to be extensible and to evolve to meet the future needs in
@@ -343,6 +343,7 @@ loss or drop outs.
 
 ~~~~~
     syntax = "proto3";
+    import "google/protobuf/any.proto";
 
     message DOTSClientMessage {
       // Client generated sequence number
@@ -351,68 +352,67 @@ loss or drop outs.
       // Sequence number of last received server message
       uint64 last_svr_seqno = 2;
 
-      // Opaque client generated event identifier
-      string eventid = 3;
-
-      // Mitigation scope (target)
-      string scope = 4;
-
-      // Mitigation request lifetime in seconds
-      uint32 lifetime = 5;
-
-      // Mitigation efficacy, scored as a floating point value between 0 and 1
-      float efficacy = 6;
+      repeated DOTSMitigation mitigations = 3;
 
       // Request active mitigation list from server
-      bool active = 13;
+      bool active = 4;
 
-      // Heartbeat request (operator initiated)
-      bool ping = 14;
+      // Ping request (operator initiated)
+      bool ping = 5;
 
-      // Mitigation request
-      bool mitigate = 15;
+      repeated google.protobuf.Any extensions;
+    }
+
+    message DOTSMitigation {
+      // Opaque client-generated event identifier
+      string eventid = 1;
+
+      // Toggle mitigation for the above scope
+      bool requested = 2;
+
+      // Mitigation scope as described in I-D.ietf-dots-requirements
+      string scope = 3;
+
+      // Lifetime of the requested mitigation.
+      uint32 lifetime = 4;
+
+      // Mitigation efficacy score as a float value between 0 and 1
+      float efficacy = 5;
+
+      repeated google.protobuf.Any extensions;
     }
 ~~~~~
 {: #fig-client-schema title="Client Schema"}
+
+
+#### Client Schema Fields
 
 The fields in the DOTS client signal channel message schema have the following
 functions:
 
 seqno:
-: a client-generated sequence number unique to the message.
+: a client-generated sequence number unique to the message. The client
+  increments the seqno value by one for each message sent over the signal
+  channel.
 
 last\_svr\_seqno:
-: the sequence number of the last message received from the server.
+: the sequence number of the last message received from the server, provided to
+  the server as a simple way to detect lost messages.
 
-eventid:
-: an opaque client generated identifier that distinguishes a unique event or
-  incident.
-
-scope:
-: the scope of the mitigation requested, which may be any of the types described
-  in [I-D.ietf-dots-requirements].
-
-lifetime:
-: the lifetime in seconds a mitigation request should be considered valid.
-
-efficacy:
-: a metric to convey to a DOTS server the perceived efficacy of an active
-  mitigation [OP-007]. The mitigation efficacy is represented as a floating
-point value between 0 and 1, with smaller values indicating lesser efficacy, and
-larger greater efficacy. The efficacy value is calculated as 
+mitigations:
+: a list of mitigations requested or withdrawn by the client. The mitigation
+  schema fields are described below.
 
 active:
-: a request for a list of active mitigations and their detail that are current
-  on the DOTS server.
+: indicates a request for a list of active mitigations and their detail that are
+  current on the DOTS server.
 
 ping:
 : an operator initiated heartbeat like message which will ellicit a response
   from the DOTS server.  This may be used to prove bi-directional communications
-  on an ad-hoc basis.
-
-mitigate:
-: signals a mitigation request (TRUE) or termination (FALSE) from the DOTS
-  server.
+  on an ad-hoc basis. For example, a DOTS ping may be used to prove keying
+  material on the DOTS client is valid and may be used to establish signaling
+  sessions with the DOTS server.
 
 extensions:
 : these fields may be used to communicate implementation specific details.  An
@@ -420,16 +420,57 @@ extensions:
   server.
 
 
+#### Mitigation Request Schema Fields
+
+The fields in the DOTS client mitigation request schema are as follows:
+
+eventid:
+: an opaque client generated identifier that distinguishes a unique event or
+  incident. May be used by the client as a reference to the specific event
+  triggering a mitigation request, or for other implementation-specific
+  purposes.
+
+requested:
+: signals the need for mitigation to the DOTS server. If true, the DOTS client
+  is requesting mitigation for the provided scope. If false, the DOTS client is
+  indicating it does not require mitigation, and the DOTS server MUST cease the
+  mitigation for the provided scope.
+
+scope:
+: the scope of the mitigation requested, which may be any of the types described
+  in [I-D.ietf-dots-requirements], such as Classless Internet Domain Routing
+  (CIDR) [RFC1518],[RFC1519] prefixes, DNS names, or aliases defined by the
+  DOTS client operator through the data channel.
+
+lifetime:
+: the lifetime in seconds a mitigation request should be considered valid.
+
+efficacy:
+: a metric to convey to a DOTS server the perceived efficacy of an active
+  mitigation, per operational requirements in [I-D.ietf-dots-requirements]. The
+  mitigation efficacy is represented as a floating point value between 0 and 1,
+  with smaller values indicating lesser efficacy, and larger greater efficacy.
+  XXX - The efficacy value is calculated as 
+
+extensions:
+: these fields may be used to provide implementation-specific mitigation
+  details.
+
+
 ### Server Schema
 
-The entire server schema is detailed in {{fig-server-schema}}.  It is not
-expected that server messages will require all fields to be used simultaneously
-but instead a subset to convey a given signal type.  The only fields which may
-be common to all signals are seqno and lastcliseqno which may be used to detect
-loss or drop outs.
+The entire server schema is detailed in {{fig-server-schema}}. DOTS server
+messages use a subset of the available fields to convey the given signal type,
+including additional relevant fields as necessary. The only fields which may
+be common to all signals are seqno and last\_client\_seqno which may be used to
+detect message loss or out-of-order delivery. When conveying mitigation
+information, the server schema may bundle multiple mitigation status datasets
+into a single message, provided this does not violate the required sub-MTU
+message size [I-D.ietf-dots-requirements].
 
 ~~~~~
     syntax = "proto3";
+    import "google/protobuf/any.proto";
 
     message DOTSServerMessage {
       // Server generated sequence number
@@ -438,15 +479,34 @@ loss or drop outs.
       // Sequence number of last received Client message
       uint64 last_client_seqno = 2;
 
-      // Heartbeat
+      // Request immediate heartbeat response from client.
       bool ping = 3;
 
+     message DOTSRedirect {
+        // Redirection target DOTS server address
+        string target = 1;
+
+        // Address family of redirection target
+        enum RedirectionTargetType {
+          DNSNAME = 0;
+          IPV4 = 4;
+          IPV6 = 6;
+        }
+        RedirectionTargetType target_type = 2;
+
+        // Port on which to contact redirection target.
+        uint32 port = 3;
+      }
+      DOTSRedirect redirect = 5
+
       // Mitigation data, limited by MTU
-      repeated DOTSMitigationStatus mitigations = 4;
+      repeated DOTSMitigationStatus mitigations = 6;
     }
 
     message DOTSMitigationStatus {
-      // Opaque Client generated event identifier
+      // Opaque Client generated event identifier, used by the DOTS client
+      // to associate a mitigation status with the event triggering the
+      // mitigation request.
       string eventid = 1;
 
       // Mitigation state
@@ -471,58 +531,401 @@ loss or drop outs.
       bool blacklist_enabled = 8;
 
       // Whitelist enabled through data channel
-      bool whitelist = 9;
+      bool whitelist_enabled = 9;
 
       // Filters enabled through data channel
-      bool filters = 10;
+      bool filters_enabled = 10;
+
+      repeated google.protobuf.Any extensions = 11;
     }
 ~~~~~
 {: #fig-server-schema title="Server Schema"}
 
 
+#### Server Schema Fields
+
+The fields in the DOTS server signal channel message schema have the following
+functions:
+
+seqno:
+: a server generated sequence number unique to the message.
+
+last\_cli\_seqno:
+: the seqno of the last message received from the client.
+
+ping:
+: an operator initiated heartbeat like message which will ellicit a response
+  from the DOTS client.  This may be used to prove bi-directional communications
+  on an ad-hoc basis.
+
+redirect:
+: Populated with the details of the redirection target DOTS server, if the DOTS
+  server is redirecting the DOTS client to another DOTS server.
+
+mitigations:
+: a list containing the status of mitigations requested by the DOTS client. The
+  fields in the mitigation status schema are described below.
+
+extensions:
+: these fields may be used to communicate implementation specific details.  An
+  example would be the communication of DNS mitigation vip to the DOTS client by
+  the DOTS server. XXX - what is this?
+
+
+#### Mitigation Status Schema Fields
+
+The DOTS server message contains zero or more mitigation status messages, the
+fields of which have the following functions:
+
+eventid:
+: an opaque client generated identifier that distinguishes a unique event or
+  incident.
+
+ttl:
+: the remaining lifetime of the mitigation.
+
+bytes\_dropped:
+: the total dropped byte count for the mitigation associated with eventid.
+
+bps\_dropped:
+: the dropped bytes per second for the mitigation associated with eventid. This
+  value is expected to be calculated by the mitigator, and as such is
+  implementation-specific.
+
+pkts\_dropped:
+: the total dropped packet count for the mitigation associated with eventid..
+
+pps\_dropped:
+: the dropped packets per second for the mitigation associated with eventid.
+  This value is expected to be calculated by the mitigator, and as such is
+  implementation-specific.
+
+blacklist\_enabled:
+: Indicates whether a blacklist of prohibited traffic sources is enabled for the
+  mitigation associated with eventid. The blacklist is managed through the data
+  channel.
+
+whitelist\_enabled:
+: Indicates whether a whitelist of sources from which traffic must always be
+  allowed is enabled. The whitelist is managed through the data channel.
+
+filters\_enabled:
+: Indicates whether client-specified traffic filters are enabled for the
+  mitigation associated with eventid.
+
+
 Interactions
 ------------
 
-Practical interactions
+### Heartbeat
 
-Mitigation request:
+The most common message exchanged between a DOTS client and a DOTS server is a
+heartbeat (OP-002 [I-D.ietf-dots-requirements]), which maintains and monitors
+the health of the DOTS session.  This is achieved with simple, loosely-coupled
+bi-directional messages containing the sending DOTS agent's message sequence
+number and the sequence number the sending DOTS agent last received from its
+peer. Due to the stress volumetric DDoS impose upon a network, a degree of loss
+during attacks is to be expected. Message loss tolerance may be set on signal
+channel establishment.
 
-~~~~~
-    Client                       Server
-      |                             |
-      |---------Event (M=1)-------->|  // Mitigation request
-      |                             |
-      |<---------SvrResponse--------|  // Server acceptance
-      |                             |
-      |---------EventUpdate-------->|  // Efficacy update
-      |                             |
-      |<---------SvrResponse--------|  // Server feedback
-      |                             |
-      |---------Event (M=0)-------->|  // Mitigation termination
-      |                             |
-~~~~~
+The default heartbeat interval is 20 seconds, plus or minus a number of
+milliseconds between 50 and 2000. The number milliseconds MUST be randomized in
+order to introduce jitter into the heartbeat interval, as recommended by
+[RFC5405]. The interval between heartbeats is may also be set by the client when
+establishing the signal channel. The minimum heartbeat interval is 15 seconds,
+plus the random number of milliseconds as described above. The maximum heartbeat
+interval is 120 seconds (two minutes), minus the random number of milliseconds
+described above.
 
-Active mitigation request:
-
-~~~~~
-    Client                       Server
-      |                             |
-      |-----------Status----------->|  // Status request
-      |                             |
-      |<-------StatusResponse-------|  // Status response
-      |                             |
-~~~~~
-
-Heartbeat:
+Heartbeats are loosely-coupled, meaning each DOTS agent in a bilateral signaling
+session sends DOTS heartbeats on the specified interval, but asynchronously,
+without acknowledgement. Each DOTS agent tracks heartbeats received from its
+peer, and includes the sequence number of the last heartbeat received from the
+peer agent in the next heartbeat sent, as shown in {fig-heartbeats}:
 
 ~~~~~
-    Client                       Server
-      |                             |
-      |----------HeartBeat--------->|  // Client heartbeat
-      |                             |
-      |<---------HeartBeat----------|  // Server heartbeat
-      |                             |
+   Client                           Server
+     |                                 |
+     |----------HeartBeat------------->|  // Client heartbeat
+     |          seqno = 1              |
+     |          last_svr_seqno = 0     |
+     |                                 |
+     |<---------HeartBeat--------------|  // Server heartbeat
+     |          seqno = 1              |
+     |          last_client_seqno = 1  |
+     |                                 |
+     |----------HeartBeat------------->|  // Client heartbeat
+     |          seqno = 2              |
+     |          last_svr_seqno = 1     |
+     |                                 |
+     |      X---HeartBeat--------------|  // Server heartbeat lost
+     |          seqno = 2              |
+     |          last_client_seqno = 2  |
+     |                                 |
+     |----------HeartBeat------------->|  // Client heartbeat,
+     |          seqno = 3              |  // last_svr_seqno remains 1,
+     |          last_svr_seqno = 1     |  // indicating lost heartbeat
+     |                                 |
+     |<---------HeartBeat--------------|  // Server heartbeat resumes
+     |          seqno = 3              |
+     |          last_client_seqno = 3  |
+     |                                 |
+     |----------HeartBeat------------->|  // Client heartbeat,
+     |          seqno = 4              |  // last_svr_seqno remains 1
+     |          last_svr_seqno = 3     |
+     |                                 |
 ~~~~~
+{: #fig-heartbeats title="Heartbeats Between DOTS agents"}
+
+The DOTS client heartbeat has the following format:
+
+~~~~~
+    message DOTSClientMessage {
+      1 (seqno) = %;
+      2 (last_svr_seqno) = %;
+    }
+~~~~~
+
+The DOTS server heartbeat is identical aside from the schema type:
+
+~~~~~
+    message DOTSServerMessage {
+      1 (seqno) = %;
+      2 (last_svr_seqno) = %;
+    }
+~~~~~
+
+There may be cases where a DOTS client or server operator wishes to trigger an
+immediate heartbeat response in order to validate bi-directional communication
+(e.g. during provisioning).  This ad-hoc triggering may be achieved by setting
+the ping field set to TRUE. When DOTS agent receives a message on the signal
+channel with the ping field set to TRUE, it MUST immediately send heartbeat back
+to the ping sender. A ping reply MUST consist of only the senders sequence
+number and the sequence number of the received ping. \[\[EDITOR'S NOTE: rate
+limiting of pings required?\]\]
+
+A ping is identical to a standard heartbeat, but with the the ping field
+included and set to TRUE:
+
+~~~~~
+       message DOTSClientMessage {
+         1 (seqno) = %;
+         2 (last_svr_seqno) = %;
+         5 (ping) = 1;
+       }
+~~~~~
+
+Should the number of signals lost exceed the acceptable lossiness value for the
+signaling session, the agent detecting the signal loss may consider the
+signaling session lost. The default value for acceptable signal loss is 9,
+which, when coupled with the default heartbeat interval, amounts to lack of
+heartbeat from the peer DOTS agent for 180 seconds (three minutes).
+
+
+### Mitigation Request Handling
+
+The mitigation request is the crux of the DOTS protocol, and is comprised of the
+minimum viable information described in {minimum-viable-information}.  The
+request may be augmented with additional implementation specific extensions
+where these do not result in undue packet bloat.  The DOTS client may send
+repeated requests until it receives a suitable response from the DOTS server by
+which it may interpret successful receipt.
+
+~~~~~
+       message DOTSClientMessage {
+         1 (seqno) = %;
+         2 (last_svr_seqno) = %;
+         3 (mitigations) = [
+           {
+             1 (eventid) = %;
+             2 (requested) = %;
+             3 (scope) = %;
+             4 (lifetime) = %;
+           }
+         ];
+       }
+~~~~~
+
+The DOTS server is expected to respond to confirm that it has accepted and or
+rejected the mitigation request.  Upon receipt of the response the DOTS client
+should cease sending additional initial requests for the same eventid.  If these
+do not cease then the server may assume that the response was possibly lost and
+should resend accordingly.  Acceptance status is communicated by the DOTS server
+replying with the corresponding eventid and the enabled field set to 1 for
+acceptance and 0 for rejection.  A rejection by the DOTS server should be
+accompanied with an extension field detailing succinctly the reason (e.g. out of
+contract, conflict, maintenance etc. ).
+
+~~~~~
+      message DOTSServerMessage {
+        1 (seqno) = %;
+        2 (last_cli_seqno) = %;
+        4 (mitigations) = [
+          {
+            1 (eventid) = %;
+            2 (enabled) = true; // Mitigation request accepted
+          }
+        ]
+      }
+~~~~~
+
+After a period of time the mitigation request may expire and the DOTS server may
+end the mitigation. Alternately, the DOTS client may explicitly terminate the
+active mitigation by sending a message to the server that contains a mitigation
+value with the eventid and that has the requested field set to false, as shown
+below:
+
+~~~~~
+      message DOTSClientMessage {
+        1 (seqno) = %;
+        2 (last_svr_seqno) = %;
+        3 (mitigations) = [
+          {
+            1 (eventid) = %;
+            2 (requested) = false; // Terminate mitigation
+          }
+        ];
+      }
+~~~~~
+
+The server must explicitly acknowledge the termination with a response message
+with the enabled field now set to false:
+
+~~~~~
+      message DOTSServerMessage {
+        1 (seqno) = %;
+        2 (last_cli_seqno) = %;
+        6 (mitigations) = [
+          {
+            1 (eventid) = %;
+            2 (enabled) = false; // Mitigation terminated
+          }
+        ];
+      }
+~~~~~
+
+The life cycle of a DOTS mitigation request resembles the following:
+
+~~~~~
+       Client                        Server
+         |                              |
+         |---Request(M=true)----------->|  // Mitigation request
+         |                              |
+         |<---------MitigationActive----|  // Server acceptance
+         |                              |
+         |< - - - - MitigationFeedback -|
+         |                              |
+         |---Terminate(M=false)-------->|  // Mitigation termination
+         |                              |
+         |<---------MitigationEnded-----|  // Server termination ack
+~~~~~
+
+
+### Ancillary Messages
+
+In addition to the basic interaction, additional messages may be exchanged
+throughout the lifetime of the mitigation.
+
+
+#### Mitigation Feedback
+
+The DOTS server MUST update the client with current mitigation status. This MUST
+include the eventid, and SHOULD include available dropped attack traffic
+statistics provided by the mitigator. A DOTS server MAY provide feedback for
+more than one mitigation in a single message, provided the resulting message
+meets the sub-MTU size requirements in [I-D.ietf-dots-requirements].
+
+The DOTS client SHOULD use the feedback from the DOTS server when deciding to
+update or terminate a mitigation request. For example, if the DOTS client learns
+from DOTS server mitigation feedback that the dropped\_pps rate is low, the DOTS
+client might decide to terminate upstream mitigation and handle the attack
+locally.
+
+A mitigation feedback message from the DOTS server would resemble the following
+format, assuming an active mitigation request from the DOTS client:
+
+~~~~~
+      message DOTSServerMessage {
+        1 (seqno) = %;
+        2 (last_client_seqno) = %;
+        6 (mitigations) = [
+          {
+            1 (eventid) = %;
+            2 (enabled) = %;
+            3 (ttl) = %;
+            4 (bytes_dropped) = %;
+            5 (bps_dropped) = %;
+            6 (pkts_dropped) = %;
+            7 (pps_dropped) = %;
+            10 (filters_enabled) = true;
+          },
+        ];
+      }
+~~~~~
+
+
+#### Mitigation Lifetime Update
+
+The DOTS client may wish to update the mitigation during its lifetime.  Updates
+may be to alter the lifetime to extend the mitigation, or an update may
+communicate the perceived efficacy of the mitigation.  The former may be as a
+result of the DOTS sever feedback which may suggest that an attack shows no sign
+of abating.  The latter may be to notify the DOTS server whether the
+countermeasures deployed are perceived as effective or not.
+
+A DOTS client may update the lifetime of multiple mitigations in a single
+request as long as the message size meets the sub-MTU requirement per
+[I-D.ietf-dots-requirements]. The lifetime update message has the following
+format:
+
+~~~~~
+       message DOTSClientMessage {
+         1 (seqno) = %;
+         2 (last_svr_seqno) = %;
+         3 (mitigations) = [
+           {
+             1 (eventid) = %;
+             2 (requested) = true;
+             4 (lifetime) = %;
+           }
+         ];
+       }
+~~~~~
+
+Upon receipt of the mitigation lifetime update, the DOTS server replace the
+current mitigation expiration time with the new value. The updated lifetime MUST
+be visible in the ttl field in subsequent mitigation feedback messages.  When
+updating a mitigation lifetime, the DOTS client SHOULD continue sending the
+lifetime update request at the heartbeat interval until the DOTS server's
+mitigation feedback shows an updated ttl for the updated mitigation.
+
+
+#### Mitigation Efficacy Updates
+
+When a mitigation is active, a DOTS client MUST periodically communicate the
+locally perceived efficacy of the mitigation to the DOTS server. This gives the
+DOTS server a rough sense of whether the DOTS client perceives the mitigator's
+deployed countermeasures as effective. The efficacy update update message has
+the following format:
+
+~~~~~
+      message DOTSClientMessage {
+        1 (seqno) = %;
+        2 (last_svr_seqno) = %;
+        3 (mitigations) = [
+          {
+            1 (eventid) = %;
+            6 (efficacy) = %;
+          }
+        ];
+      }
+~~~~~
+
+The DOTS server SHOULD consider the efficacy update an indication of the
+effectiveness of any ongoing mitigations related to the eventid provided by the
+DOTS client. The DOTS server nonetheless MAY treat any efficacy update from the
+client as advisory, and is under no obligation to alter the mitigation strategy
+in response.
 
 
 Data Channel {#data-channel}
@@ -569,10 +972,10 @@ the time of writing. Implementations of the DOTS protocol therefore MUST support
 data channels using HTTP/1.1 over TLS. However, this document also leaves open
 the possibility that the data channel MAY be implemented through such
 application transports as HTTP/2 [RFC7540] or the Quick UDP Internet Connection
-[I-D.tsvwg-quic-protocol] protocol, as well as other current and future
-protocols supporting [REST] semantics and the security requirements described in
-[I-D.ietf-dots-requirements]. Support for alternative secure REST transports for
-the data channel are deployment- and implementation-specific.
+[I-D.hamilton-quic-transport-protocol] protocol, as well as other current and
+future protocols supporting [REST] semantics and the security requirements
+described in [I-D.ietf-dots-requirements]. Support for alternative secure REST
+transports for the data channel are deployment- and implementation-specific.
 
 DOTS data channel implementations MUST support the IPv4 [RFC0791] and IPv6
 [RFC2460] protocols, and MUST support the "Happy Eyeballs" algorithm for dual
@@ -594,7 +997,8 @@ When establishing the data channel, the DOTS client and DOTS server MUST
 mutually authenticate each other, per SEC-001 in [I-D.ietf-dots-requirements].
 A common method for mutual authentication for HTTP/1.1 over TLS is an exchange
 of X.509 certificates between client and server during the TLS handshake
-[RFC5246]; similar mechanisms exist in HTTP/2 and in [I-D.tsvwg-quic-protocol].
+[RFC5246]; similar mechanisms exist in HTTP/2 [RFC7540] and in
+[I-D.hamilton-quic-transport-protocol].
 
 Regardless of the underlying transport used, this document does not prescribe
 the method of mutual authentication. The method of mutual authentication
@@ -889,9 +1293,3 @@ therefore be taken when authenticating and authorizing the data channel.
 
 DOTS server operators SHOULD enforce access control policies restricting which
 clients are able to contact DOTS servers.
-
-
-Contributors
-============
-
-Nik Teague

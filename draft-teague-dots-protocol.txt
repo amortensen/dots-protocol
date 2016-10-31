@@ -5,8 +5,8 @@
 DOTS                                                           N. Teague
 Internet-Draft                                            Verisign, Inc.
 Intended status: Standards Track                            A. Mortensen
-Expires: May 3, 2017                                Arbor Networks, Inc.
-                                                        October 30, 2016
+Expires: May 4, 2017                                Arbor Networks, Inc.
+                                                        October 31, 2016
 
 
                   DDoS Open Threat Signaling Protocol
@@ -53,12 +53,12 @@ Status of This Memo
 
 
 
-Teague & Mortensen         Expires May 3, 2017                  [Page 1]
+Teague & Mortensen         Expires May 4, 2017                  [Page 1]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
 
 
-   This Internet-Draft will expire on May 3, 2017.
+   This Internet-Draft will expire on May 4, 2017.
 
 Copyright Notice
 
@@ -86,36 +86,38 @@ Table of Contents
      4.1.  Minimum Viable Information  . . . . . . . . . . . . . . .   6
      4.2.  Signal Channel Messages . . . . . . . . . . . . . . . . .   7
        4.2.1.  Client Schema . . . . . . . . . . . . . . . . . . . .   7
-       4.2.2.  Server Schema . . . . . . . . . . . . . . . . . . . .   9
-     4.3.  Interactions  . . . . . . . . . . . . . . . . . . . . . .  10
-   5.  Data Channel  . . . . . . . . . . . . . . . . . . . . . . . .  11
-     5.1.  Role  . . . . . . . . . . . . . . . . . . . . . . . . . .  11
-     5.2.  Limitations . . . . . . . . . . . . . . . . . . . . . . .  11
-     5.3.  Transport . . . . . . . . . . . . . . . . . . . . . . . .  12
-     5.4.  Authentication  . . . . . . . . . . . . . . . . . . . . .  13
-     5.5.  Authorization . . . . . . . . . . . . . . . . . . . . . .  13
-     5.6.  Resources . . . . . . . . . . . . . . . . . . . . . . . .  13
-       5.6.1.  Resource Root . . . . . . . . . . . . . . . . . . . .  13
-       5.6.2.  {+dataroot}/sessions  . . . . . . . . . . . . . . . .  13
-       5.6.3.  {+dataroot}/filters . . . . . . . . . . . . . . . . .  15
-       5.6.4.  {+dataroot}/config  . . . . . . . . . . . . . . . . .  16
-       5.6.5.  Serialization . . . . . . . . . . . . . . . . . . . .  17
-       5.6.6.  Caching . . . . . . . . . . . . . . . . . . . . . . .  18
-   6.  Security Considerations . . . . . . . . . . . . . . . . . . .  18
-     6.1.  Data Channel Security . . . . . . . . . . . . . . . . . .  18
-   7.  Contributors  . . . . . . . . . . . . . . . . . . . . . . . .  19
-   8.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  19
-     8.1.  Normative References  . . . . . . . . . . . . . . . . . .  19
+       4.2.2.  Server Schema . . . . . . . . . . . . . . . . . . . .  10
+     4.3.  Interactions  . . . . . . . . . . . . . . . . . . . . . .  13
+       4.3.1.  Heartbeat . . . . . . . . . . . . . . . . . . . . . .  13
+       4.3.2.  Mitigation Request Handling . . . . . . . . . . . . .  15
+       4.3.3.  Ancillary Messages  . . . . . . . . . . . . . . . . .  17
+   5.  Data Channel  . . . . . . . . . . . . . . . . . . . . . . . .  19
+     5.1.  Role  . . . . . . . . . . . . . . . . . . . . . . . . . .  19
+     5.2.  Limitations . . . . . . . . . . . . . . . . . . . . . . .  19
+     5.3.  Transport . . . . . . . . . . . . . . . . . . . . . . . .  20
+     5.4.  Authentication  . . . . . . . . . . . . . . . . . . . . .  20
+     5.5.  Authorization . . . . . . . . . . . . . . . . . . . . . .  21
+     5.6.  Resources . . . . . . . . . . . . . . . . . . . . . . . .  21
+       5.6.1.  Resource Root . . . . . . . . . . . . . . . . . . . .  21
+       5.6.2.  {+dataroot}/sessions  . . . . . . . . . . . . . . . .  21
+       5.6.3.  {+dataroot}/filters . . . . . . . . . . . . . . . . .  22
+       5.6.4.  {+dataroot}/config  . . . . . . . . . . . . . . . . .  24
+       5.6.5.  Serialization . . . . . . . . . . . . . . . . . . . .  25
+       5.6.6.  Caching . . . . . . . . . . . . . . . . . . . . . . .  26
+   6.  Security Considerations . . . . . . . . . . . . . . . . . . .  26
+     6.1.  Data Channel Security . . . . . . . . . . . . . . . . . .  26
 
 
 
-Teague & Mortensen         Expires May 3, 2017                  [Page 2]
+Teague & Mortensen         Expires May 4, 2017                  [Page 2]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
 
 
-     8.2.  Informative References  . . . . . . . . . . . . . . . . .  21
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  22
+   7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  26
+     7.1.  Normative References  . . . . . . . . . . . . . . . . . .  26
+     7.2.  Informative References  . . . . . . . . . . . . . . . . .  29
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  30
 
 1.  Introduction
 
@@ -125,7 +127,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
    vendors have developed various approaches to sharing or delegating
    responsibility for defense, among them ad hoc service relationships,
    filtering through peering relationships [COMMUNITYFS], and
-   proprietary solutions ([ARBORCCS], [VERISIGNOH]).  Such hybrid
+   proprietary solutions ([CLOUDSIGNAL], [OPENHYBRID]).  Such hybrid
    approaches to DDoS defense have proven effective [CITE], but the
    heterogeneous methods employed to coordinate DDoS defenses across
    domain boundaries have necessarily limited their scope and
@@ -163,9 +165,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
 
 
 
-
-
-Teague & Mortensen         Expires May 3, 2017                  [Page 3]
+Teague & Mortensen         Expires May 4, 2017                  [Page 3]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
 
@@ -221,7 +221,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
 
 
 
-Teague & Mortensen         Expires May 3, 2017                  [Page 4]
+Teague & Mortensen         Expires May 4, 2017                  [Page 4]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
 
@@ -277,7 +277,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
 
 
 
-Teague & Mortensen         Expires May 3, 2017                  [Page 5]
+Teague & Mortensen         Expires May 4, 2017                  [Page 5]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
 
@@ -333,7 +333,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
 
 
 
-Teague & Mortensen         Expires May 3, 2017                  [Page 6]
+Teague & Mortensen         Expires May 4, 2017                  [Page 6]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
 
@@ -389,63 +389,119 @@ Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
 
 
 
-Teague & Mortensen         Expires May 3, 2017                  [Page 7]
+Teague & Mortensen         Expires May 4, 2017                  [Page 7]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
 
 
-    syntax = "proto3";
+       syntax = "proto3";
+       import "google/protobuf/any.proto";
 
-    message DOTSClientMessage {
-      // Client generated sequence number
-      uint64 seqno = 1;
+       message DOTSClientMessage {
+         // Client generated sequence number
+         uint64 seqno = 1;
 
-      // Sequence number of last received server message
-      uint64 last_svr_seqno = 2;
+         // Sequence number of last received server message
+         uint64 last_svr_seqno = 2;
 
-      // Opaque client generated event identifier
-      string eventid = 3;
+         repeated DOTSMitigation mitigations = 3;
 
-      // Mitigation scope (target)
-      string scope = 4;
+         // Request active mitigation list from server
+         bool active = 4;
 
-      // Mitigation request lifetime in seconds
-      uint32 lifetime = 5;
+         // Ping request (operator initiated)
+         bool ping = 5;
 
-      // Mitigation efficacy, scored as a floating point value between 0 and 1
-      float efficacy = 6;
+         repeated google.protobuf.Any extensions;
+       }
 
-      // Request active mitigation list from server
-      bool active = 13;
+       message DOTSMitigation {
+         // Opaque client-generated event identifier
+         string eventid = 1;
 
-      // Heartbeat request (operator initiated)
-      bool ping = 14;
+         // Toggle mitigation for the above scope
+         bool requested = 2;
 
-      // Mitigation request
-      bool mitigate = 15;
-    }
+         // Mitigation scope as described in I-D.ietf-dots-requirements
+         string scope = 3;
+
+         // Lifetime of the requested mitigation.
+         uint32 lifetime = 4;
+
+         // Mitigation efficacy score as a float value between 0 and 1
+         float efficacy = 5;
+
+         repeated google.protobuf.Any extensions;
+       }
 
                           Figure 3: Client Schema
+
+4.2.1.1.  Client Schema Fields
 
    The fields in the DOTS client signal channel message schema have the
    following functions:
 
+
+
+
+
+Teague & Mortensen         Expires May 4, 2017                  [Page 8]
+
+Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
+
+
    seqno:  a client-generated sequence number unique to the message.
+      The client increments the seqno value by one for each message sent
+      over the signal channel.
 
    last_svr_seqno:  the sequence number of the last message received
-      from the server.
+      from the server, provided to the server as a simple way to detect
+      lost messages.
+
+   mitigations:  a list of mitigations requested or withdrawn by the
+      client.  The mitigation schema fields are described below.
+
+   active:  indicates a request for a list of active mitigations and
+      their detail that are current on the DOTS server.
+
+   ping:  an operator initiated heartbeat like message which will
+      ellicit a response from the DOTS server.  This may be used to
+      prove bi-directional communications on an ad-hoc basis.  For
+      example, a DOTS ping may be used to prove keying material on the
+      DOTS client is valid and may be used to establish signaling
+      sessions with the DOTS server.
+
+   extensions:  these fields may be used to communicate implementation
+      specific details.  An example would be the dissemination of
+      filters between DOTS client and DOTS server.
+
+4.2.1.2.  Mitigation Request Schema Fields
+
+   The fields in the DOTS client mitigation request schema are as
+   follows:
 
    eventid:  an opaque client generated identifier that distinguishes a
-      unique event or incident.
+      unique event or incident.  May be used by the client as a
+      reference to the specific event triggering a mitigation request,
+      or for other implementation-specific purposes.
+
+   requested:  signals the need for mitigation to the DOTS server.  If
+      true, the DOTS client is requesting mitigation for the provided
+      scope.  If false, the DOTS client is indicating it does not
+      require mitigation, and the DOTS server MUST cease the mitigation
+      for the provided scope.
 
    scope:  the scope of the mitigation requested, which may be any of
-      the types described in [I-D.ietf-dots-requirements].
+      the types described in [I-D.ietf-dots-requirements], such as
+      Classless Internet Domain Routing (CIDR) [RFC1518],[RFC1519]
+      prefixes, DNS names, or aliases defined by the DOTS client
+      operator through the data channel.
 
 
 
 
 
-Teague & Mortensen         Expires May 3, 2017                  [Page 8]
+Teague & Mortensen         Expires May 4, 2017                  [Page 9]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
 
@@ -454,144 +510,535 @@ Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
       considered valid.
 
    efficacy:  a metric to convey to a DOTS server the perceived efficacy
-      of an active mitigation [OP-007].  The mitigation efficacy is
+      of an active mitigation, per operational requirements in
+      [I-D.ietf-dots-requirements].  The mitigation efficacy is
       represented as a floating point value between 0 and 1, with
       smaller values indicating lesser efficacy, and larger greater
-      efficacy.  The efficacy value is calculated as
+      efficacy.  XXX - The efficacy value is calculated as
 
-   active:  a request for a list of active mitigations and their detail
-      that are current on the DOTS server.
-
-   ping:  an operator initiated heartbeat like message which will
-      ellicit a response from the DOTS server.  This may be used to
-      prove bi-directional communications on an ad-hoc basis.
-
-   mitigate:  signals a mitigation request (TRUE) or termination (FALSE)
-      from the DOTS server.
-
-   extensions:  these fields may be used to communicate implementation
-      specific details.  An example would be the dissemination of
-      filters between DOTS client and DOTS server.
+   extensions:  these fields may be used to provide implementation-
+      specific mitigation details.
 
 4.2.2.  Server Schema
 
-   The entire server schema is detailed in Figure 4.  It is not expected
-   that server messages will require all fields to be used
-   simultaneously but instead a subset to convey a given signal type.
-   The only fields which may be common to all signals are seqno and
-   lastcliseqno which may be used to detect loss or drop outs.
+   The entire server schema is detailed in Figure 4.  DOTS server
+   messages use a subset of the available fields to convey the given
+   signal type, including additional relevant fields as necessary.  The
+   only fields which may be common to all signals are seqno and
+   last_client_seqno which may be used to detect message loss or out-of-
+   order delivery.  When conveying mitigation information, the server
+   schema may bundle multiple mitigation status datasets into a single
+   message, provided this does not violate the required sub-MTU message
+   size [I-D.ietf-dots-requirements].
 
-       syntax = "proto3";
+    syntax = "proto3";
+    import "google/protobuf/any.proto";
 
-       message DOTSServerMessage {
-         // Server generated sequence number
-         uint64 seqno = 1;
+    message DOTSServerMessage {
+      // Server generated sequence number
+      uint64 seqno = 1;
 
-         // Sequence number of last received Client message
-         uint64 last_client_seqno = 2;
+      // Sequence number of last received Client message
+      uint64 last_client_seqno = 2;
 
-         // Heartbeat
-         bool ping = 3;
+      // Request immediate heartbeat response from client.
+      bool ping = 3;
 
-         // Mitigation data, limited by MTU
-         repeated DOTSMitigationStatus mitigations = 4;
-       }
+     message DOTSRedirect {
+        // Redirection target DOTS server address
+        string target = 1;
 
-       message DOTSMitigationStatus {
+        // Address family of redirection target
+        enum RedirectionTargetType {
+          DNSNAME = 0;
+          IPV4 = 4;
+          IPV6 = 6;
+        }
 
 
 
-Teague & Mortensen         Expires May 3, 2017                  [Page 9]
+Teague & Mortensen         Expires May 4, 2017                 [Page 10]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
 
 
-         // Opaque Client generated event identifier
-         string eventid = 1;
+        RedirectionTargetType target_type = 2;
 
-         // Mitigation state
-         bool enabled = 2;
+        // Port on which to contact redirection target.
+        uint32 port = 3;
+      }
+      DOTSRedirect redirect = 5
 
-         // Mitigation time-to-live (lifetime - (now - start))
-         uint64 ttl = 3;
+      // Mitigation data, limited by MTU
+      repeated DOTSMitigationStatus mitigations = 6;
+    }
 
-         // Dropped byte count
-         uint64 bytes_dropped = 4;
+    message DOTSMitigationStatus {
+      // Opaque Client generated event identifier, used by the DOTS client
+      // to associate a mitigation status with the event triggering the
+      // mitigation request.
+      string eventid = 1;
 
-         // Dropped bits per second
-         uint64 bps_dropped = 5;
+      // Mitigation state
+      bool enabled = 2;
 
-         // Dropped packet count
-         uint64 pkts_dropped = 6;
+      // Mitigation time-to-live (lifetime - (now - start))
+      uint64 ttl = 3;
 
-         // Dropped packets per second
-         uint64 pps_dropped = 7;
+      // Dropped byte count
+      uint64 bytes_dropped = 4;
 
-         // Blacklist enabled through data channel
-         bool blacklist_enabled = 8;
+      // Dropped bits per second
+      uint64 bps_dropped = 5;
 
-         // Whitelist enabled through data channel
-         bool whitelist = 9;
+      // Dropped packet count
+      uint64 pkts_dropped = 6;
 
-         // Filters enabled through data channel
-         bool filters = 10;
-       }
+      // Dropped packets per second
+      uint64 pps_dropped = 7;
+
+      // Blacklist enabled through data channel
+      bool blacklist_enabled = 8;
+
+      // Whitelist enabled through data channel
+      bool whitelist_enabled = 9;
+
+      // Filters enabled through data channel
+      bool filters_enabled = 10;
+
+      repeated google.protobuf.Any extensions = 11;
+    }
 
                           Figure 4: Server Schema
 
-4.3.  Interactions
-
-   Practical interactions
-
-   Mitigation request:
 
 
-
-
-
-
-
-
-
-
-
-
-
-Teague & Mortensen         Expires May 3, 2017                 [Page 10]
+Teague & Mortensen         Expires May 4, 2017                 [Page 11]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
 
 
-       Client                       Server
-         |                             |
-         |---------Event (M=1)-------->|  // Mitigation request
-         |                             |
-         |<---------SvrResponse--------|  // Server acceptance
-         |                             |
-         |---------EventUpdate-------->|  // Efficacy update
-         |                             |
-         |<---------SvrResponse--------|  // Server feedback
-         |                             |
-         |---------Event (M=0)-------->|  // Mitigation termination
-         |                             |
+4.2.2.1.  Server Schema Fields
 
-   Active mitigation request:
+   The fields in the DOTS server signal channel message schema have the
+   following functions:
 
-       Client                       Server
-         |                             |
-         |-----------Status----------->|  // Status request
-         |                             |
-         |<-------StatusResponse-------|  // Status response
-         |                             |
+   seqno:  a server generated sequence number unique to the message.
 
-   Heartbeat:
+   last_cli_seqno:  the seqno of the last message received from the
+      client.
 
-       Client                       Server
-         |                             |
-         |----------HeartBeat--------->|  // Client heartbeat
-         |                             |
-         |<---------HeartBeat----------|  // Server heartbeat
-         |                             |
+   ping:  an operator initiated heartbeat like message which will
+      ellicit a response from the DOTS client.  This may be used to
+      prove bi-directional communications on an ad-hoc basis.
+
+   redirect:  Populated with the details of the redirection target DOTS
+      server, if the DOTS server is redirecting the DOTS client to
+      another DOTS server.
+
+   mitigations:  a list containing the status of mitigations requested
+      by the DOTS client.  The fields in the mitigation status schema
+      are described below.
+
+   extensions:  these fields may be used to communicate implementation
+      specific details.  An example would be the communication of DNS
+      mitigation vip to the DOTS client by the DOTS server.  XXX - what
+      is this?
+
+4.2.2.2.  Mitigation Status Schema Fields
+
+   The DOTS server message contains zero or more mitigation status
+   messages, the fields of which have the following functions:
+
+   eventid:  an opaque client generated identifier that distinguishes a
+      unique event or incident.
+
+   ttl:  the remaining lifetime of the mitigation.
+
+   bytes_dropped:  the total dropped byte count for the mitigation
+      associated with eventid.
+
+   bps_dropped:  the dropped bytes per second for the mitigation
+      associated with eventid.  This value is expected to be calculated
+      by the mitigator, and as such is implementation-specific.
+
+   pkts_dropped:  the total dropped packet count for the mitigation
+      associated with eventid..
+
+
+
+
+
+Teague & Mortensen         Expires May 4, 2017                 [Page 12]
+
+Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
+
+
+   pps_dropped:  the dropped packets per second for the mitigation
+      associated with eventid.  This value is expected to be calculated
+      by the mitigator, and as such is implementation-specific.
+
+   blacklist_enabled:  Indicates whether a blacklist of prohibited
+      traffic sources is enabled for the mitigation associated with
+      eventid.  The blacklist is managed through the data channel.
+
+   whitelist_enabled:  Indicates whether a whitelist of sources from
+      which traffic must always be allowed is enabled.  The whitelist is
+      managed through the data channel.
+
+   filters_enabled:  Indicates whether client-specified traffic filters
+      are enabled for the mitigation associated with eventid.
+
+4.3.  Interactions
+
+4.3.1.  Heartbeat
+
+   The most common message exchanged between a DOTS client and a DOTS
+   server is a heartbeat (OP-002 [I-D.ietf-dots-requirements]), which
+   maintains and monitors the health of the DOTS session.  This is
+   achieved with simple, loosely-coupled bi-directional messages
+   containing the sending DOTS agent's message sequence number and the
+   sequence number the sending DOTS agent last received from its peer.
+   Due to the stress volumetric DDoS impose upon a network, a degree of
+   loss during attacks is to be expected.  Message loss tolerance may be
+   set on signal channel establishment.
+
+   The default heartbeat interval is 20 seconds, plus or minus a number
+   of milliseconds between 50 and 2000.  The number milliseconds MUST be
+   randomized in order to introduce jitter into the heartbeat interval,
+   as recommended by [RFC5405].  The interval between heartbeats is may
+   also be set by the client when establishing the signal channel.  The
+   minimum heartbeat interval is 15 seconds, plus the random number of
+   milliseconds as described above.  The maximum heartbeat interval is
+   120 seconds (two minutes), minus the random number of milliseconds
+   described above.
+
+   Heartbeats are loosely-coupled, meaning each DOTS agent in a
+   bilateral signaling session sends DOTS heartbeats on the specified
+   interval, but asynchronously, without acknowledgement.  Each DOTS
+   agent tracks heartbeats received from its peer, and includes the
+   sequence number of the last heartbeat received from the peer agent in
+   the next heartbeat sent, as shown in {fig-heartbeats}:
+
+
+
+
+
+
+Teague & Mortensen         Expires May 4, 2017                 [Page 13]
+
+Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
+
+
+     Client                           Server
+       |                                 |
+       |----------HeartBeat------------->|  // Client heartbeat
+       |          seqno = 1              |
+       |          last_svr_seqno = 0     |
+       |                                 |
+       |<---------HeartBeat--------------|  // Server heartbeat
+       |          seqno = 1              |
+       |          last_client_seqno = 1  |
+       |                                 |
+       |----------HeartBeat------------->|  // Client heartbeat
+       |          seqno = 2              |
+       |          last_svr_seqno = 1     |
+       |                                 |
+       |      X---HeartBeat--------------|  // Server heartbeat lost
+       |          seqno = 2              |
+       |          last_client_seqno = 2  |
+       |                                 |
+       |----------HeartBeat------------->|  // Client heartbeat,
+       |          seqno = 3              |  // last_svr_seqno remains 1,
+       |          last_svr_seqno = 1     |  // indicating lost heartbeat
+       |                                 |
+       |<---------HeartBeat--------------|  // Server heartbeat resumes
+       |          seqno = 3              |
+       |          last_client_seqno = 3  |
+       |                                 |
+       |----------HeartBeat------------->|  // Client heartbeat,
+       |          seqno = 4              |  // last_svr_seqno remains 1
+       |          last_svr_seqno = 3     |
+       |                                 |
+
+                 Figure 5: Heartbeats Between DOTS agents
+
+   The DOTS client heartbeat has the following format:
+
+       message DOTSClientMessage {
+         1 (seqno) = %;
+         2 (last_svr_seqno) = %;
+       }
+
+   The DOTS server heartbeat is identical aside from the schema type:
+
+       message DOTSServerMessage {
+         1 (seqno) = %;
+         2 (last_svr_seqno) = %;
+       }
+
+
+
+
+
+Teague & Mortensen         Expires May 4, 2017                 [Page 14]
+
+Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
+
+
+   There may be cases where a DOTS client or server operator wishes to
+   trigger an immediate heartbeat response in order to validate bi-
+   directional communication (e.g. during provisioning).  This ad-hoc
+   triggering may be achieved by setting the ping field set to TRUE.
+   When DOTS agent receives a message on the signal channel with the
+   ping field set to TRUE, it MUST immediately send heartbeat back to
+   the ping sender.  A ping reply MUST consist of only the senders
+   sequence number and the sequence number of the received ping.
+   [[EDITOR'S NOTE: rate limiting of pings required?]]
+
+   A ping is identical to a standard heartbeat, but with the the ping
+   field included and set to TRUE:
+
+          message DOTSClientMessage {
+            1 (seqno) = %;
+            2 (last_svr_seqno) = %;
+            5 (ping) = 1;
+          }
+
+   Should the number of signals lost exceed the acceptable lossiness
+   value for the signaling session, the agent detecting the signal loss
+   may consider the signaling session lost.  The default value for
+   acceptable signal loss is 9, which, when coupled with the default
+   heartbeat interval, amounts to lack of heartbeat from the peer DOTS
+   agent for 180 seconds (three minutes).
+
+4.3.2.  Mitigation Request Handling
+
+   The mitigation request is the crux of the DOTS protocol, and is
+   comprised of the minimum viable information described in {minimum-
+   viable-information}.  The request may be augmented with additional
+   implementation specific extensions where these do not result in undue
+   packet bloat.  The DOTS client may send repeated requests until it
+   receives a suitable response from the DOTS server by which it may
+   interpret successful receipt.
+
+          message DOTSClientMessage {
+            1 (seqno) = %;
+            2 (last_svr_seqno) = %;
+            3 (mitigations) = [
+              {
+                1 (eventid) = %;
+                2 (requested) = %;
+                3 (scope) = %;
+                4 (lifetime) = %;
+              }
+            ];
+          }
+
+
+
+Teague & Mortensen         Expires May 4, 2017                 [Page 15]
+
+Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
+
+
+   The DOTS server is expected to respond to confirm that it has
+   accepted and or rejected the mitigation request.  Upon receipt of the
+   response the DOTS client should cease sending additional initial
+   requests for the same eventid.  If these do not cease then the server
+   may assume that the response was possibly lost and should resend
+   accordingly.  Acceptance status is communicated by the DOTS server
+   replying with the corresponding eventid and the enabled field set to
+   1 for acceptance and 0 for rejection.  A rejection by the DOTS server
+   should be accompanied with an extension field detailing succinctly
+   the reason (e.g. out of contract, conflict, maintenance etc. ).
+
+         message DOTSServerMessage {
+           1 (seqno) = %;
+           2 (last_cli_seqno) = %;
+           4 (mitigations) = [
+             {
+               1 (eventid) = %;
+               2 (enabled) = true; // Mitigation request accepted
+             }
+           ]
+         }
+
+   After a period of time the mitigation request may expire and the DOTS
+   server may end the mitigation.  Alternately, the DOTS client may
+   explicitly terminate the active mitigation by sending a message to
+   the server that contains a mitigation value with the eventid and that
+   has the requested field set to false, as shown below:
+
+         message DOTSClientMessage {
+           1 (seqno) = %;
+           2 (last_svr_seqno) = %;
+           3 (mitigations) = [
+             {
+               1 (eventid) = %;
+               2 (requested) = false; // Terminate mitigation
+             }
+           ];
+         }
+
+   The server must explicitly acknowledge the termination with a
+   response message with the enabled field now set to false:
+
+
+
+
+
+
+
+
+
+
+Teague & Mortensen         Expires May 4, 2017                 [Page 16]
+
+Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
+
+
+         message DOTSServerMessage {
+           1 (seqno) = %;
+           2 (last_cli_seqno) = %;
+           6 (mitigations) = [
+             {
+               1 (eventid) = %;
+               2 (enabled) = false; // Mitigation terminated
+             }
+           ];
+         }
+
+   The life cycle of a DOTS mitigation request resembles the following:
+
+          Client                        Server
+            |                              |
+            |---Request(M=true)----------->|  // Mitigation request
+            |                              |
+            |<---------MitigationActive----|  // Server acceptance
+            |                              |
+            |< - - - - MitigationFeedback -|
+            |                              |
+            |---Terminate(M=false)-------->|  // Mitigation termination
+            |                              |
+            |<---------MitigationEnded-----|  // Server termination ack
+
+4.3.3.  Ancillary Messages
+
+   In addition to the basic interaction, additional messages may be
+   exchanged throughout the lifetime of the mitigation.
+
+4.3.3.1.  Mitigation Feedback
+
+   The DOTS server MUST update the client with current mitigation
+   status.  This MUST include the eventid, and SHOULD include available
+   dropped attack traffic statistics provided by the mitigator.  A DOTS
+   server MAY provide feedback for more than one mitigation in a single
+   message, provided the resulting message meets the sub-MTU size
+   requirements in [I-D.ietf-dots-requirements].
+
+   The DOTS client SHOULD use the feedback from the DOTS server when
+   deciding to update or terminate a mitigation request.  For example,
+   if the DOTS client learns from DOTS server mitigation feedback that
+   the dropped_pps rate is low, the DOTS client might decide to
+   terminate upstream mitigation and handle the attack locally.
+
+   A mitigation feedback message from the DOTS server would resemble the
+   following format, assuming an active mitigation request from the DOTS
+   client:
+
+
+
+Teague & Mortensen         Expires May 4, 2017                 [Page 17]
+
+Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
+
+
+         message DOTSServerMessage {
+           1 (seqno) = %;
+           2 (last_client_seqno) = %;
+           6 (mitigations) = [
+             {
+               1 (eventid) = %;
+               2 (enabled) = %;
+               3 (ttl) = %;
+               4 (bytes_dropped) = %;
+               5 (bps_dropped) = %;
+               6 (pkts_dropped) = %;
+               7 (pps_dropped) = %;
+               10 (filters_enabled) = true;
+             },
+           ];
+         }
+
+4.3.3.2.  Mitigation Lifetime Update
+
+   The DOTS client may wish to update the mitigation during its
+   lifetime.  Updates may be to alter the lifetime to extend the
+   mitigation, or an update may communicate the perceived efficacy of
+   the mitigation.  The former may be as a result of the DOTS sever
+   feedback which may suggest that an attack shows no sign of abating.
+   The latter may be to notify the DOTS server whether the
+   countermeasures deployed are perceived as effective or not.
+
+   A DOTS client may update the lifetime of multiple mitigations in a
+   single request as long as the message size meets the sub-MTU
+   requirement per [I-D.ietf-dots-requirements].  The lifetime update
+   message has the following format:
+
+          message DOTSClientMessage {
+            1 (seqno) = %;
+            2 (last_svr_seqno) = %;
+            3 (mitigations) = [
+              {
+                1 (eventid) = %;
+                2 (requested) = true;
+                4 (lifetime) = %;
+              }
+            ];
+          }
+
+   Upon receipt of the mitigation lifetime update, the DOTS server
+   replace the current mitigation expiration time with the new value.
+   The updated lifetime MUST be visible in the ttl field in subsequent
+   mitigation feedback messages.  When updating a mitigation lifetime,
+
+
+
+Teague & Mortensen         Expires May 4, 2017                 [Page 18]
+
+Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
+
+
+   the DOTS client SHOULD continue sending the lifetime update request
+   at the heartbeat interval until the DOTS server's mitigation feedback
+   shows an updated ttl for the updated mitigation.
+
+4.3.3.3.  Mitigation Efficacy Updates
+
+   When a mitigation is active, a DOTS client MUST periodically
+   communicate the locally perceived efficacy of the mitigation to the
+   DOTS server.  This gives the DOTS server a rough sense of whether the
+   DOTS client perceives the mitigator's deployed countermeasures as
+   effective.  The efficacy update update message has the following
+   format:
+
+         message DOTSClientMessage {
+           1 (seqno) = %;
+           2 (last_svr_seqno) = %;
+           3 (mitigations) = [
+             {
+               1 (eventid) = %;
+               6 (efficacy) = %;
+             }
+           ];
+         }
+
+   The DOTS server SHOULD consider the efficacy update an indication of
+   the effectiveness of any ongoing mitigations related to the eventid
+   provided by the DOTS client.  The DOTS server nonetheless MAY treat
+   any efficacy update from the client as advisory, and is under no
+   obligation to alter the mitigation strategy in response.
 
 5.  Data Channel
 
@@ -610,15 +1057,15 @@ Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
    DOTS client operators limited direct control over the behavior of
    mitigations requested by the DOTS client.  However, the DOTS data
    channel is not a general purpose application programming interface
+   for mitigators with which a DOTS server is communicating.  Certain
 
 
 
-Teague & Mortensen         Expires May 3, 2017                 [Page 11]
+Teague & Mortensen         Expires May 4, 2017                 [Page 19]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
 
 
-   for mitigators with which a DOTS server is communicating.  Certain
    countermeasure profiles for DDoS attacks are widely understood and
    deployed, but many remain specific to mitigation vendor
    implementations, making abstraction all but impossible.  The DOTS
@@ -643,9 +1090,9 @@ Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
    HTTP/1.1 over TLS.  However, this document also leaves open the
    possibility that the data channel MAY be implemented through such
    application transports as HTTP/2 [RFC7540] or the Quick UDP Internet
-   Connection [I-D.tsvwg-quic-protocol] protocol, as well as other
-   current and future protocols supporting [REST] semantics and the
-   security requirements described in [I-D.ietf-dots-requirements].
+   Connection [I-D.hamilton-quic-transport-protocol] protocol, as well
+   as other current and future protocols supporting [REST] semantics and
+   the security requirements described in [I-D.ietf-dots-requirements].
    Support for alternative secure REST transports for the data channel
    are deployment- and implementation-specific.
 
@@ -662,27 +1109,23 @@ Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
    Section 6 offers a more detailed discussion of data channel transport
    security, including cipher suites.
 
-
-
-
-
-
-
-
-Teague & Mortensen         Expires May 3, 2017                 [Page 12]
-
-Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
-
-
 5.4.  Authentication
 
    When establishing the data channel, the DOTS client and DOTS server
    MUST mutually authenticate each other, per SEC-001 in
    [I-D.ietf-dots-requirements].  A common method for mutual
+
+
+
+Teague & Mortensen         Expires May 4, 2017                 [Page 20]
+
+Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
+
+
    authentication for HTTP/1.1 over TLS is an exchange of X.509
    certificates between client and server during the TLS handshake
-   [RFC5246]; similar mechanisms exist in HTTP/2 and in [I-D.tsvwg-quic-
-   protocol].
+   [RFC5246]; similar mechanisms exist in HTTP/2 [RFC7540] and in
+   [I-D.hamilton-quic-transport-protocol].
 
    Regardless of the underlying transport used, this document does not
    prescribe the method of mutual authentication.  The method of mutual
@@ -720,21 +1163,20 @@ Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
    The DOTS client requests the list of signaling sessions by issuing a
    GET for the /sessions resource:
 
-
-
-
-
-
-Teague & Mortensen         Expires May 3, 2017                 [Page 13]
-
-Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
-
-
        GET /dots/v1/data/sessions HTTP/1.1
        Host: dots-server.example.com
        Accept: application/json
 
-              Figure 5: DOTS Client Requesting Session Status
+              Figure 6: DOTS Client Requesting Session Status
+
+
+
+
+
+Teague & Mortensen         Expires May 4, 2017                 [Page 21]
+
+Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
+
 
    If the DOTS client is authorized, the DOTS server responds to the GET
    with a list of signaling session identifiers, as in the following
@@ -778,20 +1220,19 @@ Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
 
    YANG model TBD
 
-
-
-
-Teague & Mortensen         Expires May 3, 2017                 [Page 14]
-
-Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
-
-
 5.6.3.  {+dataroot}/filters
 
    The /filters endpoint on a DOTS server is a read-write resource
    through which a DOTS client may request that the DOTS server add,
    retrieve, modify and delete traffic filters to an active mitigation
    requested through the signal channel.
+
+
+
+Teague & Mortensen         Expires May 4, 2017                 [Page 22]
+
+Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
+
 
    A filter is a match and an action on match.  As discussed above in
    Section 5.2, actions are restricted to black- and white-listing and
@@ -831,17 +1272,6 @@ Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
            ]
        }
 
-
-
-
-
-
-
-Teague & Mortensen         Expires May 3, 2017                 [Page 15]
-
-Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
-
-
 5.6.3.2.  GET {+dataroot}/filters/{+mitigation-id}
 
    A GET request to the /filters endpoint on a DOTS server returns
@@ -850,16 +1280,24 @@ Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
    used in a mitigation request previously sent to the DOTS server over
    the signal channel, with the exception of the global filter list as
    described below.  A request listing the filters active during a
-   mitigation is shown below in Figure 6:
+   mitigation is shown below in Figure 7:
+
+
+
+
+Teague & Mortensen         Expires May 4, 2017                 [Page 23]
+
+Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
+
 
        GET /dots/v1/data/filters/42 HTTP/1.1
        Host: dots-server.example.com
        Accept: application/json
 
-                           Figure 6: Filter GET
+                           Figure 7: Filter GET
 
    The DOTS server returns a list of active filters applied as part of
-   the mitigation on the DOTS client's behalf as in Figure 7:
+   the mitigation on the DOTS client's behalf as in Figure 8:
 
        HTTP/1.1 200 OK
        Cache-Control: no-cache
@@ -873,7 +1311,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
            ]
        }
 
-                       Figure 7: Filter GET Response
+                       Figure 8: Filter GET Response
 
    If the filter list is empty, no filters are applied as part of the
    mitigation.
@@ -890,14 +1328,6 @@ Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
    resource through which a DOTS client may configure global signaling
    session behavior.
 
-
-
-
-Teague & Mortensen         Expires May 3, 2017                 [Page 16]
-
-Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
-
-
 5.6.4.1.  GET {+dataroot}/config
 
    A GET request to the /config endpoint returns the current DOTS
@@ -907,7 +1337,14 @@ Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
    Host: dots-server.example.com
    Accept: application/json
 
-              Figure 8: DOTS Client Requesting Configuration
+              Figure 9: DOTS Client Requesting Configuration
+
+
+
+Teague & Mortensen         Expires May 4, 2017                 [Page 24]
+
+Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
+
 
    HTTP/1.1 200 OK
    Cache-Control:
@@ -944,21 +1381,11 @@ Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
    (or an equivalent if not using HTTP), using the MIME type defined in
    [RFC7159], application/json:
 
-
-
-
-
-
-Teague & Mortensen         Expires May 3, 2017                 [Page 17]
-
-Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
-
-
            GET /dots/v1/data/sessions HTTP/1.1
            Host: dots-server.example.com
            Accept: application/json
 
-         Figure 9: DOTS Client Advertising Required Serialization
+         Figure 10: DOTS Client Advertising Required Serialization
 
    Implementations MAY offer additional serialization formats as well.
    DOTS clients MAY advertise support for additional serialization
@@ -966,11 +1393,20 @@ Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
    [RFC7231] (or an equivalent if not using HTTP), as shown in the
    example HTTP/1.1 request below:
 
+
+
+
+
+Teague & Mortensen         Expires May 4, 2017                 [Page 25]
+
+Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
+
+
            GET /dots/v1/data/sessions HTTP/1.1
            Host: dots-server.example.com
            Accept: application/json; q=0.5, application/cbor
 
-        Figure 10: DOTS Client Supporting Additional Serializations
+        Figure 11: DOTS Client Supporting Additional Serializations
 
    If a DOTS server does not support the media types in the DOTS
    client's Accept header (or its equivalent), the DOTS server MUST
@@ -1003,20 +1439,9 @@ Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
    DOTS server operators SHOULD enforce access control policies
    restricting which clients are able to contact DOTS servers.
 
+7.  References
 
-
-Teague & Mortensen         Expires May 3, 2017                 [Page 18]
-
-Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
-
-
-7.  Contributors
-
-   Nik Teague
-
-8.  References
-
-8.1.  Normative References
+7.1.  Normative References
 
    [RFC0768]  Postel, J., "User Datagram Protocol", STD 6, RFC 768, DOI
               10.17487/RFC0768, August 1980,
@@ -1025,6 +1450,13 @@ Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
    [RFC0791]  Postel, J., "Internet Protocol", STD 5, RFC 791, DOI
               10.17487/RFC0791, September 1981,
               <http://www.rfc-editor.org/info/rfc791>.
+
+
+
+Teague & Mortensen         Expires May 4, 2017                 [Page 26]
+
+Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
+
 
    [RFC0793]  Postel, J., "Transmission Control Protocol", STD 7, RFC
               793, DOI 10.17487/RFC0793, September 1981,
@@ -1059,13 +1491,6 @@ Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
               RFC5246, August 2008,
               <http://www.rfc-editor.org/info/rfc5246>.
 
-
-
-Teague & Mortensen         Expires May 3, 2017                 [Page 19]
-
-Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
-
-
    [RFC5952]  Kawamura, S. and M. Kawashima, "A Recommendation for IPv6
               Address Text Representation", RFC 5952, DOI 10.17487/
               RFC5952, August 2010,
@@ -1079,6 +1504,20 @@ Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
               of Named Entities (DANE) Transport Layer Security (TLS)
               Protocol: TLSA", RFC 6698, DOI 10.17487/RFC6698, August
               2012, <http://www.rfc-editor.org/info/rfc6698>.
+
+
+
+
+
+Teague & Mortensen         Expires May 4, 2017                 [Page 27]
+
+Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
+
+
+   [RFC7030]  Pritikin, M., Ed., Yee, P., Ed., and D. Harkins, Ed.,
+              "Enrollment over Secure Transport", RFC 7030, DOI
+              10.17487/RFC7030, October 2013,
+              <http://www.rfc-editor.org/info/rfc7030>.
 
    [RFC7159]  Bray, T., Ed., "The JavaScript Object Notation (JSON) Data
               Interchange Format", RFC 7159, DOI 10.17487/RFC7159, March
@@ -1111,17 +1550,6 @@ Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
               Signaling (DOTS) Architecture", draft-ietf-dots-
               architecture-00 (work in progress), July 2016.
 
-
-
-
-
-
-
-Teague & Mortensen         Expires May 3, 2017                 [Page 20]
-
-Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
-
-
    [I-D.ietf-dots-requirements]
               Mortensen, A., Moskowitz, R., and T. Reddy, "Distributed
               Denial of Service (DDoS) Open Threat Signaling
@@ -1134,6 +1562,14 @@ Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
               hamilton-quic-transport-protocol-00 (work in progress),
               July 2016.
 
+
+
+
+Teague & Mortensen         Expires May 4, 2017                 [Page 28]
+
+Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
+
+
    [PROTOBUF]
               Google, Inc., "Protocol Buffers", 2016,
               <https://developers.google.com/protocol-buffers/>.
@@ -1144,7 +1580,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
               <http://www.ics.uci.edu/~fielding/pubs/dissertation/
               fielding_dissertation.pdf>.
 
-8.2.  Informative References
+7.2.  Informative References
 
    [RFC1518]  Rekhter, Y. and T. Li, "An Architecture for IP Address
               Allocation with CIDR", RFC 1518, DOI 10.17487/RFC1518,
@@ -1155,34 +1591,22 @@ Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
               Aggregation Strategy", RFC 1519, DOI 10.17487/RFC1519,
               September 1993, <http://www.rfc-editor.org/info/rfc1519>.
 
-   [RFC4271]  Rekhter, Y., Ed., Li, T., Ed., and S. Hares, Ed., "A
-              Border Gateway Protocol 4 (BGP-4)", RFC 4271, DOI
-              10.17487/RFC4271, January 2006,
-              <http://www.rfc-editor.org/info/rfc4271>.
-
    [RFC5575]  Marques, P., Sheth, N., Raszuk, R., Greene, B., Mauch, J.,
               and D. McPherson, "Dissemination of Flow Specification
               Rules", RFC 5575, DOI 10.17487/RFC5575, August 2009,
               <http://www.rfc-editor.org/info/rfc5575>.
 
-   [ARBORCCS]
-              Arbor Networks, Inc., "Cloud SIgnaling: A Faster,
+   [CLOUDSIGNAL]
+              Arbor Networks, Inc., "Cloud Signaling: A Faster,
               Automated Way to Mitigate DDoS Attacks", 2011,
               <https://www.arbornetworks.com/cloud-signaling-a-faster-
               automated-way-to-mitigate-ddos-attacks>.
-
-
-
-Teague & Mortensen         Expires May 3, 2017                 [Page 21]
-
-Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
-
 
    [COMMUNITYFS]
               Team Cymru, Inc., "Community FlowSpec", 2011,
               <https://www.cymru.com/jtk/misc/community-fs.html>.
 
-   [VERISIGNOH]
+   [OPENHYBRID]
               Verisign, Inc., "Verisign OpenHybrid", 2016,
               <http://www.verisign.com/en_US/security-services/ddos-
               protection/open-api/index.xhtml>.
@@ -1191,6 +1615,16 @@ Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
               Report", 2016,
               <https://www.arbornetworks.com/images/documents/
               WISR2016_EN_Web.pdf>.
+
+
+
+
+
+
+Teague & Mortensen         Expires May 4, 2017                 [Page 29]
+
+Internet-Draft     DDoS Open Threat Signaling Protocol      October 2016
+
 
 Authors' Addresses
 
@@ -1229,4 +1663,18 @@ Authors' Addresses
 
 
 
-Teague & Mortensen         Expires May 3, 2017                 [Page 22]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Teague & Mortensen         Expires May 4, 2017                 [Page 30]
