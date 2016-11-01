@@ -407,6 +407,7 @@
 <link href="#rfc.section.5.6.6" rel="Chapter" title="5.6.6 Caching"/>
 <link href="#rfc.section.6" rel="Chapter" title="6 Security Considerations"/>
 <link href="#rfc.section.6.1" rel="Chapter" title="6.1 Data Channel Security"/>
+<link href="#rfc.section.6.2" rel="Chapter" title="6.2 Signal Channel Security"/>
 <link href="#rfc.references" rel="Chapter" title="7 References"/>
 <link href="#rfc.references.1" rel="Chapter" title="7.1 Normative References"/>
 <link href="#rfc.references.2" rel="Chapter" title="7.2 Informative References"/>
@@ -514,6 +515,7 @@
 <li>5.6.6.   <a href="#rfc.section.5.6.6">Caching</a></li>
 </ul></ul><li>6.   <a href="#rfc.section.6">Security Considerations</a></li>
 <ul><li>6.1.   <a href="#rfc.section.6.1">Data Channel Security</a></li>
+<li>6.2.   <a href="#rfc.section.6.2">Signal Channel Security</a></li>
 </ul><li>7.   <a href="#rfc.references">References</a></li>
 <ul><li>7.1.   <a href="#rfc.references.1">Normative References</a></li>
 <li>7.2.   <a href="#rfc.references.2">Informative References</a></li>
@@ -1360,6 +1362,8 @@ Content-Type: application/json
 <h1 id="rfc.section.6.1"><a href="#rfc.section.6.1">6.1.</a> <a href="#data-channel-security" id="data-channel-security">Data Channel Security</a></h1>
 <p id="rfc.section.6.1.p.1">The DOTS data channel acts as a management plane for DOTS signaling sessions.  As discussed in the security considerations of <a href="#I-D.ietf-dots-architecture">[I-D.ietf-dots-architecture]</a>, an attacker with control over data channel may be able to blacklist or rate-limit any flows under the administrative control of the DOTS client. Extra care must therefore be taken when authenticating and authorizing the data channel.</p>
 <p id="rfc.section.6.1.p.2">DOTS server operators SHOULD enforce access control policies restricting which clients are able to contact DOTS servers.</p>
+<h1 id="rfc.section.6.2"><a href="#rfc.section.6.2">6.2.</a> <a href="#signal-channel-security" id="signal-channel-security">Signal Channel Security</a></h1>
+<p id="rfc.section.6.2.p.1">The DOTS signal channel controls mitigation request and withdrawal and as such care must be taken to protect against concerns outlined in the security considerations of <a href="#I-D.ietf-dots-architecture">[I-D.ietf-dots-architecture]</a>.</p>
 <h1 id="rfc.references"><a href="#rfc.references">7.</a> References</h1>
 <h1 id="rfc.references.1"><a href="#rfc.references.1">7.1.</a> Normative References</h1>
 <table>

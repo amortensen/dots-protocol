@@ -1501,6 +1501,13 @@ therefore be taken when authenticating and authorizing the data channel.</t>
 clients are able to contact DOTS servers.</t>
 
 </section>
+<section anchor="signal-channel-security" title="Signal Channel Security">
+
+<t>The DOTS signal channel controls mitigation request and withdrawal and as such
+care must be taken to protect against concerns outlined in the security
+considerations of <xref target="I-D.ietf-dots-architecture"></xref>.</t>
+
+</section>
 </section>
 
 
