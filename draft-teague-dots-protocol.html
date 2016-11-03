@@ -419,7 +419,7 @@
 
   <meta name="dct.creator" content="Teague, N. and A. Mortensen" />
   <meta name="dct.identifier" content="urn:ietf:id:draft-teague-dots-protocol-00" />
-  <meta name="dct.issued" scheme="ISO8601" content="2016-11-01" />
+  <meta name="dct.issued" scheme="ISO8601" content="2016-11-03" />
   <meta name="dct.abstract" content="This document describes Distributed-Denial-of-Service (DDoS) Open Threat Signaling (DOTS), a signaling protocol for requesting and managing mitigation of DDoS attacks." />
   <meta name="description" content="This document describes Distributed-Denial-of-Service (DDoS) Open Threat Signaling (DOTS), a signaling protocol for requesting and managing mitigation of DDoS attacks." />
 
@@ -443,12 +443,12 @@
   <td class="right">A. Mortensen</td>
 </tr>
 <tr>
-  <td class="left">Expires: May 5, 2017</td>
+  <td class="left">Expires: May 7, 2017</td>
   <td class="right">Arbor Networks, Inc.</td>
 </tr>
 <tr>
   <td class="left"></td>
-  <td class="right">November 01, 2016</td>
+  <td class="right">November 03, 2016</td>
 </tr>
 
     	
@@ -470,7 +470,7 @@
 <p>This Internet-Draft is submitted in full conformance with the provisions of BCP 78 and BCP 79.</p>
 <p>Internet-Drafts are working documents of the Internet Engineering Task Force (IETF).  Note that other groups may also distribute working documents as Internet-Drafts.  The list of current Internet-Drafts is at http://datatracker.ietf.org/drafts/current/.</p>
 <p>Internet-Drafts are draft documents valid for a maximum of six months and may be updated, replaced, or obsoleted by other documents at any time.  It is inappropriate to use Internet-Drafts as reference material or to cite them other than as "work in progress."</p>
-<p>This Internet-Draft will expire on May 5, 2017.</p>
+<p>This Internet-Draft will expire on May 7, 2017.</p>
 <h1 id="rfc.copyrightnotice">
   <a href="#rfc.copyrightnotice">Copyright Notice</a>
 </h1>
@@ -610,7 +610,7 @@
       }
       DOTSSessionConfig config = 6;
 
-      repeated google.protobuf.Any extensions;
+      repeated google.protobuf.Any extensions = 999;
     }
 </pre>
 <p class="figure">Figure 3: DOTS Client Message Schema</p>
@@ -653,7 +653,7 @@
       // Mitigation efficacy score as a float value between 0 and 1
       float efficacy = 5;
 
-      repeated google.protobuf.Any extensions;
+      repeated google.protobuf.Any extensions = 999;
     }
 </pre>
 <p class="figure">Figure 4: DOTS Client Mitigation Request Schema</p>
@@ -750,11 +750,11 @@
 
     message DOTSServerError {
       enum ErrorCode {
-        NOERROR = 0,
-        INVALID_VALUE = 1,
-        MITIGATION_UNAVAILABLE = 2,
-        MITIGATION_CONFLICT = 3,
-        MALFORMED_MESSAGE = 4,
+        NOERROR = 0;
+        INVALID_VALUE = 1;
+        MITIGATION_UNAVAILABLE = 2;
+        MITIGATION_CONFLICT = 3;
+        MALFORMED_MESSAGE = 4;
       }
       ErrorCode code = 1;
 
@@ -830,7 +830,7 @@
       // Filters enabled through data channel
       bool filters_enabled = 10;
 
-      repeated google.protobuf.Any extensions = 11;
+      repeated google.protobuf.Any extensions = 999;
     }
 </pre>
 <p class="figure">Figure 7: DOTS Server Mitigation Status Schema</p>
@@ -917,7 +917,7 @@
 <p id="rfc.section.4.3.2.p.1">The most common message exchanged between a DOTS client and a DOTS server is a heartbeat (OP-002 <a href="#I-D.ietf-dots-requirements">[I-D.ietf-dots-requirements]</a>), which maintains and monitors the health of the DOTS session.  This is achieved with simple, loosely-coupled bi-directional messages containing the sending DOTS agent&#8217;s message sequence number and the sequence number the sending DOTS agent last received from its peer. Due to the stress volumetric DDoS impose upon a network, a degree of loss during attacks is to be expected. Message loss tolerance may be set on signal channel establishment.</p>
 <p id="rfc.section.4.3.2.p.2">The default heartbeat interval is 20 seconds, plus or minus a number of milliseconds between 50 and 2000. The number milliseconds MUST be randomized in order to introduce jitter into the heartbeat interval, as recommended by <a href="#RFC5405">[RFC5405]</a>. The default interval is derived from the recommendations in <a href="#RFC5405">[RFC5405]</a> regarding middlebox traversal.</p>
 <p id="rfc.section.4.3.2.p.3">The interval between heartbeats is may also be set by the client when establishing the signal channel. The minimum heartbeat interval is 15 seconds, plus the random number of milliseconds as described above. The maximum heartbeat interval is 120 seconds (two minutes), minus the random number of milliseconds described above.</p>
-<p id="rfc.section.4.3.2.p.4">Heartbeats are loosely-coupled, meaning each DOTS agent in a bilateral signaling session sends DOTS heartbeats on the specified interval, but asynchronously, without acknowledgement. Each DOTS agent tracks heartbeats received from its peer, and includes the sequence number of the last heartbeat received from the peer agent in the next heartbeat sent, as shown in {fig-heartbeats}:</p>
+<p id="rfc.section.4.3.2.p.4">Heartbeats are loosely-coupled, meaning each DOTS agent in a bilateral signaling session sends DOTS heartbeats on the specified interval, but asynchronously, without acknowledgement. Each DOTS agent tracks heartbeats received from its peer, and includes the sequence number of the last heartbeat received from the peer agent in the next heartbeat sent, as shown in <a href="#fig-heartbeats">Figure 10</a>:</p>
 <div id="rfc.figure.10"/>
 <div id="fig-heartbeats"/>
 <pre>
@@ -979,7 +979,7 @@
        }
 </pre>
 <h1 id="rfc.section.4.3.3"><a href="#rfc.section.4.3.3">4.3.3.</a> <a href="#mitigation-request-handling" id="mitigation-request-handling">Mitigation Request Handling</a></h1>
-<p id="rfc.section.4.3.3.p.1">The mitigation request is the crux of the DOTS protocol, and is comprised of the minimum viable information described in {minimum-viable-information}.  The request may be augmented with additional implementation specific extensions where these do not result in undue packet bloat.  The DOTS client may send repeated requests until it receives a suitable response from the DOTS server by which it may interpret successful receipt.</p>
+<p id="rfc.section.4.3.3.p.1">The mitigation request is the crux of the DOTS protocol, and is comprised of the minimum viable information described in <a href="#minimum-viable-information">Section 4.1</a>.  The request may be augmented with additional implementation specific extensions where these do not result in undue packet bloat.  The DOTS client may send repeated requests until it receives a suitable response from the DOTS server by which it may interpret successful receipt.</p>
 <pre>
        message DOTSClientMessage {
          1 (seqno) = %;

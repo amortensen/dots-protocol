@@ -5,8 +5,8 @@
 DOTS                                                           N. Teague
 Internet-Draft                                            Verisign, Inc.
 Intended status: Standards Track                            A. Mortensen
-Expires: May 5, 2017                                Arbor Networks, Inc.
-                                                       November 01, 2016
+Expires: May 7, 2017                                Arbor Networks, Inc.
+                                                       November 03, 2016
 
 
                   DDoS Open Threat Signaling Protocol
@@ -53,12 +53,12 @@ Status of This Memo
 
 
 
-Teague & Mortensen         Expires May 5, 2017                  [Page 1]
+Teague & Mortensen         Expires May 7, 2017                  [Page 1]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
 
-   This Internet-Draft will expire on May 5, 2017.
+   This Internet-Draft will expire on May 7, 2017.
 
 Copyright Notice
 
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Teague & Mortensen         Expires May 5, 2017                  [Page 2]
+Teague & Mortensen         Expires May 7, 2017                  [Page 2]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
@@ -165,7 +165,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
 
 
-Teague & Mortensen         Expires May 5, 2017                  [Page 3]
+Teague & Mortensen         Expires May 7, 2017                  [Page 3]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
@@ -221,7 +221,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
 
 
-Teague & Mortensen         Expires May 5, 2017                  [Page 4]
+Teague & Mortensen         Expires May 7, 2017                  [Page 4]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
@@ -277,7 +277,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
 
 
-Teague & Mortensen         Expires May 5, 2017                  [Page 5]
+Teague & Mortensen         Expires May 7, 2017                  [Page 5]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
@@ -333,7 +333,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
 
 
-Teague & Mortensen         Expires May 5, 2017                  [Page 6]
+Teague & Mortensen         Expires May 7, 2017                  [Page 6]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
@@ -389,7 +389,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
 
 
-Teague & Mortensen         Expires May 5, 2017                  [Page 7]
+Teague & Mortensen         Expires May 7, 2017                  [Page 7]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
@@ -425,7 +425,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
          }
          DOTSSessionConfig config = 6;
 
-         repeated google.protobuf.Any extensions;
+         repeated google.protobuf.Any extensions = 999;
        }
 
                    Figure 3: DOTS Client Message Schema
@@ -445,7 +445,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
 
 
-Teague & Mortensen         Expires May 5, 2017                  [Page 8]
+Teague & Mortensen         Expires May 7, 2017                  [Page 8]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
@@ -488,7 +488,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
          // Mitigation efficacy score as a float value between 0 and 1
          float efficacy = 5;
 
-         repeated google.protobuf.Any extensions;
+         repeated google.protobuf.Any extensions = 999;
        }
 
               Figure 4: DOTS Client Mitigation Request Schema
@@ -501,7 +501,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
 
 
-Teague & Mortensen         Expires May 5, 2017                  [Page 9]
+Teague & Mortensen         Expires May 7, 2017                  [Page 9]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
@@ -557,7 +557,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
 
 
-Teague & Mortensen         Expires May 5, 2017                 [Page 10]
+Teague & Mortensen         Expires May 7, 2017                 [Page 10]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
@@ -613,7 +613,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
 
 
-Teague & Mortensen         Expires May 5, 2017                 [Page 11]
+Teague & Mortensen         Expires May 7, 2017                 [Page 11]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
@@ -649,11 +649,11 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
        message DOTSServerError {
          enum ErrorCode {
-           NOERROR = 0,
-           INVALID_VALUE = 1,
-           MITIGATION_UNAVAILABLE = 2,
-           MITIGATION_CONFLICT = 3,
-           MALFORMED_MESSAGE = 4,
+           NOERROR = 0;
+           INVALID_VALUE = 1;
+           MITIGATION_UNAVAILABLE = 2;
+           MITIGATION_CONFLICT = 3;
+           MALFORMED_MESSAGE = 4;
          }
          ErrorCode code = 1;
 
@@ -669,7 +669,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
 
 
-Teague & Mortensen         Expires May 5, 2017                 [Page 12]
+Teague & Mortensen         Expires May 7, 2017                 [Page 12]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
@@ -725,7 +725,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
 
 
-Teague & Mortensen         Expires May 5, 2017                 [Page 13]
+Teague & Mortensen         Expires May 7, 2017                 [Page 13]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
@@ -771,7 +771,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
        // Filters enabled through data channel
        bool filters_enabled = 10;
 
-       repeated google.protobuf.Any extensions = 11;
+       repeated google.protobuf.Any extensions = 999;
      }
 
               Figure 7: DOTS Server Mitigation Status Schema
@@ -781,7 +781,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
 
 
-Teague & Mortensen         Expires May 5, 2017                 [Page 14]
+Teague & Mortensen         Expires May 7, 2017                 [Page 14]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
@@ -837,7 +837,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
 
 
-Teague & Mortensen         Expires May 5, 2017                 [Page 15]
+Teague & Mortensen         Expires May 7, 2017                 [Page 15]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
@@ -893,7 +893,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
 
 
-Teague & Mortensen         Expires May 5, 2017                 [Page 16]
+Teague & Mortensen         Expires May 7, 2017                 [Page 16]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
@@ -949,7 +949,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
 
 
-Teague & Mortensen         Expires May 5, 2017                 [Page 17]
+Teague & Mortensen         Expires May 7, 2017                 [Page 17]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
@@ -977,7 +977,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
    interval, but asynchronously, without acknowledgement.  Each DOTS
    agent tracks heartbeats received from its peer, and includes the
    sequence number of the last heartbeat received from the peer agent in
-   the next heartbeat sent, as shown in {fig-heartbeats}:
+   the next heartbeat sent, as shown in Figure 10:
 
 
 
@@ -1005,7 +1005,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
 
 
-Teague & Mortensen         Expires May 5, 2017                 [Page 18]
+Teague & Mortensen         Expires May 7, 2017                 [Page 18]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
@@ -1061,7 +1061,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
 
 
-Teague & Mortensen         Expires May 5, 2017                 [Page 19]
+Teague & Mortensen         Expires May 7, 2017                 [Page 19]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
@@ -1097,12 +1097,12 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 4.3.3.  Mitigation Request Handling
 
    The mitigation request is the crux of the DOTS protocol, and is
-   comprised of the minimum viable information described in {minimum-
-   viable-information}.  The request may be augmented with additional
-   implementation specific extensions where these do not result in undue
-   packet bloat.  The DOTS client may send repeated requests until it
-   receives a suitable response from the DOTS server by which it may
-   interpret successful receipt.
+   comprised of the minimum viable information described in Section 4.1.
+   The request may be augmented with additional implementation specific
+   extensions where these do not result in undue packet bloat.  The DOTS
+   client may send repeated requests until it receives a suitable
+   response from the DOTS server by which it may interpret successful
+   receipt.
 
 
 
@@ -1117,7 +1117,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
 
 
-Teague & Mortensen         Expires May 5, 2017                 [Page 20]
+Teague & Mortensen         Expires May 7, 2017                 [Page 20]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
@@ -1173,7 +1173,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
 
 
-Teague & Mortensen         Expires May 5, 2017                 [Page 21]
+Teague & Mortensen         Expires May 7, 2017                 [Page 21]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
@@ -1229,7 +1229,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
 
 
-Teague & Mortensen         Expires May 5, 2017                 [Page 22]
+Teague & Mortensen         Expires May 7, 2017                 [Page 22]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
@@ -1285,7 +1285,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
 
 
-Teague & Mortensen         Expires May 5, 2017                 [Page 23]
+Teague & Mortensen         Expires May 7, 2017                 [Page 23]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
@@ -1341,7 +1341,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
 
 
-Teague & Mortensen         Expires May 5, 2017                 [Page 24]
+Teague & Mortensen         Expires May 7, 2017                 [Page 24]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
@@ -1397,7 +1397,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
 
 
-Teague & Mortensen         Expires May 5, 2017                 [Page 25]
+Teague & Mortensen         Expires May 7, 2017                 [Page 25]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
@@ -1453,7 +1453,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
 
 
-Teague & Mortensen         Expires May 5, 2017                 [Page 26]
+Teague & Mortensen         Expires May 7, 2017                 [Page 26]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
@@ -1509,7 +1509,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
 
 
-Teague & Mortensen         Expires May 5, 2017                 [Page 27]
+Teague & Mortensen         Expires May 7, 2017                 [Page 27]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
@@ -1565,7 +1565,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
 
 
-Teague & Mortensen         Expires May 5, 2017                 [Page 28]
+Teague & Mortensen         Expires May 7, 2017                 [Page 28]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
@@ -1621,7 +1621,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
 
 
-Teague & Mortensen         Expires May 5, 2017                 [Page 29]
+Teague & Mortensen         Expires May 7, 2017                 [Page 29]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
@@ -1677,7 +1677,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
 
 
-Teague & Mortensen         Expires May 5, 2017                 [Page 30]
+Teague & Mortensen         Expires May 7, 2017                 [Page 30]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
@@ -1733,7 +1733,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
 
 
-Teague & Mortensen         Expires May 5, 2017                 [Page 31]
+Teague & Mortensen         Expires May 7, 2017                 [Page 31]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
@@ -1789,7 +1789,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
 
 
-Teague & Mortensen         Expires May 5, 2017                 [Page 32]
+Teague & Mortensen         Expires May 7, 2017                 [Page 32]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
@@ -1845,7 +1845,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
 
 
-Teague & Mortensen         Expires May 5, 2017                 [Page 33]
+Teague & Mortensen         Expires May 7, 2017                 [Page 33]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
@@ -1901,7 +1901,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
 
 
-Teague & Mortensen         Expires May 5, 2017                 [Page 34]
+Teague & Mortensen         Expires May 7, 2017                 [Page 34]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
@@ -1957,7 +1957,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
 
 
-Teague & Mortensen         Expires May 5, 2017                 [Page 35]
+Teague & Mortensen         Expires May 7, 2017                 [Page 35]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
@@ -2013,7 +2013,7 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
 
 
-Teague & Mortensen         Expires May 5, 2017                 [Page 36]
+Teague & Mortensen         Expires May 7, 2017                 [Page 36]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
@@ -2069,7 +2069,7 @@ Authors' Addresses
 
 
 
-Teague & Mortensen         Expires May 5, 2017                 [Page 37]
+Teague & Mortensen         Expires May 7, 2017                 [Page 37]
 
 Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
@@ -2125,4 +2125,4 @@ Internet-Draft     DDoS Open Threat Signaling Protocol     November 2016
 
 
 
-Teague & Mortensen         Expires May 5, 2017                 [Page 38]
+Teague & Mortensen         Expires May 7, 2017                 [Page 38]
