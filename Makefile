@@ -15,7 +15,7 @@ txt:	$(DRAFTS)
 xml:	$(XML)
 
 %.xml: $(SOURCES)
-	sed -e 's/@DATE@/$(date +%Y-%m-%d)/' $< > $@.tmp
+	sed -e 's/@DATE@/$(date +%Y-%m-%d)/' -e 's/\\_/_/g' $< > $@.tmp
 	kramdown-rfc2629 $@.tmp >$@.new
 	rm $@.tmp
 	mv $@.new $@
