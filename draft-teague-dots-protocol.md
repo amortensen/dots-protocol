@@ -376,7 +376,7 @@ loss or drop outs. The DOTS client message schema is defined in
       }
       DOTSSessionConfig config = 6;
 
-      repeated google.protobuf.Any extensions;
+      repeated google.protobuf.Any extensions = 999;
     }
 ~~~~~
 {: #fig-client-schema title="DOTS Client Message Schema"}
@@ -439,7 +439,7 @@ The schema for mitigation requests sent by the DOTS client is defined in
       // Mitigation efficacy score as a float value between 0 and 1
       float efficacy = 5;
 
-      repeated google.protobuf.Any extensions;
+      repeated google.protobuf.Any extensions = 999;
     }
 ~~~~~
 {: #fig-client-mit-request-schema title="DOTS Client Mitigation Request Schema"}
@@ -580,11 +580,11 @@ The schema for server error information is described in
 
     message DOTSServerError {
       enum ErrorCode {
-        NOERROR = 0,
-        INVALID_VALUE = 1,
-        MITIGATION_UNAVAILABLE = 2,
-        MITIGATION_CONFLICT = 3,
-        MALFORMED_MESSAGE = 4,
+        NOERROR = 0;
+        INVALID_VALUE = 1;
+        MITIGATION_UNAVAILABLE = 2;
+        MITIGATION_CONFLICT = 3;
+        MALFORMED_MESSAGE = 4;
       }
       ErrorCode code = 1;
 
@@ -682,7 +682,7 @@ described in {{fig-server-mit-status-schema}} below:
       // Filters enabled through data channel
       bool filters_enabled = 10;
 
-      repeated google.protobuf.Any extensions = 11;
+      repeated google.protobuf.Any extensions = 999;
     }
 ~~~~~
 {: #fig-server-mit-status-schema title="DOTS Server Mitigation Status Schema"}
@@ -853,7 +853,7 @@ Heartbeats are loosely-coupled, meaning each DOTS agent in a bilateral signaling
 session sends DOTS heartbeats on the specified interval, but asynchronously,
 without acknowledgement. Each DOTS agent tracks heartbeats received from its
 peer, and includes the sequence number of the last heartbeat received from the
-peer agent in the next heartbeat sent, as shown in {fig-heartbeats}:
+peer agent in the next heartbeat sent, as shown in {{fig-heartbeats}}:
 
 ~~~~~
    Client                           Server
@@ -940,7 +940,7 @@ included and set to true:
 ### Mitigation Request Handling
 
 The mitigation request is the crux of the DOTS protocol, and is comprised of the
-minimum viable information described in {minimum-viable-information}.  The
+minimum viable information described in {{minimum-viable-information}}.  The
 request may be augmented with additional implementation specific extensions
 where these do not result in undue packet bloat.  The DOTS client may send
 repeated requests until it receives a suitable response from the DOTS server by
