@@ -378,39 +378,35 @@
 <link href="#rfc.section.1.1" rel="Chapter" title="1.1 Terminology"/>
 <link href="#rfc.section.2" rel="Chapter" title="2 Architecture"/>
 <link href="#rfc.section.2.1" rel="Chapter" title="2.1 DOTS Agents"/>
-<link href="#rfc.section.3" rel="Chapter" title="3 Protocol Overview"/>
+<link href="#rfc.section.3" rel="Chapter" title="3 DOTS Communication Channels"/>
 <link href="#rfc.section.4" rel="Chapter" title="4 Signal Channel"/>
 <link href="#rfc.section.4.1" rel="Chapter" title="4.1 Minimum Viable Information"/>
 <link href="#rfc.section.4.2" rel="Chapter" title="4.2 Signal Channel Messages"/>
-<link href="#rfc.section.4.2.1" rel="Chapter" title="4.2.1 Client Message Schema"/>
-<link href="#rfc.section.4.2.2" rel="Chapter" title="4.2.2 Client Mitigation Request Schema"/>
-<link href="#rfc.section.4.2.3" rel="Chapter" title="4.2.3 DOTS Server Message Schema"/>
-<link href="#rfc.section.4.2.4" rel="Chapter" title="4.2.4 Server Error Schema"/>
-<link href="#rfc.section.4.2.5" rel="Chapter" title="4.2.5 Server Mitigation Status Schema"/>
+<link href="#rfc.section.4.2.1" rel="Chapter" title="4.2.1 Messaging Overview"/>
+<link href="#rfc.section.4.2.2" rel="Chapter" title="4.2.2 Message Definition and Serialization"/>
+<link href="#rfc.section.4.2.3" rel="Chapter" title="4.2.3 Client Message Fields"/>
+<link href="#rfc.section.4.2.4" rel="Chapter" title="4.2.4 Mitigation Request Fields"/>
+<link href="#rfc.section.4.2.5" rel="Chapter" title="4.2.5 DOTS Server Message Fields"/>
+<link href="#rfc.section.4.2.6" rel="Chapter" title="4.2.6 Server Errors"/>
+<link href="#rfc.section.4.2.7" rel="Chapter" title="4.2.7 Server Mitigation Status Fields"/>
 <link href="#rfc.section.4.3" rel="Chapter" title="4.3 Interactions"/>
 <link href="#rfc.section.4.3.1" rel="Chapter" title="4.3.1 Session Initialization"/>
 <link href="#rfc.section.4.3.2" rel="Chapter" title="4.3.2 Heartbeat"/>
 <link href="#rfc.section.4.3.3" rel="Chapter" title="4.3.3 Mitigation Request Handling"/>
 <link href="#rfc.section.4.3.4" rel="Chapter" title="4.3.4 Ancillary Messages"/>
-<link href="#rfc.section.5" rel="Chapter" title="5 Data Channel"/>
-<link href="#rfc.section.5.1" rel="Chapter" title="5.1 Role"/>
-<link href="#rfc.section.5.2" rel="Chapter" title="5.2 Limitations"/>
-<link href="#rfc.section.5.3" rel="Chapter" title="5.3 Transport"/>
-<link href="#rfc.section.5.4" rel="Chapter" title="5.4 Authentication"/>
-<link href="#rfc.section.5.5" rel="Chapter" title="5.5 Authorization"/>
-<link href="#rfc.section.5.6" rel="Chapter" title="5.6 Resources"/>
-<link href="#rfc.section.5.6.1" rel="Chapter" title="5.6.1 Resource Root"/>
-<link href="#rfc.section.5.6.2" rel="Chapter" title="5.6.2 {+dataroot}/sessions"/>
-<link href="#rfc.section.5.6.3" rel="Chapter" title="5.6.3 {+dataroot}/filters"/>
-<link href="#rfc.section.5.6.4" rel="Chapter" title="5.6.4 {+dataroot}/config"/>
-<link href="#rfc.section.5.6.5" rel="Chapter" title="5.6.5 Serialization"/>
-<link href="#rfc.section.5.6.6" rel="Chapter" title="5.6.6 Caching"/>
+<link href="#rfc.section.5" rel="Chapter" title="5 IANA Considerations"/>
 <link href="#rfc.section.6" rel="Chapter" title="6 Security Considerations"/>
-<link href="#rfc.section.6.1" rel="Chapter" title="6.1 Data Channel Security"/>
-<link href="#rfc.section.6.2" rel="Chapter" title="6.2 Signal Channel Security"/>
-<link href="#rfc.references" rel="Chapter" title="7 References"/>
-<link href="#rfc.references.1" rel="Chapter" title="7.1 Normative References"/>
-<link href="#rfc.references.2" rel="Chapter" title="7.2 Informative References"/>
+<link href="#rfc.section.7" rel="Chapter" title="7 Appendix A: Message Schemas"/>
+<link href="#rfc.section.7.1" rel="Chapter" title="7.1 DOTS Client Message Schema"/>
+<link href="#rfc.section.7.2" rel="Chapter" title="7.2 Mitigation Request Schema"/>
+<link href="#rfc.section.7.3" rel="Chapter" title="7.3 Session Configuration Schema"/>
+<link href="#rfc.section.7.4" rel="Chapter" title="7.4 DOTS Server Message Schema"/>
+<link href="#rfc.section.7.5" rel="Chapter" title="7.5 DOTS Redirect Schema"/>
+<link href="#rfc.section.7.6" rel="Chapter" title="7.6 DOTS Mitigation Status Schema"/>
+<link href="#rfc.section.7.7" rel="Chapter" title="7.7 Server Error Schema"/>
+<link href="#rfc.references" rel="Chapter" title="8 References"/>
+<link href="#rfc.references.1" rel="Chapter" title="8.1 Normative References"/>
+<link href="#rfc.references.2" rel="Chapter" title="8.2 Informative References"/>
 <link href="#rfc.authors" rel="Chapter"/>
 
 
@@ -419,9 +415,9 @@
 
   <meta name="dct.creator" content="Teague, N. and A. Mortensen" />
   <meta name="dct.identifier" content="urn:ietf:id:draft-teague-dots-protocol-00" />
-  <meta name="dct.issued" scheme="ISO8601" content="2016-11-03" />
-  <meta name="dct.abstract" content="This document describes Distributed-Denial-of-Service (DDoS) Open Threat Signaling (DOTS), a signaling protocol for requesting and managing mitigation of DDoS attacks." />
-  <meta name="description" content="This document describes Distributed-Denial-of-Service (DDoS) Open Threat Signaling (DOTS), a signaling protocol for requesting and managing mitigation of DDoS attacks." />
+  <meta name="dct.issued" scheme="ISO8601" content="2017-2-15" />
+  <meta name="dct.abstract" content="This document describes Distributed-Denial-of-Service (DDoS) Open Threat Signaling (DOTS), a protocol for requesting and managing mitigation of DDoS attacks." />
+  <meta name="description" content="This document describes Distributed-Denial-of-Service (DDoS) Open Threat Signaling (DOTS), a protocol for requesting and managing mitigation of DDoS attacks." />
 
 </head>
 
@@ -443,12 +439,12 @@
   <td class="right">A. Mortensen</td>
 </tr>
 <tr>
-  <td class="left">Expires: May 7, 2017</td>
+  <td class="left">Expires: August 19, 2017</td>
   <td class="right">Arbor Networks, Inc.</td>
 </tr>
 <tr>
   <td class="left"></td>
-  <td class="right">November 03, 2016</td>
+  <td class="right">February 15, 2017</td>
 </tr>
 
     	
@@ -461,20 +457,19 @@
   <h1 id="rfc.abstract">
   <a href="#rfc.abstract">Abstract</a>
 </h1>
-<p>This document describes Distributed-Denial-of-Service (DDoS) Open Threat Signaling (DOTS), a signaling protocol for requesting and managing mitigation of DDoS attacks.</p>
-<p>DOTS mitigation requests over the signal channel permit domains to signal the need for help fending off DDoS attacks, setting the scope and duration of the requested mitigation.  Elements called DOTS servers field the signals for help, and enable defensive countermeasures to defend against the attack reported by the clients, reporting the status of the delegated defense to the requesting clients.  DOTS clients additionally may use the data channel to manage filters and black- and white-lists to restrict or allow traffic to the clients&#8217; domains arbitrarily.</p>
-<p>The DOTS signal channel may operate over UDP <a href="#RFC0768">[RFC0768]</a> and if necessary TCP <a href="#RFC0793">[RFC0793]</a>.  This revision discusses a transport-agnostic approach to this channel, focusing on the message exchanges and delegating transport specifics to other documents.  The DOTS data channel operates over HTTPS or a transport with similar reliability, interaction and security characteristics.</p>
+<p>This document describes Distributed-Denial-of-Service (DDoS) Open Threat Signaling (DOTS), a protocol for requesting and managing mitigation of DDoS attacks.</p>
+<p>DOTS mitigation requests over the signal channel permit domains to signal the need for help fending off DDoS attacks, setting the scope and duration of the requested mitigation.  Elements called DOTS servers field the signals for help, and enable defensive countermeasures to defend against the attack reported by the clients, reporting the status of the delegated defense to the requesting clients.  DOTS clients additionally may use a reliable data channel to manage filters and black- and white-lists to restrict or allow traffic to the clients&#8217; domains arbitrarily. The DOTS signal channel may operate over UDP <a href="#RFC0768">[RFC0768]</a> and if necessary TCP <a href="#RFC0793">[RFC0793]</a>.  This revision discusses a transport-agnostic approach to this channel, focusing on the message exchanges and delegating transport specifics to other documents. Discussion of the reliable data channel may be found in <a href="#I-D.reddy-dots-data-channel">[I-D.reddy-dots-data-channel]</a>.</p>
 <h1 id="rfc.status">
   <a href="#rfc.status">Status of This Memo</a>
 </h1>
 <p>This Internet-Draft is submitted in full conformance with the provisions of BCP 78 and BCP 79.</p>
 <p>Internet-Drafts are working documents of the Internet Engineering Task Force (IETF).  Note that other groups may also distribute working documents as Internet-Drafts.  The list of current Internet-Drafts is at http://datatracker.ietf.org/drafts/current/.</p>
 <p>Internet-Drafts are draft documents valid for a maximum of six months and may be updated, replaced, or obsoleted by other documents at any time.  It is inappropriate to use Internet-Drafts as reference material or to cite them other than as "work in progress."</p>
-<p>This Internet-Draft will expire on May 7, 2017.</p>
+<p>This Internet-Draft will expire on August 19, 2017.</p>
 <h1 id="rfc.copyrightnotice">
   <a href="#rfc.copyrightnotice">Copyright Notice</a>
 </h1>
-<p>Copyright (c) 2016 IETF Trust and the persons identified as the document authors.  All rights reserved.</p>
+<p>Copyright (c) 2017 IETF Trust and the persons identified as the document authors.  All rights reserved.</p>
 <p>This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (http://trustee.ietf.org/license-info) in effect on the date of publication of this document.  Please review these documents carefully, as they describe your rights and restrictions with respect to this document.  Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.</p>
 
   
@@ -486,39 +481,35 @@
 <ul><li>1.1.   <a href="#rfc.section.1.1">Terminology</a></li>
 </ul><li>2.   <a href="#rfc.section.2">Architecture</a></li>
 <ul><li>2.1.   <a href="#rfc.section.2.1">DOTS Agents</a></li>
-</ul><li>3.   <a href="#rfc.section.3">Protocol Overview</a></li>
+</ul><li>3.   <a href="#rfc.section.3">DOTS Communication Channels</a></li>
 <li>4.   <a href="#rfc.section.4">Signal Channel</a></li>
 <ul><li>4.1.   <a href="#rfc.section.4.1">Minimum Viable Information</a></li>
 <li>4.2.   <a href="#rfc.section.4.2">Signal Channel Messages</a></li>
-<ul><li>4.2.1.   <a href="#rfc.section.4.2.1">Client Message Schema</a></li>
-<li>4.2.2.   <a href="#rfc.section.4.2.2">Client Mitigation Request Schema</a></li>
-<li>4.2.3.   <a href="#rfc.section.4.2.3">DOTS Server Message Schema</a></li>
-<li>4.2.4.   <a href="#rfc.section.4.2.4">Server Error Schema</a></li>
-<li>4.2.5.   <a href="#rfc.section.4.2.5">Server Mitigation Status Schema</a></li>
+<ul><li>4.2.1.   <a href="#rfc.section.4.2.1">Messaging Overview</a></li>
+<li>4.2.2.   <a href="#rfc.section.4.2.2">Message Definition and Serialization</a></li>
+<li>4.2.3.   <a href="#rfc.section.4.2.3">Client Message Fields</a></li>
+<li>4.2.4.   <a href="#rfc.section.4.2.4">Mitigation Request Fields</a></li>
+<li>4.2.5.   <a href="#rfc.section.4.2.5">DOTS Server Message Fields</a></li>
+<li>4.2.6.   <a href="#rfc.section.4.2.6">Server Errors</a></li>
+<li>4.2.7.   <a href="#rfc.section.4.2.7">Server Mitigation Status Fields</a></li>
 </ul><li>4.3.   <a href="#rfc.section.4.3">Interactions</a></li>
 <ul><li>4.3.1.   <a href="#rfc.section.4.3.1">Session Initialization</a></li>
 <li>4.3.2.   <a href="#rfc.section.4.3.2">Heartbeat</a></li>
 <li>4.3.3.   <a href="#rfc.section.4.3.3">Mitigation Request Handling</a></li>
 <li>4.3.4.   <a href="#rfc.section.4.3.4">Ancillary Messages</a></li>
-</ul></ul><li>5.   <a href="#rfc.section.5">Data Channel</a></li>
-<ul><li>5.1.   <a href="#rfc.section.5.1">Role</a></li>
-<li>5.2.   <a href="#rfc.section.5.2">Limitations</a></li>
-<li>5.3.   <a href="#rfc.section.5.3">Transport</a></li>
-<li>5.4.   <a href="#rfc.section.5.4">Authentication</a></li>
-<li>5.5.   <a href="#rfc.section.5.5">Authorization</a></li>
-<li>5.6.   <a href="#rfc.section.5.6">Resources</a></li>
-<ul><li>5.6.1.   <a href="#rfc.section.5.6.1">Resource Root</a></li>
-<li>5.6.2.   <a href="#rfc.section.5.6.2">{+dataroot}/sessions</a></li>
-<li>5.6.3.   <a href="#rfc.section.5.6.3">{+dataroot}/filters</a></li>
-<li>5.6.4.   <a href="#rfc.section.5.6.4">{+dataroot}/config</a></li>
-<li>5.6.5.   <a href="#rfc.section.5.6.5">Serialization</a></li>
-<li>5.6.6.   <a href="#rfc.section.5.6.6">Caching</a></li>
-</ul></ul><li>6.   <a href="#rfc.section.6">Security Considerations</a></li>
-<ul><li>6.1.   <a href="#rfc.section.6.1">Data Channel Security</a></li>
-<li>6.2.   <a href="#rfc.section.6.2">Signal Channel Security</a></li>
-</ul><li>7.   <a href="#rfc.references">References</a></li>
-<ul><li>7.1.   <a href="#rfc.references.1">Normative References</a></li>
-<li>7.2.   <a href="#rfc.references.2">Informative References</a></li>
+</ul></ul><li>5.   <a href="#rfc.section.5">IANA Considerations</a></li>
+<li>6.   <a href="#rfc.section.6">Security Considerations</a></li>
+<li>7.   <a href="#rfc.section.7">Appendix A: Message Schemas</a></li>
+<ul><li>7.1.   <a href="#rfc.section.7.1">DOTS Client Message Schema</a></li>
+<li>7.2.   <a href="#rfc.section.7.2">Mitigation Request Schema</a></li>
+<li>7.3.   <a href="#rfc.section.7.3">Session Configuration Schema</a></li>
+<li>7.4.   <a href="#rfc.section.7.4">DOTS Server Message Schema</a></li>
+<li>7.5.   <a href="#rfc.section.7.5">DOTS Redirect Schema</a></li>
+<li>7.6.   <a href="#rfc.section.7.6">DOTS Mitigation Status Schema</a></li>
+<li>7.7.   <a href="#rfc.section.7.7">Server Error Schema</a></li>
+</ul><li>8.   <a href="#rfc.references">References</a></li>
+<ul><li>8.1.   <a href="#rfc.references.1">Normative References</a></li>
+<li>8.2.   <a href="#rfc.references.2">Informative References</a></li>
 </ul><li><a href="#rfc.authors">Authors' Addresses</a></li>
 
 
@@ -526,8 +517,8 @@
 
   <h1 id="rfc.section.1"><a href="#rfc.section.1">1.</a> <a href="#introduction" id="introduction">Introduction</a></h1>
 <p id="rfc.section.1.p.1">Distributed-Denial-of-Service attack scale and frequency continues to increase year over year, and the trend shows no signs of abating <a href="#WISR">[WISR]</a>.  In response to the DDoS attack trends, service providers and vendors have developed various approaches to sharing or delegating responsibility for defense, among them ad hoc service relationships, filtering through peering relationships <a href="#COMMUNITYFS">[COMMUNITYFS]</a>, and proprietary solutions (<a href="#CLOUDSIGNAL">[CLOUDSIGNAL]</a>, <a href="#OPENHYBRID">[OPENHYBRID]</a>).  Such hybrid approaches to DDoS defense have proven effective, but the heterogeneous methods employed to coordinate DDoS defenses across domain boundaries have necessarily limited their scope and effectiveness, as the mechanisms in one domain have no traction in another.</p>
-<p id="rfc.section.1.p.2">The DDoS Open Threat Signaling (DOTS) protocol provides a common mechanism to achieve the coordinated attack response previously restricted to custom or proprietary solutions.  To meet the needs of network operators facing down modern DDoS attacks, DOTS itself is a hybrid protocol, consisting of a signal channel and a data channel.  DOTS uses the signal channel, a lightweight and robust communication layer, to signal the need for mitigation regardless of network conditions, and uses the data channel, an HTTPS <a href="#RFC7230">[RFC7230]</a> based communication layer with RESTful <a href="#REST">[REST]</a> semantics, as vehicle for provisioning, configuration, and filter management.</p>
-<p id="rfc.section.1.p.3">DOTS is not intended as a replacement for such protocols as BGP Flow Specification <a href="#RFC5575">[RFC5575]</a> or as a general purpose mitigation application programming interface (API), but rather as an advisory protocol enabling attack response coordination between willing domains.  Any DOTS-enabled device or service is capable of triggering a request for help and shaping the scope and nature of that help, with the details of the actual mitigation left to the discretion of the operators of the attack mitigators.  DOTS thereby permits all participating parties to manage their own attack defenses in the manner most appropriate for their own domains.</p>
+<p id="rfc.section.1.p.2">The DDoS Open Threat Signaling (DOTS) protocol provides a common mechanism to achieve the coordinated attack response previously restricted to custom or proprietary solutions.  To meet the needs of network operators facing down modern DDoS attacks, DOTS itself is a hybrid protocol, consisting of a signal channel and a data channel.  DOTS uses the signal channel, a lightweight and robust communication layer, to signal the need for mitigation regardless of network conditions, and uses the reliable data channel as vehicle for provisioning, configuration, telemetry, filter management, and other unsized or bulk data exchange.</p>
+<p id="rfc.section.1.p.3">The DOTS protocol is not intended as a replacement for such protocols as BGP Flow Specification <a href="#RFC5575">[RFC5575]</a> or as a general purpose DDoS countermeasure application programming interface (API), but rather as an advisory protocol enabling attack response coordination between DOTS agents.  Any DOTS-enabled device or service is capable of triggering a request for help and shaping the scope and nature of that help, with the details of the actual mitigation left to the discretion of the operators of the attack mitigators.  DOTS thereby permits all participating parties to manage their own attack defenses in the manner most appropriate for their own domains.</p>
 <h1 id="rfc.section.1.1"><a href="#rfc.section.1.1">1.1.</a> <a href="#terminology" id="terminology">Terminology</a></h1>
 <p id="rfc.section.1.1.p.1">The key words &#8220;MUST&#8221;, &#8220;MUST NOT&#8221;, &#8220;REQUIRED&#8221;, &#8220;SHALL&#8221;, &#8220;SHALL NOT&#8221;, &#8220;SHOULD&#8221;, &#8220;SHOULD NOT&#8221;, &#8220;RECOMMENDED&#8221;, &#8220;MAY&#8221;, and &#8220;OPTIONAL&#8221; in this document are to be interpreted as described in <a href="#RFC2119">[RFC2119]</a>.</p>
 <p id="rfc.section.1.1.p.2">Terms used to define entity relationships, transmitted data, and methods of communication are drawn from the terminology defined in <a href="#I-D.ietf-dots-requirements">[I-D.ietf-dots-requirements]</a>.</p>
@@ -563,59 +554,80 @@
 </pre>
 <p class="figure">Figure 2: DOTS protocol direct signaling</p>
 <p id="rfc.section.2.1.p.3">DOTS server Sb has signaling sessions with DOTS clients c1 and c2. DOTS client c2 has signaling sessions with DOTS servers Sa and Sb. Except where explicitly defined in this protocol, all mechanisms to maintain multiple signaling sessions are left to the implementation.</p>
-<h1 id="rfc.section.3"><a href="#rfc.section.3">3.</a> <a href="#protocol-overview" id="protocol-overview">Protocol Overview</a></h1>
-<p id="rfc.section.3.p.1">The DOTS protocol consists of two channels, a signal channel and a data channel.  The signal channel is the minimal secure communication layer a DOTS client uses to request mitigation for resources under the administrative control of the DOTS client; the administrative control may be delegated. The data channel offers DOTS client operators the limited ability to adjust configuration and filtering for their mitigation requests.</p>
+<h1 id="rfc.section.3"><a href="#rfc.section.3">3.</a> <a href="#dots-communication-channels" id="dots-communication-channels">DOTS Communication Channels</a></h1>
+<p id="rfc.section.3.p.1">DOTS uses two channels, a signal channel and a data channel.</p>
+<p id="rfc.section.3.p.2">The signal channel is the minimal secure communication layer a DOTS client uses to request mitigation for resources under the administrative control the DOTS client; administrative control may be delegated.</p>
+<p id="rfc.section.3.p.3">The data channel offers DOTS clients a limited ability to manage configuration and attack filtering for requested mitigations. The data channel offers DOTS client operators the limited ability to adjust configuration and filtering for their mitigation requests.</p>
+<p id="rfc.section.3.p.4">This document describes the DOTS signal channel. The data channel is defined separately in <a href="#I-D.reddy-dots-data-channel">[I-D.reddy-dots-data-channel]</a>.</p>
 <h1 id="rfc.section.4"><a href="#rfc.section.4">4.</a> <a href="#signal-channel" id="signal-channel">Signal Channel</a></h1>
-<p id="rfc.section.4.p.1">The purpose of the signaling channel is to convey DDoS mitigation request and status information between participating agents (client and server or gateway).  Conditions during a DDoS attack are invariably hostile for connection oriented protocols traversing affected paths.  Mechanisms such as Happy Eyeballs <a href="#RFC6555">[RFC6555]</a> may be used to select a transport suitable for a given time and prevailing network conditions.  For the purpose of this draft, however, a default signaling transport based upon UDP <a href="#RFC5405">[RFC5405]</a> will be used.  UDP&#8217;s connectionless quality lends itself to being able to sustain loose communications during an event which may heavily congest certain network paths towards the DOTS signal originating network.  Key tenets of DOTS protocol design are low communication overhead and efficient message packing to increase the chances of successful transmission and receipt.  Desirable side-effects of efficient packing are the removal of the possibility of fragmentation in addition to a message size that is friendly towards encapsulation (e.g via GRE <a href="#RFC2784">[RFC2784]</a> or MPLS <a href="#RFC3031">[RFC3031]</a>).  Large UDP packets may also be treated adversely by middleboxes with restrictive policies or may fall foul of aggressive filtering.</p>
-<p id="rfc.section.4.p.2">In support of operational requirements for protocol efficiency in <a href="#I-D.ietf-dots-requirements">[I-D.ietf-dots-requirements]</a>, the signaling channel uses Protocol Buffers <a href="#PROTOBUF">[PROTOBUF]</a>, also known as Protobufs, to encode messages exchanged between DOTS agents. Thanks to Protobufs&#8217; serialization, signal channel messaging permits the introduction of new numbered fields arbitrarily, adding the requisite extensibility to the protocol while retaining backward compatibility.  Future revisions of or extensions to the protocol may use the data channel to provide a mechanism by which schema updates or expansions may be communicated during provisioning/session establishment.</p>
-<p id="rfc.section.4.p.3">Data serialization alone does not cover the security requirements in <a href="#I-D.ietf-dots-requirements">[I-D.ietf-dots-requirements]</a> of peer mutual authentication (SEC-001), message confidentiality (SEC-002), message replay protection (SEC-003) or message integrity.  These qualities must be present in the transport over which the DOTS protocol operates. Key distribution may be achieved via the data channel, via an online mechanism such as DANE <a href="#RFC6698">[RFC6698]</a>, Enrollment over Secure Transport <a href="#RFC7030">[RFC7030]</a>, or by out-of-band means.</p>
+<p id="rfc.section.4.p.1">The purpose of the signaling channel is to convey DDoS mitigation request and status information between participating agents (client and server or gateway).  Conditions during a DDoS attack are invariably hostile for connection-oriented protocols traversing affected paths.  Mechanisms such as Happy Eyeballs <a href="#RFC6555">[RFC6555]</a> may be used to select a transport suitable for a given time and prevailing network conditions.</p>
+<p id="rfc.section.4.p.2">Implementations are required to support the DOTS signal channel over UDP as specified in <a href="#I-D.ietf-dots-requirements">[I-D.ietf-dots-requirements]</a>. This document therefore assumes the the availability of a transport based upon UDP <a href="#RFC0768">[RFC0768]</a>, but also defines the message exchanges agnostic of the underlying transport used to convey the signaling.</p>
+<p id="rfc.section.4.p.3">Key tenets of DOTS protocol design are low communication overhead and efficient message packing to increase the chances of successful transmission and receipt.  Desirable side-effects of efficient packing are the removal of the possibility of fragmentation in addition to a message size that is friendly towards encapsulation (e.g via GRE <a href="#RFC2784">[RFC2784]</a> or MPLS <a href="#RFC3031">[RFC3031]</a>).  Large UDP packets may also be treated adversely by middleboxes with restrictive policies or may fall foul of aggressive filtering.</p>
+<p id="rfc.section.4.p.4">In support of operational requirements for protocol efficiency, backward compatibility and extensibility in <a href="#I-D.ietf-dots-requirements">[I-D.ietf-dots-requirements]</a>, the signaling channel uses Protocol Buffers <a href="#PROTOBUF">[PROTOBUF]</a>, also known as Protobufs, to define message schemas and serialize messages exchanged between DOTS agents.</p>
+<p id="rfc.section.4.p.5">The security requirements described in <a href="#I-D.ietf-dots-requirements">[I-D.ietf-dots-requirements]</a> (peer mutual authentication, message confidentiality and integrity, and message replay protection are not discussed here.  However, these qualities must be present in the transport over which the DOTS signal channel operates.</p>
+<p id="rfc.section.4.p.6">Key distribution in support of those security requirements to may be achieved via the data channel, via an online mechanism such as DANE <a href="#RFC6698">[RFC6698]</a>, Enrollment over Secure Transport <a href="#RFC7030">[RFC7030]</a>, or by out-of-band means.  The key distribution mechanism is not specified in this document, but operators must take care to ensure the distribution provides the same level of security demanded by the signal channel itself.</p>
 <h1 id="rfc.section.4.1"><a href="#rfc.section.4.1">4.1.</a> <a href="#minimum-viable-information" id="minimum-viable-information">Minimum Viable Information</a></h1>
-<p id="rfc.section.4.1.p.1">DOTS is intended to be extensible and to evolve to meet the future needs in communicaring as yet unknown threats. However, it must be able to convey the minimum information required for an upstream mitigation platform to successfully counter a DDoS attack.  A client may have limited visibility into the full breadth of an attack and as such may not be well placed to provide useful telemetry. DDoS sources may or may not be spoofed and number in the millions.  Once mitigation is active, the filtered traffic seen by the DOTS client (or elements informing the DOTS client operator&#8217;s decision to request mitigation) may not be representative of the ongoing attack. This provides challenges for the quality and usefulness of telemetry and mitigation/countermeasure stipulations and as such this type of information if conveyed can only be considered advisory.</p>
+<p id="rfc.section.4.1.p.1">DOTS is intended to be extensible and to evolve to meet the future needs in communicating as yet unknown threats. However, it must be able to convey the minimum information required for an upstream mitigation platform to successfully counter a DDoS attack.  A client may have limited visibility into the full breadth of an attack and as such may not be well placed to provide useful telemetry. DDoS sources may or may not be spoofed and number in the millions.  Once mitigation is active, the filtered traffic seen by the DOTS client (or elements informing the DOTS client operator&#8217;s decision to request mitigation) may not be representative of the ongoing attack. This provides challenges for the quality and usefulness of telemetry and mitigation/countermeasure stipulations and as such this type of information if conveyed can only be considered advisory.</p>
 <p id="rfc.section.4.1.p.2">In these instances the minimum viable information required for the majority of mitigations to be activated is that which pertains to the resource being targeted by the attack (host, prefix, protocol, port, URI etc.), per <a href="#I-D.ietf-dots-requirements">[I-D.ietf-dots-requirements]</a> (OP-006). The DOTS requirements also identify a mitigation lifetime period (OP-005) and mitigation efficacy metric (OP-007).  The former may be considered for inclusion in the minimum viable information set, however, the latter may only be relevant in updates.  An explicit mitigation request/terminate flag is also required: a mitigation MUST be explicitly requested by a DOTS client operator.  Finally, each message should include a message id or sequence number field as well as a field for the last received message id or sequence number.  These may then be compared by the endpoints to assist in tracking state and/or identifying loss.</p>
 <h1 id="rfc.section.4.2"><a href="#rfc.section.4.2">4.2.</a> <a href="#signal-channel-messages" id="signal-channel-messages">Signal Channel Messages</a></h1>
-<p id="rfc.section.4.2.p.1">The DOTS protocol signal channel uses Protobufs to reduce the number of discrete messages to just a single message superset per direction, with function defined by the chosen fields contained within the message. The protocol therefore defines a single schema each for the client and server sides containing all relevant fields.  Tags 1 through 15 may benefit from only requiring a single byte to encode (vs two for tags 16 through 2047) and these should be used for frequently occurring message elements.</p>
-<h1 id="rfc.section.4.2.1"><a href="#rfc.section.4.2.1">4.2.1.</a> <a href="#client-message-schema" id="client-message-schema">Client Message Schema</a></h1>
-<p id="rfc.section.4.2.1.p.1">The entire client schema is detailed in <a href="#fig-client-schema">Figure 3</a>.  It is not expected that client messages will require all fields to be used simultaneously but instead a subset to convey a given signal type.  The only fields which may be common to all signals are seqno and lastsvrseqno which may be used to detect loss or drop outs. The DOTS client message schema is defined in <a href="#fig-client-schema">Figure 3</a> below:</p>
+<h1 id="rfc.section.4.2.1"><a href="#rfc.section.4.2.1">4.2.1.</a> <a href="#messaging-overview" id="messaging-overview">Messaging Overview</a></h1>
+<p id="rfc.section.4.2.1.p.1">The signal channel requirements in <a href="#I-D.ietf-dots-requirements">[I-D.ietf-dots-requirements]</a> demand a protocol capable of operating despite significant link congestion between DOTS agents. In an effort to maximize the probability of signal delivery between DOTS agents, all DOTS signal channel messages in the DOTS protocol are conceptually unidirectional heartbeats sent between DOTS agents.</p>
+<p id="rfc.section.4.2.1.p.2">The result is a form of scheduled messaging between DOTS agents, in contrast to a conventional request-response model. Once a signal channel is established, a DOTS client begins sending unidirectional heartbeats to the DOTS server, separated by the configured session heartbeat interval (see <a href="#interactions-session-initialization">Section 4.3.1</a> below). To request mitigation, a DOTS client merely adds the requested mitigation parameters to its heartbeat, and maintains that request until a heartbeat from the DOTS server indicates receipt of that mitigation request. The DOTS server likewise sends its unidirectional heartbeat on the schedule interval, augmenting the content of the heartbeat with mitigation request status.</p>
+<p id="rfc.section.4.2.1.p.3">A simple exchange between DOTS agents with an established signaling session is shown below in <a href="#fig-simple-session">Figure 3</a>.</p>
 <div id="rfc.figure.3"/>
-<div id="fig-client-schema"/>
+<div id="fig-simple-session"/>
 <pre>
-    syntax = "proto3";
-    import "google/protobuf/any.proto";
-
-    message DOTSClientMessage {
-      // Client generated sequence number
-      uint64 seqno = 1;
-
-      // Sequence number of last received server message
-      uint64 last_svr_seqno = 2;
-
-      repeated DOTSMitigation mitigations = 3;
-
-      // Request active mitigation list from server
-      bool active = 4;
-
-      // Ping request (operator initiated)
-      bool ping = 5;
-
-      // Per session configuration sent on signaling session init
-      message DOTSSessionConfig {
-        // Acceptable signal loss
-        uint32 loss_limit = 1;
-
-        // Maximum mitigation lifetime in seconds
-        uint32 lifetime_max = 2;
-
-        // Heartbeat interval in milliseconds
-        uint32 heartbeat_interval = 3;
-      }
-      DOTSSessionConfig config = 6;
-
-      repeated google.protobuf.Any extensions = 999;
-    }
+   Client                           Server
+     |                                 |  // Active signaling session
+     |&lt;==== Signal Channel Active ====&gt;|  // with heartbeat interval of
+     |                                 |  // 15 seconds, +/- jitter.
+     |                                 |
+     |----------Heartbeat-------------&gt;|  // Client heartbeat
+     |                                 |
+     |&lt;---------Heartbeat--------------|  // Server heartbeat
+     |                                 |
+     \                                 \  // 15 seconds elapse, during
+     /                                 /  // which client adds request
+     \                                 \  // for mitigation.
+     |                                 |
+     |----------HeartBeat-------------&gt;|  // Client heartbeat now has
+     |          + MitigationRequest    |  // mitigation request params.
+     |                                 |
+     |&lt;---------HeartBeat--------------|  // Server heartbeat now has
+     |          + MitigationPending    |  // pending mitigation request
+     |                                 |  // status.
+     |                                 |
+     \                                 \
+     /                                 /  // 15s elapse, +/- jitter.
+     \                                 \
+     |                                 |
+     |----------HeartBeat-------------&gt;|  // Client heartbeat maintains
+     |          + MitigationRequest    |  // request as it waits for
+     |                                 |  // mitigation to begin.
+     |                                 |
+     |     X----HeartBeat--------------|  // Mitigation enabled, but
+     |          + MitigationRunning    |  // server heartbeat is dropped
+     |                                 |
+     \                                 \
+     /                                 /  // 15s elapse, +/- jitter.
+     \                                 \
+     |                                 |
+     |----------HeartBeat-------------&gt;|  // Client heartbeat maintains
+     |          + MitigationRequest    |  // request as it waits for
+     |                                 |  // mitigation to begin.
+     |                                 |
+     |&lt;---------HeartBeat--------------|  // Server heartbeat, status of
+     |          + MitigationRunning    |  // running mitigation
+     |                                 |  // delivered to client.
 </pre>
-<p class="figure">Figure 3: DOTS Client Message Schema</p>
-<h1 id="rfc.section.4.2.1.1"><a href="#rfc.section.4.2.1.1">4.2.1.1.</a> <a href="#client-message-schema-fields" id="client-message-schema-fields">Client Message Schema Fields</a></h1>
-<p id="rfc.section.4.2.1.1.p.1">The fields in the DOTS client signal channel message schema have the following functions:</p>
+<p class="figure">Figure 3: Signaling Session with Mitigation Request</p>
+<p id="rfc.section.4.2.1.p.4">All messages are variations of this scheduled heartbeat model. See <a href="#interactions">Section 4.3</a> below for detailed discussion of the message exchanges between DOTS agents.</p>
+<h1 id="rfc.section.4.2.2"><a href="#rfc.section.4.2.2">4.2.2.</a> <a href="#message-definition-and-serialization" id="message-definition-and-serialization">Message Definition and Serialization</a></h1>
+<p id="rfc.section.4.2.2.p.1">The DOTS protocol signal channel uses Protobufs <a href="#PROTOBUF">[PROTOBUF]</a> as an interface definition language (IDL) for signal channel messaging between DOTS agent, reducing the number of discrete messages to just a single message superset per direction, with function defined by the chosen fields contained within the message.</p>
+<p id="rfc.section.4.2.2.p.2">Protobufs schemas are used to define the messages sent in either direction, from which code may be generated for specific language implementations of DOTS. As Protobufs serialization relies on numbered fields, signal channel messaging permits the introduction of new numbered fields arbitrarily, adding the requisite extensibility to the protocol while retaining backward compatibility.  Future revisions of or extensions to the protocol may use the data channel to provide a mechanism by which schema updates or expansions may be communicated during provisioning/session establishment.</p>
+<h1 id="rfc.section.4.2.3"><a href="#rfc.section.4.2.3">4.2.3.</a> <a href="#client-message-fields" id="client-message-fields">Client Message Fields</a></h1>
+<p id="rfc.section.4.2.3.p.1">Only the seqno and last_svr_seqno fields are required in every message, as they are the minimum required for the heartbeat. Subsets of the other fields are used to convey a given signal message type.</p>
+<p id="rfc.section.4.2.3.p.2">The fields in the DOTS client signal channel message have the following functions:</p>
 <p/>
 
 <dl>
@@ -628,37 +640,14 @@
   <dt>active:</dt>
   <dd style="margin-left: 8">indicates a request for a list of active mitigations and their detail that are current on the DOTS server.</dd>
   <dt>ping:</dt>
-  <dd style="margin-left: 8">an operator initiated heartbeat like message which will ellicit a response from the DOTS server.  This may be used to prove bi-directional communications on an ad-hoc basis. For example, a DOTS ping may be used to prove keying material on the DOTS client is valid and may be used to establish signaling sessions with the DOTS server.</dd>
+  <dd style="margin-left: 8">an operator initiated heartbeat like message which will elicit a response from the DOTS server.  This may be used to prove bi-directional communications on an ad-hoc basis. For example, a DOTS ping may be used to prove keying material on the DOTS client is valid and may be used to establish signaling sessions with the DOTS server.</dd>
   <dt>extensions:</dt>
   <dd style="margin-left: 8">these fields may be used to communicate implementation specific details.  An example would be the dissemination of filters between DOTS client and DOTS server.</dd>
 </dl>
-<h1 id="rfc.section.4.2.2"><a href="#rfc.section.4.2.2">4.2.2.</a> <a href="#client-mitigation-request-schema" id="client-mitigation-request-schema">Client Mitigation Request Schema</a></h1>
-<p id="rfc.section.4.2.2.p.1">The schema for mitigation requests sent by the DOTS client is defined in <a href="#fig-client-mit-request-schema">Figure 4</a> below:</p>
-<div id="rfc.figure.4"/>
-<div id="fig-client-mit-request-schema"/>
-<pre>
-    message DOTSMitigation {
-      // Opaque client-generated event identifier
-      string eventid = 1;
-
-      // Toggle mitigation for the above scope
-      bool requested = 2;
-
-      // Mitigation scope as described in I-D.ietf-dots-requirements
-      string scope = 3;
-
-      // Lifetime of the requested mitigation.
-      uint32 lifetime = 4;
-
-      // Mitigation efficacy score as a float value between 0 and 1
-      float efficacy = 5;
-
-      repeated google.protobuf.Any extensions = 999;
-    }
-</pre>
-<p class="figure">Figure 4: DOTS Client Mitigation Request Schema</p>
-<h1 id="rfc.section.4.2.2.1"><a href="#rfc.section.4.2.2.1">4.2.2.1.</a> <a href="#client-mitigation-request-schema-fields" id="client-mitigation-request-schema-fields">Client Mitigation Request Schema Fields</a></h1>
-<p id="rfc.section.4.2.2.1.p.1">The fields in the DOTS client mitigation request schema are as follows:</p>
+<h1 id="rfc.section.4.2.3.1"><a href="#rfc.section.4.2.3.1">4.2.3.1.</a> <a href="#client-message-schema" id="client-message-schema">Client Message Schema</a></h1>
+<p id="rfc.section.4.2.3.1.p.1">The DOTS client message schema is detailed in <a href="#appendix-schema-client-message">Section 7.1</a>.</p>
+<h1 id="rfc.section.4.2.4"><a href="#rfc.section.4.2.4">4.2.4.</a> <a href="#mitigation-request-fields" id="mitigation-request-fields">Mitigation Request Fields</a></h1>
+<p id="rfc.section.4.2.4.p.1">The fields in a mitigation request are as follows:</p>
 <p/>
 
 <dl>
@@ -671,57 +660,15 @@
   <dt>lifetime:</dt>
   <dd style="margin-left: 8">the lifetime in seconds a mitigation request should be considered valid.</dd>
   <dt>efficacy:</dt>
-  <dd style="margin-left: 8">a metric to convey to a DOTS server the perceived efficacy of an active mitigation, per operational requirements in <a href="#I-D.ietf-dots-requirements">[I-D.ietf-dots-requirements]</a>. The mitigation efficacy is represented as a floating point value between 0 and 1, with smaller values indicating lesser efficacy, and larger greater efficacy.  XXX - The efficacy value is calculated as</dd>
+  <dd style="margin-left: 8">a metric to convey to a DOTS server the perceived efficacy of an active mitigation, per operational requirements in <a href="#I-D.ietf-dots-requirements">[I-D.ietf-dots-requirements]</a>. The mitigation efficacy is represented as a floating point value between 0 and 1, with smaller values indicating lesser efficacy, and larger greater efficacy.</dd>
   <dt>extensions:</dt>
   <dd style="margin-left: 8">these fields may be used to provide implementation-specific mitigation details.</dd>
 </dl>
-<h1 id="rfc.section.4.2.3"><a href="#rfc.section.4.2.3">4.2.3.</a> <a href="#dots-server-message-schema" id="dots-server-message-schema">DOTS Server Message Schema</a></h1>
-<p id="rfc.section.4.2.3.p.1">The entire server schema is detailed in <a href="#fig-server-schema">Figure 5</a>. DOTS server messages use a subset of the available fields to convey the given signal type, including additional relevant fields as necessary. The only fields which may be common to all signals are seqno and last_client_seqno which may be used to detect message loss or out-of-order delivery. When conveying mitigation information, the server schema may bundle multiple mitigation status datasets into a single message, provided this does not violate the required sub-MTU message size <a href="#I-D.ietf-dots-requirements">[I-D.ietf-dots-requirements]</a>.</p>
-<div id="rfc.figure.5"/>
-<div id="fig-server-schema"/>
-<pre>
-    syntax = "proto3";
-    import "google/protobuf/any.proto";
-
-    message DOTSServerMessage {
-      // Server generated sequence number
-      uint64 seqno = 1;
-
-      // Sequence number of last received Client message
-      uint64 last_client_seqno = 2;
-
-      // Request immediate heartbeat response from client.
-      bool ping = 3;
-
-      // Server error details, if available
-      DOTSServerError error = 4;
-
-      message DOTSRedirect {
-        // Redirection target DOTS server address
-        string target = 1;
-
-        // Address family of redirection target
-        enum RedirectionTargetType {
-          DNSNAME = 0;
-          IPV4 = 4;
-          IPV6 = 6;
-        }
-        RedirectionTargetType target_type = 2;
-
-        // Port on which to contact redirection target.
-        // XXX Protobufs has no uint16 type, implementations
-        // will need to sanity check.
-        uint32 port = 3;
-      }
-      DOTSRedirect redirect = 5;
-
-      // Mitigation data, limited by MTU
-      repeated DOTSMitigationStatus mitigations = 6;
-    }
-</pre>
-<p class="figure">Figure 5: DOTS Server Message Schema</p>
-<h1 id="rfc.section.4.2.3.1"><a href="#rfc.section.4.2.3.1">4.2.3.1.</a> <a href="#server-message-schema-fields" id="server-message-schema-fields">Server Message Schema Fields</a></h1>
-<p id="rfc.section.4.2.3.1.p.1">The fields in the DOTS server signal channel message schema have the following functions:</p>
+<h1 id="rfc.section.4.2.4.1"><a href="#rfc.section.4.2.4.1">4.2.4.1.</a> <a href="#mitigation-request-schema" id="mitigation-request-schema">Mitigation Request Schema</a></h1>
+<p id="rfc.section.4.2.4.1.p.1">The DOTS client message schema is detailed in <a href="#appendix-schema-mit-request">Section 7.2</a>.</p>
+<h1 id="rfc.section.4.2.5"><a href="#rfc.section.4.2.5">4.2.5.</a> <a href="#dots-server-message-fields" id="dots-server-message-fields">DOTS Server Message Fields</a></h1>
+<p id="rfc.section.4.2.5.p.1">DOTS server messages use a subset of the available fields to convey the given signal type, including additional relevant fields as necessary. The only fields which may be common to all signals are seqno and last_client_seqno which may be used to detect message loss or out-of-order delivery. When conveying mitigation information, the server schema may bundle multiple mitigation status datasets into a single message, provided this does not violate the required sub-MTU message size <a href="#I-D.ietf-dots-requirements">[I-D.ietf-dots-requirements]</a>.</p>
+<p id="rfc.section.4.2.5.p.2">The fields in the DOTS server signal channel message schema have the following functions:</p>
 <p/>
 
 <dl>
@@ -730,7 +677,7 @@
   <dt>last_cli_seqno:</dt>
   <dd style="margin-left: 8">the seqno of the last message received from the client.</dd>
   <dt>ping:</dt>
-  <dd style="margin-left: 8">an operator-initiated heartbeat like message which will ellicit a response from the DOTS client.  This may be used to prove bi-directional communications on an ad-hoc basis.</dd>
+  <dd style="margin-left: 8">an operator-initiated heartbeat like message which will elicit a response from the DOTS client.  This may be used to prove bi-directional communications on an ad-hoc basis.</dd>
   <dt>error:</dt>
   <dd style="margin-left: 8">details of an error caused by a DOTS client request.</dd>
   <dt>redirect:</dt>
@@ -740,32 +687,12 @@
   <dt>extensions:</dt>
   <dd style="margin-left: 8">these fields may be used to communicate implementation specific details.  An example would be the communication of DNS mitigation vip to the DOTS client by the DOTS server.</dd>
 </dl>
-<h1 id="rfc.section.4.2.4"><a href="#rfc.section.4.2.4">4.2.4.</a> <a href="#server-error-schema" id="server-error-schema">Server Error Schema</a></h1>
-<p id="rfc.section.4.2.4.p.1">The schema for server error information is described in <a href="#fig-server-error-schema">Figure 6</a> below:</p>
-<div id="rfc.figure.6"/>
-<div id="fig-server-error-schema"/>
-<pre>
-    syntax = "proto3";
-    import "google/protobuf/any.proto";
-
-    message DOTSServerError {
-      enum ErrorCode {
-        NOERROR = 0;
-        INVALID_VALUE = 1;
-        MITIGATION_UNAVAILABLE = 2;
-        MITIGATION_CONFLICT = 3;
-        MALFORMED_MESSAGE = 4;
-      }
-      ErrorCode code = 1;
-
-      // Error details, returned as a blob
-      google.protobuf.Any details = 2;
-    }
-</pre>
-<p class="figure">Figure 6: DOTS Server Error Schema</p>
-<p id="rfc.section.4.2.4.p.2">If a DOTS client message cannot be processed by the DOTS server, or for any other reason causes an error, the DOTS server MUST populate the error field in any response to the message causing the error. As the error response itself may be lost, a DOTS client may continue sending problematic messages regardless of the DOTS server&#8217;s error notifications. DOTS server implementations MAY terminate the signaling session after client-triggered errors exceed a threshold during a time period equivalent to three times the session heartbeat interval.</p>
-<p id="rfc.section.4.2.4.p.3">The DOTS client message triggering the error condition is indicated in the last_client_seqno value of the DOTS server message containing the error.</p>
-<p id="rfc.section.4.2.4.p.4">Errors may be one of the following types:</p>
+<h1 id="rfc.section.4.2.5.1"><a href="#rfc.section.4.2.5.1">4.2.5.1.</a> <a href="#dots-server-message-schema" id="dots-server-message-schema">DOTS Server Message Schema</a></h1>
+<p id="rfc.section.4.2.5.1.p.1">The server message schema is detailed in <a href="#appendix-schema-server-message">Section 7.4</a>.</p>
+<h1 id="rfc.section.4.2.6"><a href="#rfc.section.4.2.6">4.2.6.</a> <a href="#server-errors" id="server-errors">Server Errors</a></h1>
+<p id="rfc.section.4.2.6.p.1">If a DOTS client message cannot be processed by the DOTS server, or for any other reason causes an error, the DOTS server MUST populate the error field in any response to the message causing the error. As the error response itself may be lost, a DOTS client may continue sending problematic messages regardless of the DOTS server&#8217;s error notifications. DOTS server implementations MAY terminate the signaling session after client-triggered errors exceed a threshold during a time period equivalent to three times the session heartbeat interval.</p>
+<p id="rfc.section.4.2.6.p.2">The DOTS client message triggering the error condition is indicated in the last_client_seqno value of the DOTS server message containing the error.</p>
+<p id="rfc.section.4.2.6.p.3">Error codes MUST be one of the following types:</p>
 <p/>
 
 <dl>
@@ -780,7 +707,7 @@
   <dt>MALFORMED_MESSAGE:</dt>
   <dd style="margin-left: 8">Indicates the DOTS client message is malformed and cannot be processed.</dd>
 </dl>
-<h1 id="rfc.section.4.2.4.1"><a href="#rfc.section.4.2.4.1">4.2.4.1.</a> <a href="#server-error-schema-fields" id="server-error-schema-fields">Server Error Schema Fields</a></h1>
+<h1 id="rfc.section.4.2.6.1"><a href="#rfc.section.4.2.6.1">4.2.6.1.</a> <a href="#server-error-fields" id="server-error-fields">Server Error Fields</a></h1>
 <p/>
 
 <dl>
@@ -789,60 +716,17 @@
   <dt>details:</dt>
   <dd style="margin-left: 8">specific information about the reason for the detected error.</dd>
 </dl>
-<h1 id="rfc.section.4.2.5"><a href="#rfc.section.4.2.5">4.2.5.</a> <a href="#server-mitigation-status-schema" id="server-mitigation-status-schema">Server Mitigation Status Schema</a></h1>
-<p id="rfc.section.4.2.5.p.1">The schema for the status of mitigations managed by the DOTS server are described in <a href="#fig-server-mit-status-schema">Figure 7</a> below:</p>
-<div id="rfc.figure.7"/>
-<div id="fig-server-mit-status-schema"/>
-<pre>
-    syntax = "proto3";
-    import "google/protobuf/any.proto";
-
-    message DOTSMitigationStatus {
-      // Opaque Client generated event identifier, used by DOTS client
-      // to associate a mitigation status with the event triggering the
-      // mitigation request.
-      string eventid = 1;
-
-      // Mitigation state
-      bool enabled = 2;
-
-      // Mitigation time-to-live (lifetime - (now - start))
-      uint64 ttl = 3;
-
-      // Dropped byte count
-      uint64 bytes_dropped = 4;
-
-      // Dropped bits per second
-      uint64 bps_dropped = 5;
-
-      // Dropped packet count
-      uint64 pkts_dropped = 6;
-
-      // Dropped packets per second
-      uint64 pps_dropped = 7;
-
-      // Blacklist enabled through data channel
-      bool blacklist_enabled = 8;
-
-      // Whitelist enabled through data channel
-      bool whitelist_enabled = 9;
-
-      // Filters enabled through data channel
-      bool filters_enabled = 10;
-
-      repeated google.protobuf.Any extensions = 999;
-    }
-</pre>
-<p class="figure">Figure 7: DOTS Server Mitigation Status Schema</p>
-<h1 id="rfc.section.4.2.5.1"><a href="#rfc.section.4.2.5.1">4.2.5.1.</a> <a href="#server-mitigation-status-schema-fields" id="server-mitigation-status-schema-fields">Server Mitigation Status Schema Fields</a></h1>
-<p id="rfc.section.4.2.5.1.p.1">The DOTS server message contains zero or more mitigation status messages, the fields of which have the following functions:</p>
+<h1 id="rfc.section.4.2.6.2"><a href="#rfc.section.4.2.6.2">4.2.6.2.</a> <a href="#server-error-schema" id="server-error-schema">Server Error Schema</a></h1>
+<p id="rfc.section.4.2.6.2.p.1">The server error schema is detailed in <a href="#appendix-schema-server-error">Section 7.7</a>.</p>
+<h1 id="rfc.section.4.2.7"><a href="#rfc.section.4.2.7">4.2.7.</a> <a href="#server-mitigation-status-fields" id="server-mitigation-status-fields">Server Mitigation Status Fields</a></h1>
+<p id="rfc.section.4.2.7.p.1">The DOTS server message contains zero or more mitigation status messages, the fields of which have the following functions:</p>
 <p/>
 
 <dl>
   <dt>eventid:</dt>
   <dd style="margin-left: 8">an opaque client generated identifier that distinguishes a unique event or incident.</dd>
   <dt>ttl:</dt>
-  <dd style="margin-left: 8">the remaining lifetime of the mitigation.</dd>
+  <dd style="margin-left: 8">the remaining lifetime of the mitigation, in seconds.</dd>
   <dt>bytes_dropped:</dt>
   <dd style="margin-left: 8">the total dropped byte count for the mitigation associated with eventid.</dd>
   <dt>bps_dropped:</dt>
@@ -859,11 +743,11 @@
   <dd style="margin-left: 8">Indicates whether client-specified traffic filters are enabled for the mitigation associated with eventid.</dd>
 </dl>
 <h1 id="rfc.section.4.3"><a href="#rfc.section.4.3">4.3.</a> <a href="#interactions" id="interactions">Interactions</a></h1>
-<h1 id="rfc.section.4.3.1"><a href="#rfc.section.4.3.1">4.3.1.</a> <a href="#session-initialization" id="session-initialization">Session Initialization</a></h1>
-<p id="rfc.section.4.3.1.p.1">Signaling sessions are initiated by the DOTS client. Session initialization begins when the DOTS client connects to the DOTS server port, 4646 (the hex value for the ASCII character &#8220;.&#8221; twice). After connecting, the DOTS client establishes the channel security context, including all necessary cryptographic exchanges between the two DOTS agents.</p>
+<h1 id="rfc.section.4.3.1"><a href="#rfc.section.4.3.1">4.3.1.</a> <a href="#interactions-session-initialization" id="interactions-session-initialization">Session Initialization</a></h1>
+<p id="rfc.section.4.3.1.p.1">Signaling sessions are initiated by the DOTS client. Session initialization begins when the DOTS client connects to the DOTS server port, 4646. After connecting, the DOTS client establishes the channel security context, including all necessary cryptographic exchanges between the two DOTS agents.</p>
 <p id="rfc.section.4.3.1.p.2">This signal channel specification is transport-agnostic, and delegates the details of transport, including transport security, to transport-specific documents. Regardless of transport, DOTS implementations nonetheless MUST provide signal channel security meeting the requirements in <a href="#I-D.ietf-dots-requirements">[I-D.ietf-dots-requirements]</a>.</p>
-<p id="rfc.section.4.3.1.p.3">Once the signal channel security context is established, the DOTS client sends a channel initialization message to the DOTS server, optionally including signaling session configuration values; if the session configuration values are excluded, defaults MUST be used for the signaling session. An example initialization message setting the acceptable signal loss and heartbeat interval for the signaling sessions is described in <a href="#fig-channel-init-message">Figure 8</a> below:</p>
-<div id="rfc.figure.8"/>
+<p id="rfc.section.4.3.1.p.3">Once the signal channel security context is established, the DOTS client sends a channel initialization message to the DOTS server, optionally including signaling session configuration values; if the session configuration values are excluded, defaults MUST be used for the signaling session. An example initialization message setting the acceptable signal loss and heartbeat interval for the signaling sessions is described in <a href="#fig-channel-init-message">Figure 4</a> below:</p>
+<div id="rfc.figure.4"/>
 <div id="fig-channel-init-message"/>
 <pre>
     message DOTSClientMessage {
@@ -875,17 +759,17 @@
       };
     }
 </pre>
-<p class="figure">Figure 8: Signal Channel Initialization Message</p>
+<p class="figure">Figure 4: Signal Channel Initialization Message</p>
 <p id="rfc.section.4.3.1.p.4">The DOTS server MUST respond immediately by sending a heartbeat (see <a href="#interactions-heartbeat">Section 4.3.2</a> below) to the DOTS client. The signal channel is active when the DOTS client receives a heartbeat from the DOTS server with a last_client_seqno of a signal channel initialization message. Both DOTS agents MUST begin sending heartbeats on the interval for the signaling session once the session is active.</p>
-<p id="rfc.section.4.3.1.p.5">The following example assumes a DOTS implementation using UDP as the transport and DTLS1.3 <a href="#I-D.rescorla-tls-dtls13">[I-D.rescorla-tls-dtls13]</a>. In <a href="#fig-signal-channel-init">Figure 9</a> below, the DOTS client uses the default values for acceptable signal loss, maximum mitigation lifetime, and heartbeat interval. The initial DOTS server heartbeat is lost, so the DOTS client sends another channel initialization message after waiting for the minimum heartbeat interval defined below in <a href="#interactions-heartbeat">Section 4.3.2</a>:</p>
-<div id="rfc.figure.9"/>
+<p id="rfc.section.4.3.1.p.5">The following example assumes a DOTS implementation using UDP as the transport and DTLS1.2 <a href="#RFC6347">[RFC6347]</a>. In <a href="#fig-signal-channel-init">Figure 5</a> below, the DOTS client uses the default values for acceptable signal loss, maximum mitigation lifetime, and heartbeat interval. The initial DOTS server heartbeat is lost, so the DOTS client sends another channel initialization message after waiting for the minimum heartbeat interval defined below in <a href="#interactions-heartbeat">Section 4.3.2</a>:</p>
+<div id="rfc.figure.5"/>
 <div id="fig-signal-channel-init"/>
 <pre>
    Client                           Server
      |                                 |
-     |---UDP connect to Server:4646---&gt;|
-     |                                 |
-     |&lt;- - - -DTLS1.3 handshake- - - -&gt;|
+     |&lt;- - - - DTLS1.2 handshake - - -&gt;|  // Server listens on UDP:4646.
+     |                                 |  // Client initiates DTLS
+     |                                 |  // handshake.
      |                                 |
      |----------ChannelInit-----------&gt;|  // Client sends signal
      |          seqno = 1              |  // channel init message
@@ -895,11 +779,11 @@
      |          seqno = 1              |  // heartbeat reply, which
      |          last_client_seqno = 1  |  // is lost.
      |                                 |
-     \ (min heartbeat interval passes) \
-     /                                 /
+     \                                 \  // Session heartbeat interval
+     /                                 /  // elapses.
      \                                 \
      |----------ChannelInit-----------&gt;|  // Client retries signal
-     |          seqno = 2              |  // channel init message
+     |          seqno = 2              |  // channel init message.
      |          last_svr_seqno = 0     |
      |                                 |
      |&lt;---------HeartBeat--------------|  // Server immediately sends
@@ -908,17 +792,17 @@
      |                                 |
      |&lt;==== Signal Channel Active ====&gt;|
 </pre>
-<p class="figure">Figure 9: Signal Channel Initialization</p>
+<p class="figure">Figure 5: Signal Channel Initialization</p>
 <h1 id="rfc.section.4.3.1.1"><a href="#rfc.section.4.3.1.1">4.3.1.1.</a> <a href="#session-initialization-error-handling" id="session-initialization-error-handling">Session Initialization Error Handling</a></h1>
 <p id="rfc.section.4.3.1.1.p.1">If the DOTS client specifies invalid values for the signal channel configuration, the DOTS server replies with an error, and may ultimately terminate the connection if the client fails to correct the invalid values, as described in <a href="#I-D.ietf-dots-architecture">[I-D.ietf-dots-architecture]</a>.</p>
 <h1 id="rfc.section.4.3.1.2"><a href="#rfc.section.4.3.1.2">4.3.1.2.</a> <a href="#mis-sequencing" id="mis-sequencing">Mis-Sequencing</a></h1>
 <p id="rfc.section.4.3.1.2.p.1">In the event that the DOTS agent receives messages containing invalid seqno, last_client_seqno or last_svr_seqno these should be discarded and ignored.</p>
 <h1 id="rfc.section.4.3.2"><a href="#rfc.section.4.3.2">4.3.2.</a> <a href="#interactions-heartbeat" id="interactions-heartbeat">Heartbeat</a></h1>
 <p id="rfc.section.4.3.2.p.1">The most common message exchanged between a DOTS client and a DOTS server is a heartbeat (OP-002 <a href="#I-D.ietf-dots-requirements">[I-D.ietf-dots-requirements]</a>), which maintains and monitors the health of the DOTS session.  This is achieved with simple, loosely-coupled bi-directional messages containing the sending DOTS agent&#8217;s message sequence number and the sequence number the sending DOTS agent last received from its peer. Due to the stress volumetric DDoS impose upon a network, a degree of loss during attacks is to be expected. Message loss tolerance may be set on signal channel establishment.</p>
-<p id="rfc.section.4.3.2.p.2">The default heartbeat interval is 20 seconds, plus or minus a number of milliseconds between 50 and 2000. The number milliseconds MUST be randomized in order to introduce jitter into the heartbeat interval, as recommended by <a href="#RFC5405">[RFC5405]</a>. The default interval is derived from the recommendations in <a href="#RFC5405">[RFC5405]</a> regarding middlebox traversal.</p>
+<p id="rfc.section.4.3.2.p.2">The default heartbeat interval is 20 seconds, plus or minus a number of milliseconds between 50 and 2000. The number of milliseconds MUST be randomized in order to introduce jitter into the heartbeat interval, as recommended by <a href="#RFC5405">[RFC5405]</a>. The default interval is derived from the recommendations in <a href="#RFC5405">[RFC5405]</a> regarding middlebox traversal, to maintain NAT bindings in the path between DOTS agents.</p>
 <p id="rfc.section.4.3.2.p.3">The interval between heartbeats is may also be set by the client when establishing the signal channel. The minimum heartbeat interval is 15 seconds, plus the random number of milliseconds as described above. The maximum heartbeat interval is 120 seconds (two minutes), minus the random number of milliseconds described above.</p>
-<p id="rfc.section.4.3.2.p.4">Heartbeats are loosely-coupled, meaning each DOTS agent in a bilateral signaling session sends DOTS heartbeats on the specified interval, but asynchronously, without acknowledgement. Each DOTS agent tracks heartbeats received from its peer, and includes the sequence number of the last heartbeat received from the peer agent in the next heartbeat sent, as shown in <a href="#fig-heartbeats">Figure 10</a>:</p>
-<div id="rfc.figure.10"/>
+<p id="rfc.section.4.3.2.p.4">Heartbeats are loosely-coupled, meaning each DOTS agent in a bilateral signaling session sends DOTS heartbeats on the specified interval, but asynchronously, without acknowledgement. Each DOTS agent tracks heartbeats received from its peer, and includes the sequence number of the last heartbeat received from the peer agent in the next heartbeat sent, as shown in <a href="#fig-heartbeats">Figure 6</a>:</p>
+<div id="rfc.figure.6"/>
 <div id="fig-heartbeats"/>
 <pre>
    Client                           Server
@@ -947,12 +831,12 @@
      |          seqno = 3              |
      |          last_client_seqno = 3  |
      |                                 |
-     |----------HeartBeat-------------&gt;|  // Client heartbeat,
-     |          seqno = 4              |  // last_svr_seqno remains 1
+     |----------HeartBeat-------------&gt;|  // Client heartbeat
+     |          seqno = 4              |
      |          last_svr_seqno = 3     |
      |                                 |
 </pre>
-<p class="figure">Figure 10: Heartbeats Between DOTS agents</p>
+<p class="figure">Figure 6: Heartbeats Between DOTS agents</p>
 <p id="rfc.section.4.3.2.p.5">The DOTS client heartbeat has the following format:</p>
 <pre>
     message DOTSClientMessage {
@@ -970,7 +854,7 @@
 <p id="rfc.section.4.3.2.p.7">Should the number of signals lost exceed the acceptable lossiness value for the signaling session, the agent detecting the signal loss may consider the signaling session lost. The default value for acceptable signal loss is 9, which, when coupled with the default heartbeat interval, amounts to lack of heartbeat from the peer DOTS agent for 180 seconds (three minutes).</p>
 <h1 id="rfc.section.4.3.2.1"><a href="#rfc.section.4.3.2.1">4.3.2.1.</a> <a href="#client-ping" id="client-ping">Ping</a></h1>
 <p id="rfc.section.4.3.2.1.p.1">There may be cases where a DOTS client or server operator wishes to trigger an immediate heartbeat response in order to validate bi-directional communication (e.g. during provisioning).  This ad-hoc triggering may be achieved by setting the ping field set to TRUE. When DOTS agent receives a message on the signal channel with the ping field set to TRUE, it MUST immediately send heartbeat back to the ping sender. A ping reply MUST consist of only the senders sequence number and the sequence number of the received ping. [[EDITOR&#8217;S NOTE: rate limiting of pings required?]]</p>
-<p id="rfc.section.4.3.2.1.p.2">A ping is identical to a standard heartbeat, but with the the ping field included and set to true:</p>
+<p id="rfc.section.4.3.2.1.p.2">A ping is identical to a standard heartbeat, but with the ping field included and set to true:</p>
 <pre>
        message DOTSClientMessage {
          1 (seqno) = %;
@@ -1103,269 +987,195 @@
       }
 </pre>
 <p id="rfc.section.4.3.4.3.p.2">The DOTS server SHOULD consider the efficacy update an indication of the effectiveness of any ongoing mitigations related to the eventid provided by the DOTS client. The DOTS server nonetheless MAY treat any efficacy update from the client as advisory, and is under no obligation to alter the mitigation strategy in response.</p>
-<h1 id="rfc.section.5"><a href="#rfc.section.5">5.</a> <a href="#data-channel" id="data-channel">Data Channel</a></h1>
-<h1 id="rfc.section.5.1"><a href="#rfc.section.5.1">5.1.</a> <a href="#data-channel-role" id="data-channel-role">Role</a></h1>
-<p id="rfc.section.5.1.p.1">Using the conventions established in <a href="#REST">[REST]</a>, the data channel provides an interface for configuration, black- and white-list management, traffic filter management, and extensibility required for future operator needs (GEN-001 <a href="#I-D.ietf-dots-requirements">[I-D.ietf-dots-requirements]</a>).</p>
-<h1 id="rfc.section.5.2"><a href="#rfc.section.5.2">5.2.</a> <a href="#data-channel-limitations" id="data-channel-limitations">Limitations</a></h1>
-<p id="rfc.section.5.2.p.1">Unlike the DOTS signal channel, the data channel potentially offers DOTS client operators limited direct control over the behavior of mitigations requested by the DOTS client. However, the DOTS data channel is not a general purpose application programming interface for mitigators with which a DOTS server is communicating. Certain countermeasure profiles for DDoS attacks are widely understood and deployed, but many remain specific to mitigation vendor implementations, making abstraction all but impossible. The DOTS data channel in this protocol is therefore focused on a limited subset of widely available and well understood mitigation actions, namely black- and white-listing, and rate-limiting.</p>
-<p id="rfc.section.5.2.p.2">While managing filters and rate-limit policy over the DOTS data channel resembles the dissemination of flow specifications with a match and action on match in <a href="#RFC5575">[RFC5575]</a>, the similarity is restricted to <a href="#RFC5575">[RFC5575]</a>&#8217;s traffic-rate action only in order to prevent a DOTS client from exerting influence over traffic not destined for the DOTS client&#8217;s domain.</p>
-<h1 id="rfc.section.5.3"><a href="#rfc.section.5.3">5.3.</a> <a href="#data-channel-transport" id="data-channel-transport">Transport</a></h1>
-<p id="rfc.section.5.3.p.1">The DOTS data channel relies on the semantics described in <a href="#REST">[REST]</a>, meaning any reliable application protocol enabling those semantics could be used. This document anticipates HTTP/1.1 over TLS <a href="#RFC7230">[RFC7230]</a> will be most widely deployed at the time of writing. Implementations of the DOTS protocol therefore MUST support data channels using HTTP/1.1 over TLS. However, this document also leaves open the possibility that the data channel MAY be implemented through such application transports as HTTP/2 <a href="#RFC7540">[RFC7540]</a> or the Quick UDP Internet Connection <a href="#I-D.hamilton-quic-transport-protocol">[I-D.hamilton-quic-transport-protocol]</a> protocol, as well as other current and future protocols supporting <a href="#REST">[REST]</a> semantics and the security requirements described in <a href="#I-D.ietf-dots-requirements">[I-D.ietf-dots-requirements]</a>. Support for alternative secure REST transports for the data channel are deployment- and implementation-specific.</p>
-<p id="rfc.section.5.3.p.2">DOTS data channel implementations MUST support the IPv4 <a href="#RFC0791">[RFC0791]</a> and IPv6 <a href="#RFC2460">[RFC2460]</a> protocols, and MUST support the &#8220;Happy Eyeballs&#8221; algorithm for dual stack deployments discussed in <a href="#RFC6555">[RFC6555]</a>.</p>
-<p id="rfc.section.5.3.p.3">Implementations of the DOTS data channel MUST use TLS version 1.2 or higher.  DOTS agents MUST NOT create a data channel with a peer agent requesting a lower TLS version, and SHOULD drop the connection immediately on detecting the peer DOTS agent does not support a required TLS version.</p>
-<p><a href="#security-considerations">Section 6</a> offers a more detailed discussion of data channel transport security, including cipher suites.</p>
-<h1 id="rfc.section.5.4"><a href="#rfc.section.5.4">5.4.</a> <a href="#data-channel-authentication" id="data-channel-authentication">Authentication</a></h1>
-<p id="rfc.section.5.4.p.1">When establishing the data channel, the DOTS client and DOTS server MUST mutually authenticate each other, per SEC-001 in <a href="#I-D.ietf-dots-requirements">[I-D.ietf-dots-requirements]</a>.  A common method for mutual authentication for HTTP/1.1 over TLS is an exchange of X.509 certificates between client and server during the TLS handshake <a href="#RFC5246">[RFC5246]</a>; similar mechanisms exist in HTTP/2 <a href="#RFC7540">[RFC7540]</a> and in <a href="#I-D.hamilton-quic-transport-protocol">[I-D.hamilton-quic-transport-protocol]</a>.</p>
-<p id="rfc.section.5.4.p.2">Regardless of the underlying transport used, this document does not prescribe the method of mutual authentication, and alternatives may include a mix of things like basic auth <a href="#RFC7617">[RFC7617]</a> and HTTP SPNEGO <a href="#RFC4559">[RFC4559]</a>. The method of mutual authentication used for the data channel is left to the discretion of the DOTS server operator.  Additional discussion of mutual authentication is below in <a href="#security-considerations">Section 6</a>.</p>
-<h1 id="rfc.section.5.5"><a href="#rfc.section.5.5">5.5.</a> <a href="#data-channel-authorization" id="data-channel-authorization">Authorization</a></h1>
-<p id="rfc.section.5.5.p.1">TBD deployment-specific, see also security considerations.</p>
-<h1 id="rfc.section.5.6"><a href="#rfc.section.5.6">5.6.</a> <a href="#data-channel-resources" id="data-channel-resources">Resources</a></h1>
-<p id="rfc.section.5.6.p.1">The DOTS server exposes data channel resources to the DOTS client as uniform resource identifiers. The DOTS client sends requests related to the data channel resources using the verbs defined in <a href="#RFC7231">[RFC7231]</a>: GET, POST, PUT, PATCH and DELETE. The DOTS server responds to the DOTS client requests with a status code and, if the request succeeded, available data returned by the request. The status codes used in DOTS server responses are also defined in <a href="#RFC7231">[RFC7231]</a>.</p>
-<h1 id="rfc.section.5.6.1"><a href="#rfc.section.5.6.1">5.6.1.</a> <a href="#resource-root" id="resource-root">Resource Root</a></h1>
-<p id="rfc.section.5.6.1.p.1">The root resource or endpoint in the DOTS data channel is /dots/v1/data. The root resource MUST be prefixed to all resources exposed through the data channel.</p>
-<h1 id="rfc.section.5.6.2"><a href="#rfc.section.5.6.2">5.6.2.</a> <a href="#datarootsessions" id="datarootsessions">{+dataroot}/sessions</a></h1>
-<p id="rfc.section.5.6.2.p.1">The /sessions endpoint is a read-only resource from which the DOTS client may request the status of signaling sessions.</p>
-<h1 id="rfc.section.5.6.2.1"><a href="#rfc.section.5.6.2.1">5.6.2.1.</a> <a href="#get-datarootsessions" id="get-datarootsessions">GET {+dataroot}/sessions</a></h1>
-<p id="rfc.section.5.6.2.1.p.1">The DOTS client requests the list of signaling sessions by issuing a GET for the /sessions resource:</p>
-<div id="rfc.figure.11"/>
-<div id="eg-client-status"/>
-<pre>
-    GET /dots/v1/data/sessions HTTP/1.1
-    Host: dots-server.example.com
-    Accept: application/json
-</pre>
-<p class="figure">Figure 11: DOTS Client Requesting Session Status</p>
-<p id="rfc.section.5.6.2.1.p.2">If the DOTS client is authorized, the DOTS server responds to the GET with a list of signaling session identifiers, as in the following example:</p>
-<pre>
-    HTTP/1.1 200 OK
-    Cache-Control: no-cache
-    Content-Type: application/json
-
-    {
-        "sessions": [
-            {
-                "id": &lt;string&gt;,
-                "client": &lt;ip_address&gt;,
-                "server": &lt;ip_address&gt;,
-                "duration": &lt;iso8601_duration&gt;,
-            },
-            {
-                ...
-            }
-        ]
-    }
-</pre>
-<p id="rfc.section.5.6.2.1.p.3">The top-level JSON key-value pairs in the response are as follows:</p>
-<p/>
-
-<dl>
-  <dt>sessions:</dt>
-  <dd style="margin-left: 8">A list of dictionary objects describing active signaling sessions.  If empty, no signaling sessions are active.</dd>
-</dl>
-<p id="rfc.section.5.6.2.1.p.5">Each dictionary within the sessions list contains the following JSON key-value pairs:</p>
-<p/>
-
-<dl>
-  <dt>id:</dt>
-  <dd style="margin-left: 8">An opaque alphanumeric string identifying the signaling session.</dd>
-  <dt>client:</dt>
-  <dd style="margin-left: 8">The dotted-quad IPv4 or formatted IPv6 address <a href="#RFC5952">[RFC5952]</a> of the DOTS client in the signaling session.</dd>
-  <dt>server:</dt>
-  <dd style="margin-left: 8">The dotted-quad IPv4 or formatted IPv6 address <a href="#RFC5952">[RFC5952]</a> of the DOTS server in the signaling session.</dd>
-  <dt>duration:</dt>
-  <dd style="margin-left: 8">An ISO 8601 representation of the duration of the signaling session.</dd>
-</dl>
-<h1 id="rfc.section.5.6.3"><a href="#rfc.section.5.6.3">5.6.3.</a> <a href="#datarootfilters" id="datarootfilters">{+dataroot}/filters</a></h1>
-<p id="rfc.section.5.6.3.p.1">The /filters endpoint on a DOTS server is a read-write resource through which a DOTS client may request that the DOTS server add, retrieve, modify and delete traffic filters to an active mitigation requested through the signal channel.</p>
-<p id="rfc.section.5.6.3.p.2">DOTS servers SHOULD indicate lack of support for filtering by returning a 501 Not Implemented status to any request for a filters URI. If a DOTS client attempts to apply a filter to flows which the DOTS server determines do not belong to the DOTS client, the DOTS server MUST respond with a 403 Forbidden.</p>
-<p id="rfc.section.5.6.3.p.3">A filter is a match and an action on match. As discussed above in <a href="#data-channel-limitations">Section 5.2</a>, actions are restricted to black- and white-listing and rate-limiting. Matches in a filter dictionary may be any of the match types discussed below. All matches MUST include a destination address or identifier; DOTS server implementations MUST NOT accept filters missing a destination address or prefix.</p>
-<p id="rfc.section.5.6.3.p.4">A filter can be represented as a map or dictionary with the following attributes:</p>
-<p/>
-
-<dl>
-  <dt>id:</dt>
-  <dd style="margin-left: 8">a client-generated integer value acting as a unique identifier for the filter.</dd>
-  <dt>af:</dt>
-  <dd style="margin-left: 8">address family of the flow to filter, must be one of &#8220;ipv4&#8221; or &#8220;ipv6&#8221;. This attribute is required in all filters.</dd>
-  <dt>src:</dt>
-  <dd style="margin-left: 8">source prefix of the flow(s) to filter.</dd>
-  <dt>sport:</dt>
-  <dd style="margin-left: 8">source port of the flow(s) to filter.</dd>
-  <dt>dst:</dt>
-  <dd style="margin-left: 8">destination prefix of the flow(s) to filter.</dd>
-  <dt>dport:</dt>
-  <dd style="margin-left: 8">destination port of the flow(s) to filter.</dd>
-  <dt>action:</dt>
-  <dd style="margin-left: 8">The action to apply to flows matching the filter. The action MUST be one of &#8220;blacklist&#8221; (i.e., drop all matching flows), &#8220;whitelist&#8221; (i.e., always forward traffic matching the filter), or &#8220;rate-limit&#8221; (i.e., control the rate of traffic matching the filter).</dd>
-  <dt>Bps:</dt>
-  <dd style="margin-left: 8">an integer value setting the bytes per second limit for flows matching the filter when action is &#8220;rate-limit&#8221;.</dd>
-</dl>
-<h1 id="rfc.section.5.6.3.1"><a href="#rfc.section.5.6.3.1">5.6.3.1.</a> <a href="#post-datarootfiltersmitigation-id" id="post-datarootfiltersmitigation-id">POST {+dataroot}/filters/{+mitigation-id}</a></h1>
-<p id="rfc.section.5.6.3.1.p.1">A POST request over the data channel to the /filters endpoint on a DOTS server permits a DOTS client to manage filtering policy for a mitigation:</p>
-<div id="rfc.figure.12"/>
-<div id="fig-filter-creation"/>
-<pre>
-    POST /dots/v1/data/filters/42 HTTP/1.1
-    Host: dots-server.example.com
-    Accept: application/json
-    Content-Type: application/json
-    Content-Length: NNNN
-
-    {
-        "filters": [
-            {
-                "id": 1,
-                "af": "ipv4",
-                "src": "192.0.2.2/32",
-                "action": "blacklist",
-            },
-
-            {
-                "id": 2,
-                "af": "ipv4",
-                "src": "192.51.100.0/30",
-                "sport": 53,
-                "action": "whitelist",
-            },
-
-            ...
-        ]
-    }
-</pre>
-<p class="figure">Figure 12: Filter creation</p>
-<p id="rfc.section.5.6.3.1.p.2">The DOTS server confirms filter creation with an empty OK:</p>
-<pre>
-    HTTP/1.1 200 OK
-    Cache-Control: no-cache
-    Content-Length: 0
-
-</pre>
-<h1 id="rfc.section.5.6.3.2"><a href="#rfc.section.5.6.3.2">5.6.3.2.</a> <a href="#put-datarootfiltersmitigation-idfilter-id" id="put-datarootfiltersmitigation-idfilter-id">PUT {+dataroot}/filters/{+mitigation-id}/{+filter-id}</a></h1>
-<p id="rfc.section.5.6.3.2.p.1">Filters may be updated by sending a PUT request to the specific filter URI. DOTS servers MUST replace the existing filter atomically with the values in the PUT.</p>
-<div id="rfc.figure.13"/>
-<div id="fig-filter-update"/>
-<pre>
-    PUT /dots/v1/data/filters/42/1 HTTP/1.1
-    Host: dots-server.example.com
-    Accept: application/json
-    Content-Type: application/json
-    Content-Length: NNNN
-
-    {
-        "id": 1,
-        "af": "ipv4",
-        "src": "192.0.2.2/32",
-        "dst": "198.51.100.0/24",
-        "action": "blacklist",
-    }
-</pre>
-<p class="figure">Figure 13: Filter Update</p>
-<p id="rfc.section.5.6.3.2.p.2">The DOTS server confirms filter update with a No Content response:</p>
-<pre>
-    HTTP/1.1 204 No Content
-    Cache-Control: no-cache
-    Content-Length: 0
-
-</pre>
-<h1 id="rfc.section.5.6.3.3"><a href="#rfc.section.5.6.3.3">5.6.3.3.</a> <a href="#get-datarootfiltersmitigation-id" id="get-datarootfiltersmitigation-id">GET {+dataroot}/filters/{+mitigation-id}</a></h1>
-<p id="rfc.section.5.6.3.3.p.1">A GET request to the /filters endpoint on a DOTS server returns filters for a mitigation requested by the DOTS client. The mitigation-id value MUST be the DOTS client-generated mitigation ID used in a mitigation request previously sent to the DOTS server over the signal channel, with the exception of the global filter list as described below. A request listing the filters active during a mitigation is shown below in <a href="#eg-client-get-per-mit-filter">Figure 14</a>:</p>
-<div id="rfc.figure.14"/>
-<div id="eg-client-get-per-mit-filter"/>
-<pre>
-    GET /dots/v1/data/filters/42 HTTP/1.1
-    Host: dots-server.example.com
-    Accept: application/json
-</pre>
-<p class="figure">Figure 14: Filter GET</p>
-<p id="rfc.section.5.6.3.3.p.2">The DOTS server returns a list of active filters applied as part of the mitigation on the DOTS client&#8217;s behalf as in <a href="#eg-client-get-per-mit-filter-response">Figure 15</a>:</p>
-<div id="rfc.figure.15"/>
-<div id="eg-client-get-per-mit-filter-response"/>
-<pre>
-    HTTP/1.1 200 OK
-    Cache-Control: no-cache
-    Content-Type: application/json
-
-    {
-        "id": 42,
-        "filters": [
-            {
-                "id": 1,
-                "af": "ipv4",
-                "src": "192.0.2.2/32",
-                "action": "blacklist",
-            },
-
-            {
-                "id": 2,
-                "af": "ipv4",
-                "src": "192.51.100.0/30",
-                "sport": 53,
-                "action": "whitelist",
-            },
-        ]
-    }
-</pre>
-<p class="figure">Figure 15: Filter GET Response</p>
-<p id="rfc.section.5.6.3.3.p.3">If the filter list is empty, no filters are applied as part of the mitigation.</p>
-<h1 id="rfc.section.5.6.4"><a href="#rfc.section.5.6.4">5.6.4.</a> <a href="#datarootconfig" id="datarootconfig">{+dataroot}/config</a></h1>
-<p id="rfc.section.5.6.4.p.1">The /config data channel endpoint on a DOTS server is a read-write resource through which a DOTS client may configure global signaling session behavior.</p>
-<h1 id="rfc.section.5.6.4.1"><a href="#rfc.section.5.6.4.1">5.6.4.1.</a> <a href="#get-datarootconfig" id="get-datarootconfig">GET {+dataroot}/config</a></h1>
-<p id="rfc.section.5.6.4.1.p.1">A GET request to the /config endpoint returns the current DOTS configuration for the DOTS client:</p>
-<div id="rfc.figure.16"/>
-<div id="eg-client-cfg-get"/>
-<pre>
-GET /dots/v1/data/config HTTP/1.1
-Host: dots-server.example.com
-Accept: application/json
-</pre>
-<p class="figure">Figure 16: DOTS Client Requesting Configuration</p>
-<pre>
-HTTP/1.1 200 OK
-Cache-Control:
-Content-Type: application/json
-
-{
-    "config": {
-        "protected-resources": {
-            &lt;alnum_id&gt;: [
-            ]
-        }
-    }
-}
-
-</pre>
-<h1 id="rfc.section.5.6.4.2"><a href="#rfc.section.5.6.4.2">5.6.4.2.</a> <a href="#post-datarootconfigprotected-resources" id="post-datarootconfigprotected-resources">POST {+dataroot}/config/protected-resources/</a></h1>
-<p id="rfc.section.5.6.4.2.p.1">TBD</p>
-<h1 id="rfc.section.5.6.5"><a href="#rfc.section.5.6.5">5.6.5.</a> <a href="#data-channel-resources-serialization" id="data-channel-resources-serialization">Serialization</a></h1>
-<p id="rfc.section.5.6.5.p.1">Resource data is exchanged between DOTS client in a serialized format.  Implementations MUST support JSON <a href="#RFC7159">[RFC7159]</a> serialization of resource data. DOTS clients MUST advertise support for JSON-encoded data from the DOTS server through the HTTP Accept header <a href="#RFC7231">[RFC7231]</a> (or an equivalent if not using HTTP), using the MIME type defined in <a href="#RFC7159">[RFC7159]</a>, application/json:</p>
-<div id="rfc.figure.17"/>
-<div id="eg-client-serial1"/>
-<pre>
-        GET /dots/v1/data/sessions HTTP/1.1
-        Host: dots-server.example.com
-        Accept: application/json
-</pre>
-<p class="figure">Figure 17: DOTS Client Advertising Required Serialization</p>
-<p id="rfc.section.5.6.5.p.2">Implementations MAY offer additional serialization formats as well. DOTS clients MAY advertise support for additional serialization formats in requests to the DOTS server through the HTTP Accept header <a href="#RFC7231">[RFC7231]</a> (or an equivalent if not using HTTP), as shown in the example HTTP/1.1 request below:</p>
-<div id="rfc.figure.18"/>
-<div id="eg-client-serial2"/>
-<pre>
-        GET /dots/v1/data/sessions HTTP/1.1
-        Host: dots-server.example.com
-        Accept: application/json; q=0.5, application/cbor
-</pre>
-<p class="figure">Figure 18: DOTS Client Supporting Additional Serializations</p>
-<p id="rfc.section.5.6.5.p.3">If a DOTS server does not support the media types in the DOTS client&#8217;s Accept header (or its equivalent), the DOTS server MUST respond with an status code indicating an error in the client request. In HTTP deployments, the DOTS server MUST return the 415 Unsupported Media Type error code defined in <a href="#RFC7231">[RFC7231]</a>. A DOTS client request lacking indicated support for application/json content suggests an invalid or malicious client implementation. After sending the 415 error response, DOTS servers SHOULD terminate the data channel connection with the invalid client.</p>
-<h1 id="rfc.section.5.6.6"><a href="#rfc.section.5.6.6">5.6.6.</a> <a href="#data-channel-resources-caching" id="data-channel-resources-caching">Caching</a></h1>
-<p id="rfc.section.5.6.6.p.1">DOTS server responses sent over the DOTS data channel MUST NOT be cached by the DOTS client. DOTS server implementations therefore MUST include in responses a Cache-Control header with a value of &#8220;no-cache&#8221; <a href="#RFC7234">[RFC7234]</a>.</p>
+<h1 id="rfc.section.5"><a href="#rfc.section.5">5.</a> <a href="#iana-considerations" id="iana-considerations">IANA Considerations</a></h1>
+<p id="rfc.section.5.p.1">The DOTS protocol requires a well-known port to which DOTS client messages are sent. The DOTS server listens on the well-known port for client messages. The DOTS client binds to an ephemeral port per <a href="#interactions-session-initialization">Section 4.3.1</a> above. This document selects port 4646 (the ASCII decimal values for &#8220;..&#8221;: &#8220;DOTS&#8221;) as the well-known port.</p>
 <h1 id="rfc.section.6"><a href="#rfc.section.6">6.</a> <a href="#security-considerations" id="security-considerations">Security Considerations</a></h1>
-<h1 id="rfc.section.6.1"><a href="#rfc.section.6.1">6.1.</a> <a href="#data-channel-security" id="data-channel-security">Data Channel Security</a></h1>
-<p id="rfc.section.6.1.p.1">The DOTS data channel acts as a management plane for DOTS signaling sessions.  As discussed in the security considerations of <a href="#I-D.ietf-dots-architecture">[I-D.ietf-dots-architecture]</a>, an attacker with control over data channel may be able to blacklist or rate-limit any flows under the administrative control of the DOTS client. Extra care must therefore be taken when authenticating and authorizing the data channel.</p>
-<p id="rfc.section.6.1.p.2">DOTS server operators SHOULD enforce access control policies restricting which clients are able to contact DOTS servers.</p>
-<h1 id="rfc.section.6.2"><a href="#rfc.section.6.2">6.2.</a> <a href="#signal-channel-security" id="signal-channel-security">Signal Channel Security</a></h1>
-<p id="rfc.section.6.2.p.1">The DOTS signal channel controls mitigation request and withdrawal and as such care must be taken to protect against concerns outlined in the security considerations of <a href="#I-D.ietf-dots-architecture">[I-D.ietf-dots-architecture]</a>.</p>
-<h1 id="rfc.references"><a href="#rfc.references">7.</a> References</h1>
-<h1 id="rfc.references.1"><a href="#rfc.references.1">7.1.</a> Normative References</h1>
+<p id="rfc.section.6.p.1">The DOTS protocol controls mitigation request and withdrawal and as such care must be taken to protect against concerns outlined in the security considerations of <a href="#I-D.ietf-dots-architecture">[I-D.ietf-dots-architecture]</a>.</p>
+<h1 id="rfc.section.7"><a href="#rfc.section.7">7.</a> <a href="#appendix-a-message-schemas" id="appendix-a-message-schemas">Appendix A: Message Schemas</a></h1>
+<h1 id="rfc.section.7.1"><a href="#rfc.section.7.1">7.1.</a> <a href="#appendix-schema-client-message" id="appendix-schema-client-message">DOTS Client Message Schema</a></h1>
+<div id="rfc.figure.7"/>
+<div id="fig-client-message-schema"/>
+<pre>
+    syntax = "proto3";
+    import "google/protobuf/any.proto";
+
+    message DOTSClientMessage {
+      // Client generated sequence number
+      uint64 seqno = 1;
+
+      // Sequence number of last received server message
+      uint64 last_svr_seqno = 2;
+
+      repeated DOTSMitigation mitigations = 3;
+
+      // Request active mitigation list from server
+      bool active = 4;
+
+      // Ping request (operator initiated)
+      bool ping = 5;
+
+      DOTSSessionConfig config = 6;
+
+      repeated google.protobuf.Any extensions = 999;
+    }
+</pre>
+<p class="figure">Figure 7: DOTS Client Message Schema</p>
+<h1 id="rfc.section.7.2"><a href="#rfc.section.7.2">7.2.</a> <a href="#appendix-schema-mit-request" id="appendix-schema-mit-request">Mitigation Request Schema</a></h1>
+<div id="rfc.figure.8"/>
+<div id="fig-client-mit-request-schema"/>
+<pre>
+    message DOTSMitigation {
+      // Opaque client-generated event identifier
+      string eventid = 1;
+
+      // Toggle mitigation for the above scope
+      bool requested = 2;
+
+      // Mitigation scope as described in I-D.ietf-dots-requirements
+      string scope = 3;
+
+      // Lifetime of the requested mitigation.
+      uint32 lifetime = 4;
+
+      // Mitigation efficacy score as a float value between 0 and 1
+      float efficacy = 5;
+
+      repeated google.protobuf.Any extensions = 999;
+    }
+</pre>
+<p class="figure">Figure 8: DOTS Client Mitigation Request Schema</p>
+<h1 id="rfc.section.7.3"><a href="#rfc.section.7.3">7.3.</a> <a href="#appendix-schema-session-configuration" id="appendix-schema-session-configuration">Session Configuration Schema</a></h1>
+<div id="rfc.figure.9"/>
+<div id="fig-client-sess-cfg-schema"/>
+<pre>
+      // Per session configuration sent on signaling session init
+      message DOTSSessionConfig {
+        // Acceptable signal loss
+        uint32 loss_limit = 1;
+
+        // Maximum mitigation lifetime in seconds
+        uint32 lifetime_max = 2;
+
+        // Heartbeat interval in milliseconds
+        uint32 heartbeat_interval = 3;
+      }
+</pre>
+<p class="figure">Figure 9: DOTS Session Conifiguration Schema</p>
+<h1 id="rfc.section.7.4"><a href="#rfc.section.7.4">7.4.</a> <a href="#appendix-schema-server-message" id="appendix-schema-server-message">DOTS Server Message Schema</a></h1>
+<div id="rfc.figure.10"/>
+<div id="fig-server-message-schema"/>
+<pre>
+    syntax = "proto3";
+    import "google/protobuf/any.proto";
+
+    message DOTSServerMessage {
+      // Server generated sequence number
+      uint64 seqno = 1;
+
+      // Sequence number of last received Client message
+      uint64 last_client_seqno = 2;
+
+      // Request immediate heartbeat response from client.
+      bool ping = 3;
+
+      // Server error details, if available
+      DOTSServerError error = 4;
+
+      DOTSRedirect redirect = 5;
+
+      // Mitigation data, limited by MTU
+      repeated DOTSMitigationStatus mitigations = 6;
+    }
+</pre>
+<p class="figure">Figure 10: DOTS Server Message Schema</p>
+<h1 id="rfc.section.7.5"><a href="#rfc.section.7.5">7.5.</a> <a href="#appendix-schema-redirect" id="appendix-schema-redirect">DOTS Redirect Schema</a></h1>
+<pre>
+    message DOTSRedirect {
+      // Redirection target DOTS server address
+      string target = 1;
+
+      // Address family of redirection target
+      enum RedirectionTargetType {
+        DNSNAME = 0;
+        IPV4 = 4;
+        IPV6 = 6;
+      }
+      RedirectionTargetType target_type = 2;
+
+      // Port on which to contact redirection target.
+      // XXX Protobufs has no uint16 type, implementations
+      // will need to sanity check.
+      uint32 port = 3;
+    }
+</pre>
+<h1 id="rfc.section.7.6"><a href="#rfc.section.7.6">7.6.</a> <a href="#appendix-schema-mitigation-status" id="appendix-schema-mitigation-status">DOTS Mitigation Status Schema</a></h1>
+<div id="rfc.figure.11"/>
+<div id="fig-server-mit-status-schema"/>
+<pre>
+    syntax = "proto3";
+    import "google/protobuf/any.proto";
+
+    message DOTSMitigationStatus {
+      // Opaque Client generated event identifier, used by DOTS client
+      // to associate a mitigation status with the event triggering the
+      // mitigation request.
+      string eventid = 1;
+
+      // Mitigation state
+      bool enabled = 2;
+
+      // Mitigation time-to-live (lifetime - (now - start))
+      uint32 ttl = 3;
+
+      // Dropped byte count
+      uint64 bytes_dropped = 4;
+
+      // Dropped bits per second
+      uint64 bps_dropped = 5;
+
+      // Dropped packet count
+      uint64 pkts_dropped = 6;
+
+      // Dropped packets per second
+      uint64 pps_dropped = 7;
+
+      // Blacklist enabled through data channel
+      bool blacklist_enabled = 8;
+
+      // Whitelist enabled through data channel
+      bool whitelist_enabled = 9;
+
+      // Filters enabled through data channel
+      bool filters_enabled = 10;
+
+      repeated google.protobuf.Any extensions = 999;
+    }
+</pre>
+<p class="figure">Figure 11: DOTS Server Mitigation Status Schema</p>
+<h1 id="rfc.section.7.7"><a href="#rfc.section.7.7">7.7.</a> <a href="#appendix-schema-server-error" id="appendix-schema-server-error">Server Error Schema</a></h1>
+<div id="rfc.figure.12"/>
+<div id="fig-server-error-schema"/>
+<pre>
+    syntax = "proto3";
+    import "google/protobuf/any.proto";
+
+    message DOTSServerError {
+      enum ErrorCode {
+        NOERROR = 0;
+        INVALID_VALUE = 1;
+        MITIGATION_UNAVAILABLE = 2;
+        MITIGATION_CONFLICT = 3;
+        MALFORMED_MESSAGE = 4;
+      }
+      ErrorCode code = 1;
+
+      // Error details, returned as a blob
+      google.protobuf.Any details = 2;
+    }
+</pre>
+<p class="figure">Figure 12: DOTS Server Error Schema</p>
+<h1 id="rfc.references"><a href="#rfc.references">8.</a> References</h1>
+<h1 id="rfc.references.1"><a href="#rfc.references.1">8.1.</a> Normative References</h1>
 <table>
   <tbody>
     <tr>
@@ -1373,12 +1183,6 @@ Content-Type: application/json
         <b id="RFC0768">[RFC0768]</b>
       </td>
       <td class="top"><a>Postel, J.</a>, "<a href="http://tools.ietf.org/html/rfc768">User Datagram Protocol</a>", STD 6, RFC 768, DOI 10.17487/RFC0768, August 1980.</td>
-    </tr>
-    <tr>
-      <td class="reference">
-        <b id="RFC0791">[RFC0791]</b>
-      </td>
-      <td class="top"><a>Postel, J.</a>, "<a href="http://tools.ietf.org/html/rfc791">Internet Protocol</a>", STD 5, RFC 791, DOI 10.17487/RFC0791, September 1981.</td>
     </tr>
     <tr>
       <td class="reference">
@@ -1391,12 +1195,6 @@ Content-Type: application/json
         <b id="RFC2119">[RFC2119]</b>
       </td>
       <td class="top"><a>Bradner, S.</a>, "<a href="http://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997.</td>
-    </tr>
-    <tr>
-      <td class="reference">
-        <b id="RFC2460">[RFC2460]</b>
-      </td>
-      <td class="top"><a>Deering, S.</a> and <a>R. Hinden</a>, "<a href="http://tools.ietf.org/html/rfc2460">Internet Protocol, Version 6 (IPv6) Specification</a>", RFC 2460, DOI 10.17487/RFC2460, December 1998.</td>
     </tr>
     <tr>
       <td class="reference">
@@ -1418,15 +1216,9 @@ Content-Type: application/json
     </tr>
     <tr>
       <td class="reference">
-        <b id="RFC5246">[RFC5246]</b>
+        <b id="RFC6347">[RFC6347]</b>
       </td>
-      <td class="top"><a>Dierks, T.</a> and <a>E. Rescorla</a>, "<a href="http://tools.ietf.org/html/rfc5246">The Transport Layer Security (TLS) Protocol Version 1.2</a>", RFC 5246, DOI 10.17487/RFC5246, August 2008.</td>
-    </tr>
-    <tr>
-      <td class="reference">
-        <b id="RFC5952">[RFC5952]</b>
-      </td>
-      <td class="top"><a>Kawamura, S.</a> and <a>M. Kawashima</a>, "<a href="http://tools.ietf.org/html/rfc5952">A Recommendation for IPv6 Address Text Representation</a>", RFC 5952, DOI 10.17487/RFC5952, August 2010.</td>
+      <td class="top"><a>Rescorla, E.</a> and <a>N. Modadugu</a>, "<a href="http://tools.ietf.org/html/rfc6347">Datagram Transport Layer Security Version 1.2</a>", RFC 6347, DOI 10.17487/RFC6347, January 2012.</td>
     </tr>
     <tr>
       <td class="reference">
@@ -1448,57 +1240,15 @@ Content-Type: application/json
     </tr>
     <tr>
       <td class="reference">
-        <b id="RFC7159">[RFC7159]</b>
-      </td>
-      <td class="top"><a>Bray, T.</a>, "<a href="http://tools.ietf.org/html/rfc7159">The JavaScript Object Notation (JSON) Data Interchange Format</a>", RFC 7159, DOI 10.17487/RFC7159, March 2014.</td>
-    </tr>
-    <tr>
-      <td class="reference">
-        <b id="RFC7230">[RFC7230]</b>
-      </td>
-      <td class="top"><a>Fielding, R.</a> and <a>J. Reschke</a>, "<a href="http://tools.ietf.org/html/rfc7230">Hypertext Transfer Protocol (HTTP/1.1): Message Syntax and Routing</a>", RFC 7230, DOI 10.17487/RFC7230, June 2014.</td>
-    </tr>
-    <tr>
-      <td class="reference">
-        <b id="RFC7231">[RFC7231]</b>
-      </td>
-      <td class="top"><a>Fielding, R.</a> and <a>J. Reschke</a>, "<a href="http://tools.ietf.org/html/rfc7231">Hypertext Transfer Protocol (HTTP/1.1): Semantics and Content</a>", RFC 7231, DOI 10.17487/RFC7231, June 2014.</td>
-    </tr>
-    <tr>
-      <td class="reference">
-        <b id="RFC7234">[RFC7234]</b>
-      </td>
-      <td class="top"><a>Fielding, R.</a>, <a>Nottingham, M.</a> and <a>J. Reschke</a>, "<a href="http://tools.ietf.org/html/rfc7234">Hypertext Transfer Protocol (HTTP/1.1): Caching</a>", RFC 7234, DOI 10.17487/RFC7234, June 2014.</td>
-    </tr>
-    <tr>
-      <td class="reference">
-        <b id="RFC7540">[RFC7540]</b>
-      </td>
-      <td class="top"><a>Belshe, M.</a>, <a>Peon, R.</a> and <a>M. Thomson</a>, "<a href="http://tools.ietf.org/html/rfc7540">Hypertext Transfer Protocol Version 2 (HTTP/2)</a>", RFC 7540, DOI 10.17487/RFC7540, May 2015.</td>
-    </tr>
-    <tr>
-      <td class="reference">
         <b id="I-D.ietf-dots-architecture">[I-D.ietf-dots-architecture]</b>
       </td>
-      <td class="top"><a>Mortensen, A.</a>, <a>Andreasen, F.</a>, <a>Reddy, T.</a>, <a>christopher_gray3@cable.comcast.com, c.</a>, <a>Compton, R.</a> and <a>N. Teague</a>, "<a href="http://tools.ietf.org/html/draft-ietf-dots-architecture-00">Distributed-Denial-of-Service Open Threat Signaling (DOTS) Architecture</a>", Internet-Draft draft-ietf-dots-architecture-00, July 2016.</td>
+      <td class="top"><a>Mortensen, A.</a>, <a>Andreasen, F.</a>, <a>Reddy, T.</a>, <a>christopher_gray3@cable.comcast.com, c.</a>, <a>Compton, R.</a> and <a>N. Teague</a>, "<a href="http://tools.ietf.org/html/draft-ietf-dots-architecture-01">Distributed-Denial-of-Service Open Threat Signaling (DOTS) Architecture</a>", Internet-Draft draft-ietf-dots-architecture-01, October 2016.</td>
     </tr>
     <tr>
       <td class="reference">
         <b id="I-D.ietf-dots-requirements">[I-D.ietf-dots-requirements]</b>
       </td>
-      <td class="top"><a>Mortensen, A.</a>, <a>Moskowitz, R.</a> and <a>T. Reddy</a>, "<a href="http://tools.ietf.org/html/draft-ietf-dots-requirements-02">Distributed Denial of Service (DDoS) Open Threat Signaling Requirements</a>", Internet-Draft draft-ietf-dots-requirements-02, July 2016.</td>
-    </tr>
-    <tr>
-      <td class="reference">
-        <b id="I-D.hamilton-quic-transport-protocol">[I-D.hamilton-quic-transport-protocol]</b>
-      </td>
-      <td class="top"><a>Hamilton, R.</a>, <a>Iyengar, J.</a>, <a>Swett, I.</a> and <a>A. Wilk</a>, "<a href="http://tools.ietf.org/html/draft-hamilton-quic-transport-protocol-00">QUIC: A UDP-Based Multiplexed and Secure Transport</a>", Internet-Draft draft-hamilton-quic-transport-protocol-00, July 2016.</td>
-    </tr>
-    <tr>
-      <td class="reference">
-        <b id="I-D.rescorla-tls-dtls13">[I-D.rescorla-tls-dtls13]</b>
-      </td>
-      <td class="top"><a>Rescorla, E.</a> and <a>H. Tschofenig</a>, "<a href="http://tools.ietf.org/html/draft-rescorla-tls-dtls13-00">The Datagram Transport Layer Security (DTLS) Protocol Version 1.3</a>", Internet-Draft draft-rescorla-tls-dtls13-00, October 2016.</td>
+      <td class="top"><a>Mortensen, A.</a>, <a>Moskowitz, R.</a> and <a>T. Reddy</a>, "<a href="http://tools.ietf.org/html/draft-ietf-dots-requirements-03">Distributed Denial of Service (DDoS) Open Threat Signaling Requirements</a>", Internet-Draft draft-ietf-dots-requirements-03, October 2016.</td>
     </tr>
     <tr>
       <td class="reference">
@@ -1506,17 +1256,17 @@ Content-Type: application/json
       </td>
       <td class="top"><a>Google, Inc.</a>, "<a href="https://developers.google.com/protocol-buffers/">Protocol Buffers</a>", 2016.</td>
     </tr>
-    <tr>
-      <td class="reference">
-        <b id="REST">[REST]</b>
-      </td>
-      <td class="top"><a title="University of California, Irvine">Fielding, R.</a>, "<a href="http://www.ics.uci.edu/~fielding/pubs/dissertation/fielding_dissertation.pdf">Architectural Styles and the Design of Network-based Software Architectures</a>", Ph.D. Dissertation, University of California, Irvine, 2000.</td>
-    </tr>
   </tbody>
 </table>
-<h1 id="rfc.references.2"><a href="#rfc.references.2">7.2.</a> Informative References</h1>
+<h1 id="rfc.references.2"><a href="#rfc.references.2">8.2.</a> Informative References</h1>
 <table>
   <tbody>
+    <tr>
+      <td class="reference">
+        <b id="I-D.reddy-dots-data-channel">[I-D.reddy-dots-data-channel]</b>
+      </td>
+      <td class="top"><a>Reddy, T.</a>, <a>Boucadair, M.</a>, <a>Nishizuka, K.</a>, <a>Xia, L.</a> and <a>P. Patil</a>, "<a href="http://tools.ietf.org/html/draft-reddy-dots-data-channel-03">Distributed Denial-of-Service Open Threat Signaling (DOTS) Data Channel</a>", Internet-Draft draft-reddy-dots-data-channel-03, December 2016.</td>
+    </tr>
     <tr>
       <td class="reference">
         <b id="RFC1518">[RFC1518]</b>
@@ -1531,21 +1281,9 @@ Content-Type: application/json
     </tr>
     <tr>
       <td class="reference">
-        <b id="RFC4559">[RFC4559]</b>
-      </td>
-      <td class="top"><a>Jaganathan, K.</a>, <a>Zhu, L.</a> and <a>J. Brezak</a>, "<a href="http://tools.ietf.org/html/rfc4559">SPNEGO-based Kerberos and NTLM HTTP Authentication in Microsoft Windows</a>", RFC 4559, DOI 10.17487/RFC4559, June 2006.</td>
-    </tr>
-    <tr>
-      <td class="reference">
         <b id="RFC5575">[RFC5575]</b>
       </td>
       <td class="top"><a>Marques, P.</a>, <a>Sheth, N.</a>, <a>Raszuk, R.</a>, <a>Greene, B.</a>, <a>Mauch, J.</a> and <a>D. McPherson</a>, "<a href="http://tools.ietf.org/html/rfc5575">Dissemination of Flow Specification Rules</a>", RFC 5575, DOI 10.17487/RFC5575, August 2009.</td>
-    </tr>
-    <tr>
-      <td class="reference">
-        <b id="RFC7617">[RFC7617]</b>
-      </td>
-      <td class="top"><a>Reschke, J.</a>, "<a href="http://tools.ietf.org/html/rfc7617">The 'Basic' HTTP Authentication Scheme</a>", RFC 7617, DOI 10.17487/RFC7617, September 2015.</td>
     </tr>
     <tr>
       <td class="reference">

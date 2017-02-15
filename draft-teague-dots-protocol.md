@@ -35,27 +35,17 @@ author:
 
 normative:
   RFC0768:
-  RFC0791:
   RFC0793:
   RFC2119:
-  RFC2460:
   RFC2784:
   RFC3031:
   RFC5405:
-  RFC5246:
-  RFC5952:
+  RFC6347:
   RFC6555:
   RFC6698:
   RFC7030:
-  RFC7159:
-  RFC7230:
-  RFC7231:
-  RFC7234:
-  RFC7540:
   I-D.ietf-dots-architecture:
   I-D.ietf-dots-requirements:
-  I-D.hamilton-quic-transport-protocol:
-  I-D.rescorla-tls-dtls13:
   PROTOBUF:
     target: https://developers.google.com/protocol-buffers/
     title: Protocol Buffers
@@ -64,25 +54,12 @@ normative:
     date: 2016
     format:
       HTML: https://developers.google.com/protocol-buffers/
-  REST:
-    target: http://www.ics.uci.edu/~fielding/pubs/dissertation/fielding_dissertation.pdf
-    title: Architectural Styles and the Design of Network-based Software Architectures
-    author:
-      ins: R. Fielding
-      name: Roy Thomas Fielding
-      org: University of California, Irvine
-    date: 2000
-    seriesinfo:
-      "Ph.D.": "Dissertation, University of California, Irvine"
-    format:
-      PDF: http://www.ics.uci.edu/~fielding/pubs/dissertation/fielding_dissertation.pdf
 
 informative:
+  I-D.reddy-dots-data-channel:
   RFC1518:
   RFC1519:
-  RFC4559:
   RFC5575:
-  RFC7617:
   CLOUDSIGNAL:
     target: https://www.arbornetworks.com/cloud-signaling-a-faster-automated-way-to-mitigate-ddos-attacks
     title: "Cloud Signaling: A Faster, Automated Way to Mitigate DDoS Attacks"
@@ -119,23 +96,21 @@ informative:
 --- abstract
 
 This document describes Distributed-Denial-of-Service (DDoS) Open Threat
-Signaling (DOTS), a signaling protocol for requesting and managing mitigation of
-DDoS attacks.
+Signaling (DOTS), a protocol for requesting and managing mitigation of DDoS
+attacks.
 
 DOTS mitigation requests over the signal channel permit domains to signal the
 need for help fending off DDoS attacks, setting the scope and duration of the
 requested mitigation.  Elements called DOTS servers field the signals for help,
 and enable defensive countermeasures to defend against the attack reported by
 the clients, reporting the status of the delegated defense to the requesting
-clients.  DOTS clients additionally may use the data channel to manage filters
-and black- and white-lists to restrict or allow traffic to the clients' domains
-arbitrarily.
-
-The DOTS signal channel may operate over UDP [RFC0768] and if necessary TCP
-[RFC0793].  This revision discusses a transport-agnostic approach to this
-channel, focusing on the message exchanges and delegating transport specifics to
-other documents.  The DOTS data channel operates over HTTPS or a transport with
-similar reliability, interaction and security characteristics.
+clients.  DOTS clients additionally may use a reliable data channel to manage
+filters and black- and white-lists to restrict or allow traffic to the clients'
+domains arbitrarily. The DOTS signal channel may operate over UDP [RFC0768] and
+if necessary TCP [RFC0793].  This revision discusses a transport-agnostic
+approach to this channel, focusing on the message exchanges and delegating
+transport specifics to other documents. Discussion of the reliable data channel
+may be found in [I-D.reddy-dots-data-channel].
 
 
 --- middle
@@ -160,18 +135,18 @@ proprietary solutions.  To meet the needs of network operators facing down
 modern DDoS attacks, DOTS itself is a hybrid protocol, consisting of a signal
 channel and a data channel.  DOTS uses the signal channel, a lightweight and
 robust communication layer, to signal the need for mitigation regardless of
-network conditions, and uses the data channel, an HTTPS [RFC7230] based
-communication layer with RESTful [REST] semantics, as vehicle for provisioning,
-configuration, and filter management.
+network conditions, and uses the reliable data channel as vehicle for
+provisioning, configuration, telemetry, filter management, and other unsized or
+bulk data exchange.
 
-DOTS is not intended as a replacement for such protocols as BGP Flow
-Specification [RFC5575] or as a general purpose mitigation application
-programming interface (API), but rather as an advisory protocol enabling attack
-response coordination between willing domains.  Any DOTS-enabled device or
-service is capable of triggering a request for help and shaping the scope and
-nature of that help, with the details of the actual mitigation left to the
-discretion of the operators of the attack mitigators.  DOTS thereby permits all
-participating parties to manage their own attack defenses in the manner most
+The DOTS protocol is not intended as a replacement for such protocols as BGP
+Flow Specification [RFC5575] or as a general purpose DDoS countermeasure
+application programming interface (API), but rather as an advisory protocol
+enabling attack response coordination between DOTS agents.  Any DOTS-enabled
+device or service is capable of triggering a request for help and shaping the
+scope and nature of that help, with the details of the actual mitigation left to
+the discretion of the operators of the attack mitigators.  DOTS thereby permits
+all participating parties to manage their own attack defenses in the manner most
 appropriate for their own domains.
 
 
@@ -242,15 +217,22 @@ defined in this protocol, all mechanisms to maintain multiple signaling sessions
 are left to the implementation.
 
 
-Protocol Overview
-=================
+DOTS Communication Channels
+===========================
 
-The DOTS protocol consists of two channels, a signal channel and a data channel.
+DOTS uses two channels, a signal channel and a data channel.
+
 The signal channel is the minimal secure communication layer a DOTS client uses
-to request mitigation for resources under the administrative control of the DOTS
-client; the administrative control may be delegated. The data channel offers
-DOTS client operators the limited ability to adjust configuration and filtering
-for their mitigation requests.
+to request mitigation for resources under the administrative control the DOTS
+client; administrative control may be delegated.
+
+The data channel offers DOTS clients a limited ability to manage configuration
+and attack filtering for requested mitigations. The data channel offers DOTS
+client operators the limited ability to adjust configuration and filtering for
+their mitigation requests.
+
+This document describes the DOTS signal channel. The data channel is defined
+separately in [I-D.reddy-dots-data-channel].
 
 
 Signal Channel
@@ -258,46 +240,48 @@ Signal Channel
 
 The purpose of the signaling channel is to convey DDoS mitigation request and
 status information between participating agents (client and server or gateway).
-Conditions during a DDoS attack are invariably hostile for connection oriented
+Conditions during a DDoS attack are invariably hostile for connection-oriented
 protocols traversing affected paths.  Mechanisms such as Happy Eyeballs
 [RFC6555] may be used to select a transport suitable for a given time and
-prevailing network conditions.  For the purpose of this draft, however, a
-default signaling transport based upon UDP [RFC5405] will be used.  UDP's
-connectionless quality lends itself to being able to sustain loose
-communications during an event which may heavily congest certain network paths
-towards the DOTS signal originating network.  Key tenets of DOTS protocol design
-are low communication overhead and efficient message packing to increase the
-chances of successful transmission and receipt.  Desirable side-effects of
-efficient packing are the removal of the possibility of fragmentation in
-addition to a message size that is friendly towards encapsulation (e.g via GRE
-[RFC2784] or MPLS [RFC3031]).  Large UDP packets may also be treated adversely
-by middleboxes with restrictive policies or may fall foul of aggressive
-filtering.
+prevailing network conditions.
 
-In support of operational requirements for protocol efficiency in
-[I-D.ietf-dots-requirements], the signaling channel uses Protocol Buffers
-[PROTOBUF], also known as Protobufs, to encode messages exchanged between DOTS
-agents. Thanks to Protobufs' serialization, signal channel messaging permits the
-introduction of new numbered fields arbitrarily, adding the requisite
-extensibility to the protocol while retaining backward compatibility.
-Future revisions of or extensions to the protocol may use the data channel to
-provide a mechanism by which schema updates or expansions may be communicated
-during provisioning/session establishment.
+Implementations are required to support the DOTS signal channel over UDP as
+specified in [I-D.ietf-dots-requirements]. This document therefore assumes the
+the availability of a transport based upon UDP [RFC0768], but also defines the
+message exchanges agnostic of the underlying transport used to convey the
+signaling.
 
-Data serialization alone does not cover the security requirements in
-[I-D.ietf-dots-requirements] of peer mutual authentication (SEC-001), message
-confidentiality (SEC-002), message replay protection (SEC-003) or message
-integrity.  These qualities must be present in the transport over which the DOTS
-protocol operates. Key distribution may be achieved via the data channel,
-via an online mechanism such as DANE [RFC6698], Enrollment over Secure Transport
-[RFC7030], or by out-of-band means.
+Key tenets of DOTS protocol design are low communication overhead and efficient
+message packing to increase the chances of successful transmission and receipt.
+Desirable side-effects of efficient packing are the removal of the possibility
+of fragmentation in addition to a message size that is friendly towards
+encapsulation (e.g via GRE [RFC2784] or MPLS [RFC3031]).  Large UDP packets may
+also be treated adversely by middleboxes with restrictive policies or may fall
+foul of aggressive filtering.
+
+In support of operational requirements for protocol efficiency, backward
+compatibility and extensibility in [I-D.ietf-dots-requirements], the signaling
+channel uses Protocol Buffers [PROTOBUF], also known as Protobufs, to define
+message schemas and serialize messages exchanged between DOTS agents.
+
+The security requirements described in [I-D.ietf-dots-requirements] \(peer
+mutual authentication, message confidentiality and integrity, and message replay
+protection are not discussed here.  However, these qualities must be present in
+the transport over which the DOTS signal channel operates.
+
+Key distribution in support of those security requirements to may be achieved
+via the data channel, via an online mechanism such as DANE [RFC6698], Enrollment
+over Secure Transport [RFC7030], or by out-of-band means.  The key distribution
+mechanism is not specified in this document, but operators must take care to
+ensure the distribution provides the same level of security demanded by the
+signal channel itself.
 
 
 Minimum Viable Information {#minimum-viable-information}
 --------------------------
 
 DOTS is intended to be extensible and to evolve to meet the future needs in
-communicaring as yet unknown threats. However, it must be able to convey the
+communicating as yet unknown threats. However, it must be able to convey the
 minimum information required for an upstream mitigation platform to successfully
 counter a DDoS attack.  A client may have limited visibility into the full
 breadth of an attack and as such may not be well placed to provide useful
@@ -326,65 +310,104 @@ endpoints to assist in tracking state and/or identifying loss.
 Signal Channel Messages
 -----------------------
 
-The DOTS protocol signal channel uses Protobufs to reduce the number of discrete
-messages to just a single message superset per direction, with function defined
-by the chosen fields contained within the message. The protocol therefore
-defines a single schema each for the client and server sides containing all
-relevant fields.  Tags 1 through 15 may benefit from only requiring a single
-byte to encode (vs two for tags 16 through 2047) and these should be used for
-frequently occurring message elements.
+### Messaging Overview
 
+The signal channel requirements in [I-D.ietf-dots-requirements] demand a
+protocol capable of operating despite significant link congestion between DOTS
+agents. In an effort to maximize the probability of signal delivery between DOTS
+agents, all DOTS signal channel messages in the DOTS protocol are conceptually
+unidirectional heartbeats sent between DOTS agents.
 
-### Client Message Schema
+The result is a form of scheduled messaging between DOTS agents, in contrast to
+a conventional request-response model. Once a signal channel is established, a
+DOTS client begins sending unidirectional heartbeats to the DOTS server,
+separated by the configured session heartbeat interval (see
+{{interactions-session-initialization}} below). To request mitigation, a DOTS
+client merely adds the requested mitigation parameters to its heartbeat, and
+maintains that request until a heartbeat from the DOTS server indicates receipt
+of that mitigation request. The DOTS server likewise sends its unidirectional
+heartbeat on the schedule interval, augmenting the content of the heartbeat with
+mitigation request status.
 
-The entire client schema is detailed in {{fig-client-schema}}.  It is not
-expected that client messages will require all fields to be used simultaneously
-but instead a subset to convey a given signal type.  The only fields which may
-be common to all signals are seqno and lastsvrseqno which may be used to detect
-loss or drop outs. The DOTS client message schema is defined in
-{{fig-client-schema}} below:
+A simple exchange between DOTS agents with an established signaling session is
+shown below in {{fig-simple-session}}.
 
 ~~~~~
-    syntax = "proto3";
-    import "google/protobuf/any.proto";
-
-    message DOTSClientMessage {
-      // Client generated sequence number
-      uint64 seqno = 1;
-
-      // Sequence number of last received server message
-      uint64 last_svr_seqno = 2;
-
-      repeated DOTSMitigation mitigations = 3;
-
-      // Request active mitigation list from server
-      bool active = 4;
-
-      // Ping request (operator initiated)
-      bool ping = 5;
-
-      // Per session configuration sent on signaling session init
-      message DOTSSessionConfig {
-        // Acceptable signal loss
-        uint32 loss_limit = 1;
-
-        // Maximum mitigation lifetime in seconds
-        uint32 lifetime_max = 2;
-
-        // Heartbeat interval in milliseconds
-        uint32 heartbeat_interval = 3;
-      }
-      DOTSSessionConfig config = 6;
-
-      repeated google.protobuf.Any extensions = 999;
-    }
+   Client                           Server
+     |                                 |  // Active signaling session
+     |<==== Signal Channel Active ====>|  // with heartbeat interval of
+     |                                 |  // 15 seconds, +/- jitter.
+     |                                 |
+     |----------Heartbeat------------->|  // Client heartbeat
+     |                                 |
+     |<---------Heartbeat--------------|  // Server heartbeat
+     |                                 |
+     \                                 \  // 15 seconds elapse, during
+     /                                 /  // which client adds request
+     \                                 \  // for mitigation.
+     |                                 |
+     |----------HeartBeat------------->|  // Client heartbeat now has
+     |          + MitigationRequest    |  // mitigation request params.
+     |                                 |
+     |<---------HeartBeat--------------|  // Server heartbeat now has
+     |          + MitigationPending    |  // pending mitigation request
+     |                                 |  // status.
+     |                                 |
+     \                                 \
+     /                                 /  // 15s elapse, +/- jitter.
+     \                                 \
+     |                                 |
+     |----------HeartBeat------------->|  // Client heartbeat maintains
+     |          + MitigationRequest    |  // request as it waits for
+     |                                 |  // mitigation to begin.
+     |                                 |
+     |     X----HeartBeat--------------|  // Mitigation enabled, but
+     |          + MitigationRunning    |  // server heartbeat is dropped
+     |                                 |
+     \                                 \
+     /                                 /  // 15s elapse, +/- jitter.
+     \                                 \
+     |                                 |
+     |----------HeartBeat------------->|  // Client heartbeat maintains
+     |          + MitigationRequest    |  // request as it waits for
+     |                                 |  // mitigation to begin.
+     |                                 |
+     |<---------HeartBeat--------------|  // Server heartbeat, status of
+     |          + MitigationRunning    |  // running mitigation
+     |                                 |  // delivered to client.
 ~~~~~
-{: #fig-client-schema title="DOTS Client Message Schema"}
+{: #fig-simple-session title="Signaling Session with Mitigation Request"}
+
+All messages are variations of this scheduled heartbeat model. See
+{{interactions}} below for detailed discussion of the message exchanges between
+DOTS agents.
 
 
-#### Client Message Schema Fields
+### Message Definition and Serialization
 
-The fields in the DOTS client signal channel message schema have the following
+The DOTS protocol signal channel uses Protobufs [PROTOBUF] as an interface
+definition language (IDL) for signal channel messaging between DOTS agent,
+reducing the number of discrete messages to just a single message superset per
+direction, with function defined by the chosen fields contained within the
+message.
+
+Protobufs schemas are used to define the messages sent in either direction, from
+which code may be generated for specific language implementations of DOTS. As
+Protobufs serialization relies on numbered fields, signal channel messaging
+permits the introduction of new numbered fields arbitrarily, adding the
+requisite extensibility to the protocol while retaining backward compatibility.
+Future revisions of or extensions to the protocol may use the data channel to
+provide a mechanism by which schema updates or expansions may be communicated
+during provisioning/session establishment.
+
+
+### Client Message Fields
+
+Only the seqno and last\_svr\_seqno fields are required in every message, as
+they are the minimum required for the heartbeat. Subsets of the other fields are
+used to convey a given signal message type.
+
+The fields in the DOTS client signal channel message have the following
 functions:
 
 seqno:
@@ -405,7 +428,7 @@ active:
   current on the DOTS server.
 
 ping:
-: an operator initiated heartbeat like message which will ellicit a response
+: an operator initiated heartbeat like message which will elicit a response
   from the DOTS server.  This may be used to prove bi-directional communications
   on an ad-hoc basis. For example, a DOTS ping may be used to prove keying
   material on the DOTS client is valid and may be used to establish signaling
@@ -417,37 +440,15 @@ extensions:
   server.
 
 
-### Client Mitigation Request Schema
+#### Client Message Schema
 
-The schema for mitigation requests sent by the DOTS client is defined in
-{{fig-client-mit-request-schema}} below:
-
-~~~~~
-    message DOTSMitigation {
-      // Opaque client-generated event identifier
-      string eventid = 1;
-
-      // Toggle mitigation for the above scope
-      bool requested = 2;
-
-      // Mitigation scope as described in I-D.ietf-dots-requirements
-      string scope = 3;
-
-      // Lifetime of the requested mitigation.
-      uint32 lifetime = 4;
-
-      // Mitigation efficacy score as a float value between 0 and 1
-      float efficacy = 5;
-
-      repeated google.protobuf.Any extensions = 999;
-    }
-~~~~~
-{: #fig-client-mit-request-schema title="DOTS Client Mitigation Request Schema"}
+The DOTS client message schema is detailed in
+{{appendix-schema-client-message}}.
 
 
-#### Client Mitigation Request Schema Fields
+### Mitigation Request Fields
 
-The fields in the DOTS client mitigation request schema are as follows:
+The fields in a mitigation request are as follows:
 
 eventid:
 : an opaque client generated identifier that distinguishes a unique event or
@@ -475,68 +476,25 @@ efficacy:
   mitigation, per operational requirements in [I-D.ietf-dots-requirements]. The
   mitigation efficacy is represented as a floating point value between 0 and 1,
   with smaller values indicating lesser efficacy, and larger greater efficacy.
-  XXX - The efficacy value is calculated as 
 
 extensions:
 : these fields may be used to provide implementation-specific mitigation
   details.
 
+#### Mitigation Request Schema
 
-### DOTS Server Message Schema
-
-The entire server schema is detailed in {{fig-server-schema}}. DOTS server
-messages use a subset of the available fields to convey the given signal type,
-including additional relevant fields as necessary. The only fields which may
-be common to all signals are seqno and last\_client\_seqno which may be used to
-detect message loss or out-of-order delivery. When conveying mitigation
-information, the server schema may bundle multiple mitigation status datasets
-into a single message, provided this does not violate the required sub-MTU
-message size [I-D.ietf-dots-requirements].
-
-~~~~~
-    syntax = "proto3";
-    import "google/protobuf/any.proto";
-
-    message DOTSServerMessage {
-      // Server generated sequence number
-      uint64 seqno = 1;
-
-      // Sequence number of last received Client message
-      uint64 last_client_seqno = 2;
-
-      // Request immediate heartbeat response from client.
-      bool ping = 3;
-
-      // Server error details, if available
-      DOTSServerError error = 4;
-
-      message DOTSRedirect {
-        // Redirection target DOTS server address
-        string target = 1;
-
-        // Address family of redirection target
-        enum RedirectionTargetType {
-          DNSNAME = 0;
-          IPV4 = 4;
-          IPV6 = 6;
-        }
-        RedirectionTargetType target_type = 2;
-
-        // Port on which to contact redirection target.
-        // XXX Protobufs has no uint16 type, implementations
-        // will need to sanity check.
-        uint32 port = 3;
-      }
-      DOTSRedirect redirect = 5;
-
-      // Mitigation data, limited by MTU
-      repeated DOTSMitigationStatus mitigations = 6;
-    }
-~~~~~
-{: #fig-server-schema title="DOTS Server Message Schema"}
+The DOTS client message schema is detailed in {{appendix-schema-mit-request}}.
 
 
-#### Server Message Schema Fields
+### DOTS Server Message Fields
+
+DOTS server messages use a subset of the available fields to convey the given
+signal type, including additional relevant fields as necessary. The only fields
+which may be common to all signals are seqno and last\_client\_seqno which may
+be used to detect message loss or out-of-order delivery. When conveying
+mitigation information, the server schema may bundle multiple mitigation status
+datasets into a single message, provided this does not violate the required
+sub-MTU message size [I-D.ietf-dots-requirements].
 
 The fields in the DOTS server signal channel message schema have the following
 functions:
@@ -548,7 +506,7 @@ last\_cli\_seqno:
 : the seqno of the last message received from the client.
 
 ping:
-: an operator-initiated heartbeat like message which will ellicit a response
+: an operator-initiated heartbeat like message which will elicit a response
   from the DOTS client.  This may be used to prove bi-directional communications
   on an ad-hoc basis.
 
@@ -569,30 +527,12 @@ extensions:
   the DOTS server.
 
 
-### Server Error Schema
+#### DOTS Server Message Schema
 
-The schema for server error information is described in
-{{fig-server-error-schema}} below:
+The server message schema is detailed in {{appendix-schema-server-message}}.
 
-~~~~~
-    syntax = "proto3";
-    import "google/protobuf/any.proto";
 
-    message DOTSServerError {
-      enum ErrorCode {
-        NOERROR = 0;
-        INVALID_VALUE = 1;
-        MITIGATION_UNAVAILABLE = 2;
-        MITIGATION_CONFLICT = 3;
-        MALFORMED_MESSAGE = 4;
-      }
-      ErrorCode code = 1;
-
-      // Error details, returned as a blob
-      google.protobuf.Any details = 2;
-    }
-~~~~~
-{: #fig-server-error-schema title="DOTS Server Error Schema"}
+### Server Errors
 
 If a DOTS client message cannot be processed by the DOTS server, or for any
 other reason causes an error, the DOTS server MUST populate the error field in
@@ -605,7 +545,7 @@ a time period equivalent to three times the session heartbeat interval.
 The DOTS client message triggering the error condition is indicated in the
 last\_client\_seqno value of the DOTS server message containing the error.
 
-Errors may be one of the following types:
+Error codes MUST be one of the following types:
 
 NOERROR:
 : Indicates the DOTS server has detected no error resulting from a DOTS client
@@ -631,7 +571,7 @@ MITIGATION\_CONFLICT:
 MALFORMED\_MESSAGE:
 : Indicates the DOTS client message is malformed and cannot be processed.
 
-#### Server Error Schema Fields
+#### Server Error Fields
 
 code:
 : a numeric code categorizing the error type detected by the DOTS server.
@@ -639,56 +579,12 @@ code:
 details:
 : specific information about the reason for the detected error.
 
+#### Server Error Schema
 
-### Server Mitigation Status Schema
-
-The schema for the status of mitigations managed by the DOTS server are
-described in {{fig-server-mit-status-schema}} below:
-
-~~~~~
-    syntax = "proto3";
-    import "google/protobuf/any.proto";
-
-    message DOTSMitigationStatus {
-      // Opaque Client generated event identifier, used by DOTS client
-      // to associate a mitigation status with the event triggering the
-      // mitigation request.
-      string eventid = 1;
-
-      // Mitigation state
-      bool enabled = 2;
-
-      // Mitigation time-to-live (lifetime - (now - start))
-      uint64 ttl = 3;
-
-      // Dropped byte count
-      uint64 bytes_dropped = 4;
-
-      // Dropped bits per second
-      uint64 bps_dropped = 5;
-
-      // Dropped packet count
-      uint64 pkts_dropped = 6;
-
-      // Dropped packets per second
-      uint64 pps_dropped = 7;
-
-      // Blacklist enabled through data channel
-      bool blacklist_enabled = 8;
-
-      // Whitelist enabled through data channel
-      bool whitelist_enabled = 9;
-
-      // Filters enabled through data channel
-      bool filters_enabled = 10;
-
-      repeated google.protobuf.Any extensions = 999;
-    }
-~~~~~
-{: #fig-server-mit-status-schema title="DOTS Server Mitigation Status Schema"}
+The server error schema is detailed in {{appendix-schema-server-error}}.
 
 
-#### Server Mitigation Status Schema Fields
+### Server Mitigation Status Fields
 
 The DOTS server message contains zero or more mitigation status messages, the
 fields of which have the following functions:
@@ -698,7 +594,7 @@ eventid:
   incident.
 
 ttl:
-: the remaining lifetime of the mitigation.
+: the remaining lifetime of the mitigation, in seconds.
 
 bytes\_dropped:
 : the total dropped byte count for the mitigation associated with eventid.
@@ -730,16 +626,15 @@ filters\_enabled:
   mitigation associated with eventid.
 
 
-Interactions
+Interactions    {#interactions}
 ------------
 
-### Session Initialization
+### Session Initialization      {#interactions-session-initialization}
 
 Signaling sessions are initiated by the DOTS client. Session initialization
-begins when the DOTS client connects to the DOTS server port, 4646 (the hex
-value for the ASCII character "." twice). After connecting, the DOTS client
-establishes the channel security context, including all necessary cryptographic
-exchanges between the two DOTS agents.
+begins when the DOTS client connects to the DOTS server port, 4646. After
+connecting, the DOTS client establishes the channel security context, including
+all necessary cryptographic exchanges between the two DOTS agents.
 
 This signal channel specification is transport-agnostic, and delegates the
 details of transport, including transport security, to transport-specific
@@ -774,19 +669,18 @@ MUST begin sending heartbeats on the interval for the signaling session once the
 session is active.
 
 The following example assumes a DOTS implementation using UDP as the transport
-and DTLS1.3 [I-D.rescorla-tls-dtls13]. In {{fig-signal-channel-init}} below, the
-DOTS client uses the default values for acceptable signal loss, maximum
-mitigation lifetime, and heartbeat interval. The initial DOTS server heartbeat
-is lost, so the DOTS client sends another channel initialization message after
-waiting for the minimum heartbeat interval defined below in
-{{interactions-heartbeat}}:
+and DTLS1.2 [RFC6347]. In {{fig-signal-channel-init}} below, the DOTS client
+uses the default values for acceptable signal loss, maximum mitigation lifetime,
+and heartbeat interval. The initial DOTS server heartbeat is lost, so the DOTS
+client sends another channel initialization message after waiting for the
+minimum heartbeat interval defined below in {{interactions-heartbeat}}:
 
 ~~~~~
    Client                           Server
      |                                 |
-     |---UDP connect to Server:4646--->|
-     |                                 |
-     |<- - - -DTLS1.3 handshake- - - ->|
+     |<- - - - DTLS1.2 handshake - - ->|  // Server listens on UDP:4646.
+     |                                 |  // Client initiates DTLS
+     |                                 |  // handshake.
      |                                 |
      |----------ChannelInit----------->|  // Client sends signal
      |          seqno = 1              |  // channel init message
@@ -796,11 +690,11 @@ waiting for the minimum heartbeat interval defined below in
      |          seqno = 1              |  // heartbeat reply, which
      |          last_client_seqno = 1  |  // is lost.
      |                                 |
-     \ (min heartbeat interval passes) \
-     /                                 /
+     \                                 \  // Session heartbeat interval
+     /                                 /  // elapses.
      \                                 \
      |----------ChannelInit----------->|  // Client retries signal
-     |          seqno = 2              |  // channel init message
+     |          seqno = 2              |  // channel init message.
      |          last_svr_seqno = 0     |
      |                                 |
      |<---------HeartBeat--------------|  // Server immediately sends
@@ -810,6 +704,7 @@ waiting for the minimum heartbeat interval defined below in
      |<==== Signal Channel Active ====>|
 ~~~~~
 {: #fig-signal-channel-init title="Signal Channel Initialization"}
+
 
 
 #### Session Initialization Error Handling
@@ -838,10 +733,11 @@ during attacks is to be expected. Message loss tolerance may be set on signal
 channel establishment.
 
 The default heartbeat interval is 20 seconds, plus or minus a number of
-milliseconds between 50 and 2000. The number milliseconds MUST be randomized in
-order to introduce jitter into the heartbeat interval, as recommended by
+milliseconds between 50 and 2000. The number of milliseconds MUST be randomized
+in order to introduce jitter into the heartbeat interval, as recommended by
 [RFC5405]. The default interval is derived from the recommendations in [RFC5405]
-regarding middlebox traversal.
+regarding middlebox traversal, to maintain NAT bindings in the path between
+DOTS agents.
 
 The interval between heartbeats is may also be set by the client when
 establishing the signal channel. The minimum heartbeat interval is 15 seconds,
@@ -882,8 +778,8 @@ peer agent in the next heartbeat sent, as shown in {{fig-heartbeats}}:
      |          seqno = 3              |
      |          last_client_seqno = 3  |
      |                                 |
-     |----------HeartBeat------------->|  // Client heartbeat,
-     |          seqno = 4              |  // last_svr_seqno remains 1
+     |----------HeartBeat------------->|  // Client heartbeat
+     |          seqno = 4              |
      |          last_svr_seqno = 3     |
      |                                 |
 ~~~~~
@@ -925,8 +821,8 @@ to the ping sender. A ping reply MUST consist of only the senders sequence
 number and the sequence number of the received ping. \[\[EDITOR'S NOTE: rate
 limiting of pings required?\]\]
 
-A ping is identical to a standard heartbeat, but with the the ping field
-included and set to true:
+A ping is identical to a standard heartbeat, but with the ping field included
+and set to true:
 
 ~~~~~
        message DOTSClientMessage {
@@ -1145,453 +1041,213 @@ client as advisory, and is under no obligation to alter the mitigation strategy
 in response.
 
 
-Data Channel {#data-channel}
-============
-
-Role {#data-channel-role}
-----
-
-Using the conventions established in [REST], the data channel provides an
-interface for configuration, black- and white-list management, traffic filter
-management, and extensibility required for future operator needs (GEN-001
-[I-D.ietf-dots-requirements]).
-
-
-Limitations {#data-channel-limitations}
------------
-
-Unlike the DOTS signal channel, the data channel potentially offers DOTS client
-operators limited direct control over the behavior of mitigations requested by
-the DOTS client. However, the DOTS data channel is not a general purpose
-application programming interface for mitigators with which a DOTS server is
-communicating. Certain countermeasure profiles for DDoS attacks are widely
-understood and deployed, but many remain specific to mitigation vendor
-implementations, making abstraction all but impossible. The DOTS data channel in
-this protocol is therefore focused on a limited subset of widely available and
-well understood mitigation actions, namely black- and white-listing, and
-rate-limiting.
-
-While managing filters and rate-limit policy over the DOTS data channel
-resembles the dissemination of flow specifications with a match and action on
-match in [RFC5575], the similarity is restricted to [RFC5575]'s traffic-rate
-action only in order to prevent a DOTS client from exerting influence over
-traffic not destined for the DOTS client's domain.
-
-
-Transport {#data-channel-transport}
----------
-
-The DOTS data channel relies on the semantics described in [REST], meaning any
-reliable application protocol enabling those semantics could be used. This
-document anticipates HTTP/1.1 over TLS [RFC7230] will be most widely deployed at
-the time of writing. Implementations of the DOTS protocol therefore MUST support
-data channels using HTTP/1.1 over TLS. However, this document also leaves open
-the possibility that the data channel MAY be implemented through such
-application transports as HTTP/2 [RFC7540] or the Quick UDP Internet Connection
-[I-D.hamilton-quic-transport-protocol] protocol, as well as other current and
-future protocols supporting [REST] semantics and the security requirements
-described in [I-D.ietf-dots-requirements]. Support for alternative secure REST
-transports for the data channel are deployment- and implementation-specific.
-
-DOTS data channel implementations MUST support the IPv4 [RFC0791] and IPv6
-[RFC2460] protocols, and MUST support the "Happy Eyeballs" algorithm for dual
-stack deployments discussed in [RFC6555].
-
-Implementations of the DOTS data channel MUST use TLS version 1.2 or higher.
-DOTS agents MUST NOT create a data channel with a peer agent requesting a lower
-TLS version, and SHOULD drop the connection immediately on detecting the peer
-DOTS agent does not support a required TLS version.
-
-{{security-considerations}} offers a more detailed discussion of data channel
-transport security, including cipher suites.
-
-
-Authentication {#data-channel-authentication}
---------------
-
-When establishing the data channel, the DOTS client and DOTS server MUST
-mutually authenticate each other, per SEC-001 in [I-D.ietf-dots-requirements].
-A common method for mutual authentication for HTTP/1.1 over TLS is an exchange
-of X.509 certificates between client and server during the TLS handshake
-[RFC5246]; similar mechanisms exist in HTTP/2 [RFC7540] and in
-[I-D.hamilton-quic-transport-protocol].
-
-Regardless of the underlying transport used, this document does not prescribe
-the method of mutual authentication, and alternatives may include a mix of
-things like basic auth [RFC7617] and HTTP SPNEGO [RFC4559]. The method of mutual
-authentication used for the data channel is left to the discretion of the DOTS
-server operator.  Additional discussion of mutual authentication is below in
-{{security-considerations}}.
-
-
-Authorization {#data-channel-authorization}
--------------
-
-TBD deployment-specific, see also security considerations.
-
-
-Resources {#data-channel-resources}
----------
-
-The DOTS server exposes data channel resources to the DOTS client as uniform
-resource identifiers. The DOTS client sends requests related to the data channel
-resources using the verbs defined in [RFC7231]: GET, POST, PUT, PATCH and
-DELETE. The DOTS server responds to the DOTS client requests with a status code
-and, if the request succeeded, available data returned by the request. The
-status codes used in DOTS server responses are also defined in [RFC7231].
-
-
-### Resource Root
-
-The root resource or endpoint in the DOTS data channel is /dots/v1/data. The
-root resource MUST be prefixed to all resources exposed through the data
-channel.
-
-
-### {+dataroot}/sessions
-
-The /sessions endpoint is a read-only resource from which the DOTS client may
-request the status of signaling sessions.
-
-
-#### GET {+dataroot}/sessions
-
-The DOTS client requests the list of signaling sessions by issuing a GET for the
-/sessions resource:
-
-~~~~~
-    GET /dots/v1/data/sessions HTTP/1.1
-    Host: dots-server.example.com
-    Accept: application/json
-~~~~~
-{: #eg-client-status title="DOTS Client Requesting Session Status"}
-
-If the DOTS client is authorized, the DOTS server responds to the GET with a
-list of signaling session identifiers, as in the following example:
-
-~~~~~
-    HTTP/1.1 200 OK
-    Cache-Control: no-cache
-    Content-Type: application/json
-
-    {
-        "sessions": [
-            {
-                "id": <string>,
-                "client": <ip_address>,
-                "server": <ip_address>,
-                "duration": <iso8601_duration>,
-            },
-            {
-                ...
-            }
-        ]
-    }
-~~~~~
-
-The top-level JSON key-value pairs in the response are as follows:
-
-sessions:
-: A list of dictionary objects describing active signaling sessions.  If empty,
-no signaling sessions are active.
-
-Each dictionary within the sessions list contains the following JSON key-value
-pairs:
-
-id:
-: An opaque alphanumeric string identifying the signaling session.
-
-client:
-: The dotted-quad IPv4 or formatted IPv6 address [RFC5952] of the DOTS client in
-  the signaling session.
-
-server:
-: The dotted-quad IPv4 or formatted IPv6 address [RFC5952] of the DOTS server in
-  the signaling session.
-
-duration:
-: An ISO 8601 representation of the duration of the signaling session.
-
-
-### {+dataroot}/filters
-
-The /filters endpoint on a DOTS server is a read-write resource through which
-a DOTS client may request that the DOTS server add, retrieve, modify and delete
-traffic filters to an active mitigation requested through the signal channel.
-
-DOTS servers SHOULD indicate lack of support for filtering by returning a 501
-Not Implemented status to any request for a filters URI. If a DOTS client
-attempts to apply a filter to flows which the DOTS server determines do not
-belong to the DOTS client, the DOTS server MUST respond with a 403 Forbidden.
-
-A filter is a match and an action on match. As discussed above in
-{{data-channel-limitations}}, actions are restricted to black- and white-listing
-and rate-limiting. Matches in a filter dictionary may be any of the match types
-discussed below. All matches MUST include a destination address or identifier;
-DOTS server implementations MUST NOT accept filters missing a destination
-address or prefix.
-
-A filter can be represented as a map or dictionary with the following
-attributes:
-
-id:
-: a client-generated integer value acting as a unique identifier for the filter.
-
-af:
-: address family of the flow to filter, must be one of "ipv4" or "ipv6". This
-  attribute is required in all filters.
-
-src:
-: source prefix of the flow(s) to filter.
-
-sport:
-: source port of the flow(s) to filter.
-
-dst:
-: destination prefix of the flow(s) to filter.
-
-dport:
-: destination port of the flow(s) to filter.
-
-action:
-: The action to apply to flows matching the filter. The action MUST be one of
-  "blacklist" (i.e., drop all matching flows), "whitelist" (i.e., always forward
-  traffic matching the filter), or "rate-limit" (i.e., control the rate of
-  traffic matching the filter).
-
-Bps:
-: an integer value setting the bytes per second limit for flows matching the
-  filter when action is "rate-limit".
-
-
-#### POST {+dataroot}/filters/{+mitigation-id}
-
-A POST request over the data channel to the /filters endpoint on a DOTS server
-permits a DOTS client to manage filtering policy for a mitigation:
-
-~~~~~
-    POST /dots/v1/data/filters/42 HTTP/1.1
-    Host: dots-server.example.com
-    Accept: application/json
-    Content-Type: application/json
-    Content-Length: NNNN
-
-    {
-        "filters": [
-            {
-                "id": 1,
-                "af": "ipv4",
-                "src": "192.0.2.2/32",
-                "action": "blacklist",
-            },
-
-            {
-                "id": 2,
-                "af": "ipv4",
-                "src": "192.51.100.0/30",
-                "sport": 53,
-                "action": "whitelist",
-            },
-
-            ...
-        ]
-    }
-~~~~~
-{: #fig-filter-creation title="Filter creation"}
-
-The DOTS server confirms filter creation with an empty OK:
-
-~~~~~
-    HTTP/1.1 200 OK
-    Cache-Control: no-cache
-    Content-Length: 0
-
-~~~~~
-
-
-#### PUT {+dataroot}/filters/{+mitigation-id}/{+filter-id}
-
-Filters may be updated by sending a PUT request to the specific filter URI. DOTS
-servers MUST replace the existing filter atomically with the values in the PUT.
-
-~~~~~
-    PUT /dots/v1/data/filters/42/1 HTTP/1.1
-    Host: dots-server.example.com
-    Accept: application/json
-    Content-Type: application/json
-    Content-Length: NNNN
-
-    {
-        "id": 1,
-        "af": "ipv4",
-        "src": "192.0.2.2/32",
-        "dst": "198.51.100.0/24",
-        "action": "blacklist",
-    }
-~~~~~
-{: #fig-filter-update title="Filter Update"}
-
-The DOTS server confirms filter update with a No Content response:
-
-~~~~~
-    HTTP/1.1 204 No Content
-    Cache-Control: no-cache
-    Content-Length: 0
-
-~~~~~
-
-#### GET {+dataroot}/filters/{+mitigation-id}
-
-A GET request to the /filters endpoint on a DOTS server returns filters for a
-mitigation requested by the DOTS client. The mitigation-id value MUST be the
-DOTS client-generated mitigation ID used in a mitigation request previously sent
-to the DOTS server over the signal channel, with the exception of the global
-filter list as described below. A request listing the filters active during
-a mitigation is shown below in {{eg-client-get-per-mit-filter}}:
-
-~~~~~
-    GET /dots/v1/data/filters/42 HTTP/1.1
-    Host: dots-server.example.com
-    Accept: application/json
-~~~~~
-{: #eg-client-get-per-mit-filter title="Filter GET"}
-
-The DOTS server returns a list of active filters applied as part of the
-mitigation on the DOTS client's behalf as in
-{{eg-client-get-per-mit-filter-response}}:
-
-~~~~~
-    HTTP/1.1 200 OK
-    Cache-Control: no-cache
-    Content-Type: application/json
-
-    {
-        "id": 42,
-        "filters": [
-            {
-                "id": 1,
-                "af": "ipv4",
-                "src": "192.0.2.2/32",
-                "action": "blacklist",
-            },
-
-            {
-                "id": 2,
-                "af": "ipv4",
-                "src": "192.51.100.0/30",
-                "sport": 53,
-                "action": "whitelist",
-            },
-        ]
-    }
-~~~~~
-{: #eg-client-get-per-mit-filter-response title="Filter GET Response"}
-
-If the filter list is empty, no filters are applied as part of the mitigation.
-
-
-### {+dataroot}/config
-
-The /config data channel endpoint on a DOTS server is a read-write resource
-through which a DOTS client may configure global signaling session behavior.
-
-
-#### GET {+dataroot}/config
-
-A GET request to the /config endpoint returns the current DOTS configuration for
-the DOTS client:
-
-~~~~~
-GET /dots/v1/data/config HTTP/1.1
-Host: dots-server.example.com
-Accept: application/json
-~~~~~
-{: #eg-client-cfg-get title="DOTS Client Requesting Configuration"}
-
-~~~~~
-HTTP/1.1 200 OK
-Cache-Control:
-Content-Type: application/json
-
-{
-    "config": {
-        "protected-resources": {
-            <alnum_id>: [
-            ]
-        }
-    }
-}
-
-~~~~~
-
-
-#### POST {+dataroot}/config/protected-resources/
-
-TBD
-
-
-### Serialization {#data-channel-resources-serialization}
-
-Resource data is exchanged between DOTS client in a serialized format.
-Implementations MUST support JSON [RFC7159] serialization of resource data. DOTS
-clients MUST advertise support for JSON-encoded data from the DOTS server
-through the HTTP Accept header [RFC7231] \(or an equivalent if not using HTTP),
-using the MIME type defined in [RFC7159], application/json:
-
-~~~~~
-        GET /dots/v1/data/sessions HTTP/1.1
-        Host: dots-server.example.com
-        Accept: application/json
-~~~~~
-{: #eg-client-serial1 title="DOTS Client Advertising Required Serialization"}
-
-Implementations MAY offer additional serialization formats as well. DOTS clients
-MAY advertise support for additional serialization formats in requests to the
-DOTS server through the HTTP Accept header [RFC7231] \(or an equivalent if not
-using HTTP), as shown in the example HTTP/1.1 request below:
-
-~~~~~
-        GET /dots/v1/data/sessions HTTP/1.1
-        Host: dots-server.example.com
-        Accept: application/json; q=0.5, application/cbor
-~~~~~
-{: #eg-client-serial2 title="DOTS Client Supporting Additional Serializations"}
-
-If a DOTS server does not support the media types in the DOTS client's Accept
-header (or its equivalent), the DOTS server MUST respond with an status code
-indicating an error in the client request. In HTTP deployments, the DOTS server
-MUST return the 415 Unsupported Media Type error code defined in [RFC7231]. A
-DOTS client request lacking indicated support for application/json content
-suggests an invalid or malicious client implementation. After sending the 415
-error response, DOTS servers SHOULD terminate the data channel connection with
-the invalid client.
-
-
-### Caching {#data-channel-resources-caching}
-
-DOTS server responses sent over the DOTS data channel MUST NOT be cached by the
-DOTS client. DOTS server implementations therefore MUST include in responses
-a Cache-Control header with a value of "no-cache" [RFC7234].
+IANA Considerations
+===================
+
+The DOTS protocol requires a well-known port to which DOTS client messages are
+sent. The DOTS server listens on the well-known port for client messages. The
+DOTS client binds to an ephemeral port per
+{{interactions-session-initialization}} above. This document selects port 4646
+(the ASCII decimal values for "..": "DOTS") as the well-known port.
 
 
 Security Considerations
 =======================
 
-Data Channel Security
----------------------
-
-The DOTS data channel acts as a management plane for DOTS signaling sessions.
-As discussed in the security considerations of [I-D.ietf-dots-architecture], an
-attacker with control over data channel may be able to blacklist or rate-limit
-any flows under the administrative control of the DOTS client. Extra care must
-therefore be taken when authenticating and authorizing the data channel.
-
-DOTS server operators SHOULD enforce access control policies restricting which
-clients are able to contact DOTS servers.
-
-Signal Channel Security
------------------------
-
-The DOTS signal channel controls mitigation request and withdrawal and as such
-care must be taken to protect against concerns outlined in the security
+The DOTS protocol controls mitigation request and withdrawal and as such care
+must be taken to protect against concerns outlined in the security
 considerations of [I-D.ietf-dots-architecture].
+
+
+Appendix A: Message Schemas
+===========================
+
+DOTS Client Message Schema      {#appendix-schema-client-message}
+--------------------------
+~~~~~
+    syntax = "proto3";
+    import "google/protobuf/any.proto";
+
+    message DOTSClientMessage {
+      // Client generated sequence number
+      uint64 seqno = 1;
+
+      // Sequence number of last received server message
+      uint64 last_svr_seqno = 2;
+
+      repeated DOTSMitigation mitigations = 3;
+
+      // Request active mitigation list from server
+      bool active = 4;
+
+      // Ping request (operator initiated)
+      bool ping = 5;
+
+      DOTSSessionConfig config = 6;
+
+      repeated google.protobuf.Any extensions = 999;
+    }
+~~~~~
+{: #fig-client-message-schema title="DOTS Client Message Schema"}
+
+
+Mitigation Request Schema {#appendix-schema-mit-request}
+-------------------------
+~~~~~
+    message DOTSMitigation {
+      // Opaque client-generated event identifier
+      string eventid = 1;
+
+      // Toggle mitigation for the above scope
+      bool requested = 2;
+
+      // Mitigation scope as described in I-D.ietf-dots-requirements
+      string scope = 3;
+
+      // Lifetime of the requested mitigation.
+      uint32 lifetime = 4;
+
+      // Mitigation efficacy score as a float value between 0 and 1
+      float efficacy = 5;
+
+      repeated google.protobuf.Any extensions = 999;
+    }
+~~~~~
+{: #fig-client-mit-request-schema title="DOTS Client Mitigation Request Schema"}
+
+
+Session Configuration Schema    {#appendix-schema-session-configuration}
+----------------------------
+~~~~~
+      // Per session configuration sent on signaling session init
+      message DOTSSessionConfig {
+        // Acceptable signal loss
+        uint32 loss_limit = 1;
+
+        // Maximum mitigation lifetime in seconds
+        uint32 lifetime_max = 2;
+
+        // Heartbeat interval in milliseconds
+        uint32 heartbeat_interval = 3;
+      }
+~~~~~
+{: #fig-client-sess-cfg-schema title="DOTS Session Conifiguration Schema"}
+
+
+DOTS Server Message Schema      {#appendix-schema-server-message}
+--------------------------
+~~~~~
+    syntax = "proto3";
+    import "google/protobuf/any.proto";
+
+    message DOTSServerMessage {
+      // Server generated sequence number
+      uint64 seqno = 1;
+
+      // Sequence number of last received Client message
+      uint64 last_client_seqno = 2;
+
+      // Request immediate heartbeat response from client.
+      bool ping = 3;
+
+      // Server error details, if available
+      DOTSServerError error = 4;
+
+      DOTSRedirect redirect = 5;
+
+      // Mitigation data, limited by MTU
+      repeated DOTSMitigationStatus mitigations = 6;
+    }
+~~~~~
+{: #fig-server-message-schema title="DOTS Server Message Schema"}
+
+
+DOTS Redirect Schema            {#appendix-schema-redirect}
+--------------------
+~~~~~
+    message DOTSRedirect {
+      // Redirection target DOTS server address
+      string target = 1;
+
+      // Address family of redirection target
+      enum RedirectionTargetType {
+        DNSNAME = 0;
+        IPV4 = 4;
+        IPV6 = 6;
+      }
+      RedirectionTargetType target_type = 2;
+
+      // Port on which to contact redirection target.
+      // XXX Protobufs has no uint16 type, implementations
+      // will need to sanity check.
+      uint32 port = 3;
+    }
+~~~~~
+
+
+DOTS Mitigation Status Schema   {#appendix-schema-mitigation-status}
+-----------------------------
+~~~~~
+    syntax = "proto3";
+    import "google/protobuf/any.proto";
+
+    message DOTSMitigationStatus {
+      // Opaque Client generated event identifier, used by DOTS client
+      // to associate a mitigation status with the event triggering the
+      // mitigation request.
+      string eventid = 1;
+
+      // Mitigation state
+      bool enabled = 2;
+
+      // Mitigation time-to-live (lifetime - (now - start))
+      uint32 ttl = 3;
+
+      // Dropped byte count
+      uint64 bytes_dropped = 4;
+
+      // Dropped bits per second
+      uint64 bps_dropped = 5;
+
+      // Dropped packet count
+      uint64 pkts_dropped = 6;
+
+      // Dropped packets per second
+      uint64 pps_dropped = 7;
+
+      // Blacklist enabled through data channel
+      bool blacklist_enabled = 8;
+
+      // Whitelist enabled through data channel
+      bool whitelist_enabled = 9;
+
+      // Filters enabled through data channel
+      bool filters_enabled = 10;
+
+      repeated google.protobuf.Any extensions = 999;
+    }
+~~~~~
+{: #fig-server-mit-status-schema title="DOTS Server Mitigation Status Schema"}
+
+
+Server Error Schema     {#appendix-schema-server-error}
+-------------------
+~~~~~
+    syntax = "proto3";
+    import "google/protobuf/any.proto";
+
+    message DOTSServerError {
+      enum ErrorCode {
+        NOERROR = 0;
+        INVALID_VALUE = 1;
+        MITIGATION_UNAVAILABLE = 2;
+        MITIGATION_CONFLICT = 3;
+        MALFORMED_MESSAGE = 4;
+      }
+      ErrorCode code = 1;
+
+      // Error details, returned as a blob
+      google.protobuf.Any details = 2;
+    }
+~~~~~
+{: #fig-server-error-schema title="DOTS Server Error Schema"}
